@@ -1,0 +1,33 @@
+{
+  "packageId": "ke.co.mgrinvest.portal",
+  "name": "MGR Investment Group",
+  "launcherName": "MGR Invest",
+  "display": "standalone",
+  "themeColor": "#1D3B2A",
+  "navigationColor": "#1D3B2A",
+  "backgroundColor": "#1D3B2A",
+  "enableNotifications": true,
+  "startUrl": "/",
+  "iconUrl": "/pwa-512x512.png",
+  "maskableIconUrl": "/pwa-512x512.png",
+  "appVersion": "1.0.0",
+  "appVersionCode": 1,
+  "shortcuts": [
+    {
+      "name": "Overview",
+      "shortName": "Overview",
+      "url": "/?tab=dashboard"
+    },
+    {
+      "name": "Member Shares",
+      "shortName": "Shares",
+      "url": "/?tab=members"
+    },
+    {
+      "name": "Audited Ledger",
+      "shortName": "Ledger",
+      "url": "/?tab=ledger"
+    }
+  ]
+}
+

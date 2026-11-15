@@ -1,0 +1,28 @@
+{
+  "name": "mgr-investment-app",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "build:cpanel": "vite build && node scripts/build-documents.js && powershell -NoProfile -Command \"if (Test-Path mgr-investment-cpanel-deploy.zip) { Remove-Item mgr-investment-cpanel-deploy.zip -Force }; if (Test-Path mgr-investment-cpanel-update-only.zip) { Remove-Item mgr-investment-cpanel-update-only.zip -Force }; Compress-Archive -Path dist\\*, dist\\.htaccess -DestinationPath mgr-investment-cpanel-deploy.zip -Force; Compress-Archive -Path dist\\assets, dist\\images, dist\\documents, dist\\index.html, dist\\api.php, dist\\sw.js, dist\\manifest.webmanifest -DestinationPath mgr-investment-cpanel-update-only.zip -Force\"",
+    "build:update": "vite build && node scripts/build-documents.js && powershell -NoProfile -Command \"if (Test-Path mgr-investment-cpanel-update-only.zip) { Remove-Item mgr-investment-cpanel-update-only.zip -Force }; Compress-Archive -Path dist\\assets, dist\\images, dist\\documents, dist\\index.html, dist\\api.php, dist\\sw.js, dist\\manifest.webmanifest -DestinationPath mgr-investment-cpanel-update-only.zip -Force\"",
+    "lint": "oxlint",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "lucide-react": "^1.66.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "oxlint": "^1.89.0",
+    "tailwindcss": "^4.3.3",
+    "vite": "^8.3.5"
+  }
+}

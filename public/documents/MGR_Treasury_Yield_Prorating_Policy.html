@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MGR Club Treasury Holding-Period Yield Prorating Policy</title>
+  <style>
+  @import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Inconsolata:wght@400;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400&display=swap');
+
+  @page {
+    size: A4;
+    margin: 16mm 14mm 16mm 14mm;
+    @bottom-right {
+      content: counter(page);
+      font-family: 'Inconsolata', monospace;
+      font-size: 8.5pt;
+      color: #666;
+    }
+    @bottom-left {
+      content: "MGR CLUB • OFFICIAL INSTRUMENT & POLICY REPOSITORY";
+      font-family: 'Inconsolata', monospace;
+      font-size: 8pt;
+      color: #888;
+      letter-spacing: 0.08em;
+    }
+  }
+
+  :root {
+    --ink: #161816;
+    --ink-muted: #4A4D48;
+    --forest: #1D3B2A;
+    --forest-dark: #12261B;
+    --forest-light: #EBF0EC;
+    --ochre: #9A5B25;
+    --ochre-light: #FBF4E8;
+    --terracotta: #8C2D27;
+    --terracotta-light: #FBF0EF;
+    --paper: #FAF8F3;
+    --paper-cream: #F4EFE4;
+    --border: #C8C1B0;
+    --border-dark: #8C8472;
+  }
+
+  * {
+    box-sizing: border-box;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    background: #FFFFFF;
+    color: var(--ink);
+    font-family: 'Atkinson Hyperlegible', Georgia, serif;
+    font-size: 10.2pt;
+    line-height: 1.55;
+  }
+
+  .page {
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  .page-break {
+    page-break-before: always;
+    break-before: page;
+  }
+
+  .masthead {
+    border: 3px double var(--ink);
+    background: var(--paper);
+    padding: 24px 28px;
+    margin-bottom: 22px;
+    text-align: center;
+  }
+
+  .masthead-crest {
+    display: inline-block;
+    width: 48px;
+    height: 48px;
+    line-height: 48px;
+    border: 2px solid var(--forest);
+    border-radius: 50%;
+    font-family: 'Newsreader', serif;
+    font-weight: 700;
+    font-size: 20pt;
+    color: var(--forest);
+    background: #FFFFFF;
+    margin-bottom: 8px;
+  }
+
+  .masthead-eyebrow {
+    font-family: 'Inconsolata', monospace;
+    font-size: 9pt;
+    font-weight: 700;
+    color: var(--ochre);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .masthead-title {
+    font-family: 'Newsreader', serif;
+    font-size: 20pt;
+    font-weight: 700;
+    color: var(--forest);
+    letter-spacing: 0.02em;
+    line-height: 1.15;
+    margin: 4px 0 6px 0;
+  }
+
+  .masthead-subtitle {
+    font-family: 'Newsreader', serif;
+    font-style: italic;
+    font-size: 11.5pt;
+    color: var(--ink-muted);
+    margin-bottom: 12px;
+  }
+
+  .masthead-meta {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    font-family: 'Inconsolata', monospace;
+    font-size: 8.5pt;
+    color: var(--ink-muted);
+    border-top: 1px solid var(--border);
+    padding-top: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .preamble {
+    font-family: 'Newsreader', serif;
+    font-size: 11pt;
+    font-style: italic;
+    color: var(--forest-dark);
+    border-left: 3px solid var(--ochre);
+    padding: 8px 16px;
+    margin-bottom: 18px;
+    background: var(--paper);
+  }
+
+  .article-header {
+    border-bottom: 2px solid var(--forest);
+    padding-bottom: 4px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  .article-header h2 {
+    font-family: 'Newsreader', serif;
+    font-size: 13pt;
+    font-weight: 700;
+    color: var(--forest);
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+
+  .article-num {
+    font-family: 'Inconsolata', monospace;
+    color: var(--ochre);
+    font-size: 11.5pt;
+  }
+
+  .clause {
+    margin-bottom: 8px;
+    text-align: justify;
+  }
+
+  .clause-num {
+    font-family: 'Inconsolata', monospace;
+    font-weight: 700;
+    color: var(--forest);
+    margin-right: 4px;
+  }
+
+  .statute-box {
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--forest);
+    padding: 10px 14px;
+    margin: 10px 0;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .statute-box.gold {
+    background: var(--ochre-light);
+    border-left-color: var(--ochre);
+  }
+
+  .statute-box.crimson {
+    background: var(--terracotta-light);
+    border-left-color: var(--terracotta);
+  }
+
+  .statute-box-title {
+    font-family: 'Newsreader', serif;
+    font-weight: 700;
+    font-size: 10.5pt;
+    color: var(--forest);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .statute-box.gold .statute-box-title { color: var(--ochre); }
+  .statute-box.crimson .statute-box-title { color: var(--terracotta); }
+
+  .smart-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 12px 0;
+    page-break-inside: avoid;
+  }
+
+  .smart-card {
+    background: var(--paper);
+    border: 1px solid var(--border);
+    padding: 10px 12px;
+    border-radius: 3px;
+  }
+
+  .smart-card-title {
+    font-family: 'Newsreader', serif;
+    font-weight: 700;
+    font-size: 10pt;
+    color: var(--forest);
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .smart-badge {
+    font-family: 'Inconsolata', monospace;
+    font-size: 8pt;
+    font-weight: 700;
+    padding: 1px 5px;
+    border-radius: 2px;
+    background: var(--forest-light);
+    color: var(--forest);
+  }
+
+  table.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0 16px 0;
+    font-size: 9pt;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  table.data-table th {
+    background: var(--forest);
+    color: #FFFFFF;
+    font-family: 'Atkinson Hyperlegible', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 8.2pt;
+    padding: 6px 8px;
+    border: 1px solid var(--forest-dark);
+    text-align: left;
+  }
+
+  table.data-table td {
+    padding: 5px 8px;
+    border: 1px solid #D6D0C2;
+    vertical-align: middle;
+  }
+
+  table.data-table tr:nth-child(even) td {
+    background: #FAF7F0;
+  }
+
+  .text-center { text-align: center; }
+  .text-right { text-align: right; }
+  .font-mono { font-family: 'Inconsolata', monospace; }
+
+  .sign-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 14px;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    font-size: 8.8pt;
+  }
+
+  .sign-table td {
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    vertical-align: top;
+    background: #FFFFFF;
+  }
+
+  .sign-box-role {
+    font-family: 'Inconsolata', monospace;
+    font-size: 7.5pt;
+    font-weight: 700;
+    color: var(--ochre);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .sign-box-name {
+    font-family: 'Newsreader', serif;
+    font-weight: 700;
+    font-size: 10pt;
+    color: var(--forest);
+    margin: 2px 0 6px 0;
+  }
+
+  .sign-line {
+    border-bottom: 1px dashed var(--ink-muted);
+    height: 18px;
+    margin-bottom: 4px;
+  }
+
+  .sign-date {
+    font-family: 'Inconsolata', monospace;
+    font-size: 7.5pt;
+    color: #888;
+  }
+</style>
+</head>
+<body>
+  <div class="page">
+    <div class="masthead">
+      <div class="masthead-crest">M</div>
+      <div class="masthead-eyebrow">The Republic of Kenya • Treasury Accounting &amp; Dividend Allocation</div>
+      <h1 class="masthead-title">YIELD PRORATING POLICY</h1>
+      <div class="masthead-subtitle">Holding-Period Weighted Allocations, Post-Period Capital &amp; Unanimous Ratification</div>
+      <div class="masthead-meta">
+        <span><strong>Policy Ref:</strong> MGR/POL/MMF-DIST-01</span>
+        <span><strong>Authority:</strong> Constitution Clause 9.4</span>
+        <span><strong>Approval Gate:</strong> 100% Unanimous</span>
+        <span><strong>Method:</strong> Holding-Period Weighted</span>
+      </div>
+    </div>
+
+    <div class="preamble">
+      "This policy operationalizes Clause 9.4 of the MGR Club Constitution, establishing the mathematical formula, holding-period prorating, post-period capital protection, and unanimous member ratification mandate governing interest distributions."
+    </div>
+
+    <div class="article-header">
+      <h2><span class="article-num">1.0</span> The Unanimous Member Ratification Mandate</h2>
+    </div>
+    <div class="clause">
+      <span class="clause-num">1.1</span> No financial action crediting or debiting investment interest to individual member accounts may be executed without the prior unanimous (100%) affirmative ratification of all active members.
+    </div>
+
+    <div class="article-header">
+      <h2><span class="article-num">2.0</span> Holding-Period Weighted Allocation Formula</h2>
+    </div>
+    <div class="clause">
+      <span class="clause-num">2.1</span> Investment interest earned from CMA-regulated funds (Mansa-X Special Fund and Etica Capital MMF) shall be attributed based on eligible capital weighted by active days invested during the period.
+    </div>
+    <div class="clause">
+      <span class="clause-num">2.2</span> <strong>Exclusion of Post-Period Capital:</strong> Capital received after the close of an accounting quarter (e.g. Leoivard Omondi Ongule <code>MGR-011</code> depositing in late October 2026, after Q3 closure on 30/09/2026) is strictly excluded from past quarter dividends, receiving KES 0.00 for Q3 and preserving 100% of his KES 17,000 principal for Q4.
+    </div>
+    <div class="clause">
+      <span class="clause-num">2.3</span> <strong>Protection of Deceased Estates:</strong> Funds of deceased members that remained active throughout the period (e.g. Late Frederick Ongule Seunda <code>MGR-007</code>) accrue their full pro-rata share into the estate escrow account.
+    </div>
+
+    <table class="sign-table" style="margin-top:24px;">
+      <tr>
+        <td style="width:50%;">
+          <div class="sign-box-role">Treasurer, Exec Committee</div>
+          <div class="sign-box-name">Leoivard Omondi Ongule (011)</div>
+          <div class="sign-line"></div>
+          <div class="sign-date">Treasury Verified • 30/10/2026</div>
+        </td>
+        <td style="width:50%;">
+          <div class="sign-box-role">Chief Executive Officer</div>
+          <div class="sign-box-name">John Kennedy Obalah (001)</div>
+          <div class="sign-line"></div>
+          <div class="sign-date">Executive Signatory • 30/10/2026</div>
+        </td>
+      </tr>
+    </table>
+  </div>
+</body>
+</html>

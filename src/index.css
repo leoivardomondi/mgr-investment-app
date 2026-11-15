@@ -1,0 +1,342 @@
+@import "tailwindcss";
+
+/* ============================================================================
+   MGR INVESTMENT GROUP — PRINT-INSPIRED ARCHIVAL & COOPERATIVE DESIGN SYSTEM
+   Zero AI clichés, zero neon gradients, non-AI editorial & accounting typefaces
+   1. Nairobi Gazette & Co-op Ledger (swiss — Default)
+   2. Espresso & Brass Boardroom (terminal)
+   3. Savanna Limestone & Olive (fintech)
+   ============================================================================ */
+
+:root,
+html[data-design="swiss"] {
+  /* 1. Nairobi Gazette & Co-op Ledger (Warm Cotton Paper, Acacia Green & Ochre) */
+  --font-display: "Newsreader", Georgia, "Times New Roman", serif;
+  --font-sans: "Atkinson Hyperlegible", "Source Sans 3", Georgia, sans-serif;
+  --font-mono: "Inconsolata", "Courier New", monospace;
+
+  /* Tactile Paper Surfaces (No sterile blue-grays) */
+  --bg-outer: #E5DEC9;
+  --bg-canvas: #F4EFE4;
+  --bg-surface: #FCFBF8;
+  --bg-subtle: #EAE3D2;
+  --border-hairline: #D6CEBE;
+  --border-hover: #B8AE99;
+
+  /* Ink & Authority: Matte Acacia Forest Green & Rift Valley Ochre (Solid, Zero Gradient) */
+  --brand-header-bg: #1D3B2A;
+  --brand-header-border: #142A1E;
+  --brand-primary: #1D3B2A;
+  --brand-primary-hover: #142A1E;
+  --brand-tint: #EBF0EC;
+  --brand-tint-border: #C4D4C8;
+
+  /* Earth & Accounting Semantic Accents */
+  --accent-gold: #9A5B25;
+  --accent-gold-hover: #7D481B;
+  --accent-gold-light: #F3DEC0;
+  --accent-gold-surface: #FAF3E8;
+  --accent-emerald: #235337;
+  --accent-emerald-surface: #E9F2EC;
+  --accent-crimson: #8C2D27;
+  --accent-crimson-surface: #F9ECEB;
+  --accent-cyan: #2B546A;
+
+  /* Solid Matte Account Header (Zero Gradient) */
+  --hero-bg: #1D3B2A;
+  --hero-border: #12261B;
+  --hero-shadow: 0 4px 0 0 #D6CEBE;
+
+  /* Archival Ledger Geometry */
+  --card-radius: 6px;
+  --btn-radius: 4px;
+  --card-shadow: 0 1px 0 0 #D6CEBE;
+  --card-shadow-hover: 0 3px 0 0 #C2B8A3;
+}
+
+html[data-design="terminal"] {
+  /* 2. Espresso & Brass Boardroom (Warm Dark Roast & Aged Brass — No AI Blue-Black) */
+  --font-display: "Newsreader", Georgia, serif;
+  --font-sans: "Atkinson Hyperlegible", "Source Sans 3", sans-serif;
+  --font-mono: "Inconsolata", monospace;
+
+  --bg-outer: #120F0C;
+  --bg-canvas: #181411;
+  --bg-surface: #221D18;
+  --bg-subtle: #2C251F;
+  --border-hairline: #3A3129;
+  --border-hover: #54473B;
+
+  --brand-header-bg: #14110E;
+  --brand-header-border: #3A3129;
+  --brand-primary: #B88644;
+  --brand-primary-hover: #9E7034;
+  --brand-tint: #2D251C;
+  --brand-tint-border: #4A3C2C;
+
+  --accent-gold: #C89B57;
+  --accent-gold-hover: #B08442;
+  --accent-gold-light: #F2DEC0;
+  --accent-gold-surface: #2C241B;
+  --accent-emerald: #4E8C64;
+  --accent-emerald-surface: #1E2D24;
+  --accent-crimson: #B84A42;
+  --accent-crimson-surface: #2E1D1C;
+  --accent-cyan: #5B89A6;
+
+  --hero-bg: #261F19;
+  --hero-border: #4A3C2C;
+  --hero-shadow: 0 4px 0 0 #0D0B09;
+
+  --card-radius: 6px;
+  --btn-radius: 4px;
+  --card-shadow: 0 2px 0 0 #0D0B09;
+  --card-shadow-hover: 0 3px 0 0 #54473B;
+}
+
+html[data-design="fintech"] {
+  /* 3. Savanna Limestone & Olive (Warm Tactile Cooperative Field Style) */
+  --font-display: "Newsreader", Georgia, serif;
+  --font-sans: "Source Sans 3", "Atkinson Hyperlegible", sans-serif;
+  --font-mono: "Inconsolata", monospace;
+
+  --bg-outer: #DDD5C7;
+  --bg-canvas: #EFEAE1;
+  --bg-surface: #FAF8F4;
+  --bg-subtle: #E4DDD0;
+  --border-hairline: #CFC6B6;
+  --border-hover: #B2A692;
+
+  --brand-header-bg: #2C3824;
+  --brand-header-border: #1F2819;
+  --brand-primary: #2C3824;
+  --brand-primary-hover: #1F2819;
+  --brand-tint: #EAEDE7;
+  --brand-tint-border: #C5CEC0;
+
+  --accent-gold: #9E4E28;
+  --accent-gold-hover: #803D1E;
+  --accent-gold-light: #F4DFD2;
+  --accent-gold-surface: #FBF1EB;
+  --accent-emerald: #2D5A3C;
+  --accent-emerald-surface: #EAF2EC;
+  --accent-crimson: #94302A;
+  --accent-crimson-surface: #F9EBEA;
+  --accent-cyan: #34596E;
+
+  --hero-bg: #2C3824;
+  --hero-border: #1F2819;
+  --hero-shadow: 0 4px 0 0 #CFC6B6;
+
+  --card-radius: 10px;
+  --btn-radius: 6px;
+  --card-shadow: 0 1px 0 0 #CFC6B6;
+  --card-shadow-hover: 0 3px 0 0 #B2A692;
+}
+
+/* ============================================================================
+   BASE TYPOGRAPHY & TABULAR ACCOUNTING NUMERALS
+   ============================================================================ */
+
+html {
+  overflow-x: hidden;
+  max-width: 100%;
+  font-family: var(--font-sans);
+  font-variant-numeric: tabular-nums;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  max-width: 100%;
+  width: 100%;
+  background-color: var(--bg-outer);
+  color: #231F1C;
+  font-family: var(--font-sans);
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Editorial Broadsheet Headings */
+h1, h2, h3, .font-editorial {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+}
+
+/* Accounting Machine Numerals */
+.font-mono-num,
+table td,
+table th,
+input[type="number"] {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ============================================================================
+   SOLID ARCHIVAL SURFACES (ZERO GRADIENTS)
+   ============================================================================ */
+
+.bank-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+
+.bank-card-interactive {
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.bank-card-interactive:hover {
+  border-color: var(--border-hover);
+  box-shadow: var(--card-shadow-hover);
+}
+
+/* Solid Matte Member Passbook Header (No Gradients) */
+.equity-account-header {
+  background-color: var(--hero-bg);
+  color: #FCFBF8;
+  border: 1px solid var(--hero-border);
+  border-radius: var(--card-radius);
+  box-shadow: var(--hero-shadow);
+}
+
+/* Solid Top Registry Bar */
+.mgr-glass-header {
+  background-color: var(--brand-header-bg);
+  border-bottom: 2px solid var(--brand-header-border);
+}
+
+/* Remap standard Tailwind slate/emerald/rose surfaces to warm archival tones */
+html[data-design="swiss"] .bg-white,
+html[data-design="fintech"] .bg-white {
+  background-color: var(--bg-surface) !important;
+}
+
+html[data-design="swiss"] .bg-slate-50,
+html[data-design="swiss"] .bg-slate-50\/50,
+html[data-design="swiss"] .bg-slate-50\/60,
+html[data-design="swiss"] .bg-slate-50\/70,
+html[data-design="swiss"] .bg-slate-100,
+html[data-design="fintech"] .bg-slate-50,
+html[data-design="fintech"] .bg-slate-100 {
+  background-color: var(--bg-subtle) !important;
+}
+
+html[data-design="swiss"] .border-slate-100,
+html[data-design="swiss"] .border-slate-200,
+html[data-design="swiss"] .border-slate-300,
+html[data-design="fintech"] .border-slate-100,
+html[data-design="fintech"] .border-slate-200,
+html[data-design="fintech"] .border-slate-300 {
+  border-color: var(--border-hairline) !important;
+}
+
+html[data-design="swiss"] .text-slate-900,
+html[data-design="swiss"] .text-slate-800 {
+  color: #1F1B18 !important;
+}
+
+html[data-design="swiss"] .text-slate-700,
+html[data-design="swiss"] .text-slate-600 {
+  color: #4A433B !important;
+}
+
+html[data-design="swiss"] .text-slate-500,
+html[data-design="swiss"] .text-slate-400 {
+  color: #6E655A !important;
+}
+
+/* ============================================================================
+   ESPRESSO & BRASS BOARDROOM ("terminal") DARK OVERRIDES
+   ============================================================================ */
+
+html[data-design="terminal"] body {
+  color: #F4EFE6;
+}
+
+html[data-design="terminal"] .mgr-app-shell,
+html[data-design="terminal"] .mgr-main-canvas {
+  background-color: #181411 !important;
+  border-color: #3A3129 !important;
+}
+
+html[data-design="terminal"] .bg-white {
+  background-color: #221D18 !important;
+}
+
+html[data-design="terminal"] .bg-slate-50,
+html[data-design="terminal"] .bg-slate-50\/50,
+html[data-design="terminal"] .bg-slate-50\/60,
+html[data-design="terminal"] .bg-slate-50\/70,
+html[data-design="terminal"] .bg-slate-50\/80 {
+  background-color: #1C1814 !important;
+}
+
+html[data-design="terminal"] .bg-slate-100,
+html[data-design="terminal"] .bg-slate-100\/80,
+html[data-design="terminal"] .bg-slate-100\/90,
+html[data-design="terminal"] .bg-slate-200 {
+  background-color: #2C251F !important;
+}
+
+html[data-design="terminal"] .text-slate-900,
+html[data-design="terminal"] .text-slate-800 {
+  color: #F4EFE6 !important;
+}
+
+html[data-design="terminal"] .text-slate-700,
+html[data-design="terminal"] .text-slate-600 {
+  color: #D6CCBE !important;
+}
+
+html[data-design="terminal"] .text-slate-500,
+html[data-design="terminal"] .text-slate-400 {
+  color: #A39686 !important;
+}
+
+html[data-design="terminal"] .border-slate-100,
+html[data-design="terminal"] .border-slate-200,
+html[data-design="terminal"] .border-slate-200\/80,
+html[data-design="terminal"] .border-slate-300 {
+  border-color: #3A3129 !important;
+}
+
+html[data-design="terminal"] .divide-slate-100 > :not([hidden]) ~ :not([hidden]),
+html[data-design="terminal"] .divide-slate-200 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #3A3129 !important;
+}
+
+html[data-design="terminal"] input,
+html[data-design="terminal"] select,
+html[data-design="terminal"] textarea {
+  background-color: #16120F !important;
+  color: #F4EFE6 !important;
+  border-color: #463B31 !important;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #C4B9A5;
+  border-radius: 2px;
+}
+html[data-design="terminal"] ::-webkit-scrollbar-thumb {
+  background: #4A3E33;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
