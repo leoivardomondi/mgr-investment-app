@@ -4,24 +4,25 @@ Official accountancy, treasury management, and corporate governance web applicat
 
 ---
 
-## 🏛️ Official Member Registry (Schedule 1)
+## 🏛️ Official Member Governance Structure (Schedule 1)
 
-| # | Member ID | Name | Governance Position | Committee Tier | Net Shares (KES) | Equity % |
-|---|---|---|---|---|---|---|
-| 1 | **MGR-001** | **John Kennedy Obalah** | Chief Executive Officer (CEO) | Executive Committee | 408,737.00 | 57.51% |
-| 2 | **MGR-002** | **Alice Tuei** | General Member | General Membership | 10,800.00 | 1.52% |
-| 3 | **MGR-003** | **Sarah Njoki** | Secretary | Executive Committee | 817.00 | 0.12% |
-| 4 | **MGR-004** | **Dan Aloo** | Chairman | Executive Committee | 160,076.00 | 22.52% |
-| 5 | **MGR-005** | **Moses Okwayo** | General Member | General Membership | 43,162.00 | 6.07% |
-| 6 | **MGR-006** | **Benjamin Ambrose Madara** | Compliance Officer | Executive Committee | 10,683.00 | 1.50% |
-| 7 | **MGR-007** | **Frederick Ongule Seunda** *(Late)* | Member (Estate Escrow) | Deceased Member | 13,019.00 | 1.83% |
-| 8 | **MGR-008** | **Richard Ruto** | General Member | General Membership | 2,540.00 | 0.36% |
-| 9 | **MGR-009** | **Dr Joash Migosi PhD** | Research Officer / Analyst | Executive Committee | 4,841.00 | 0.68% |
-| 10 | **MGR-010** | **Josephat Lubanga** | Vice Chairman | Executive Committee | 39,000.00 | 5.49% |
-| 11 | **MGR-011** | **Leoivard Omondi Ongule** | Treasurer | Executive Committee | 17,000.00 | 2.39% |
-| **TOTAL** | | | | | **KES 710,675.00** | **100.00%** |
+| # | Member ID | Governance Position | Committee Tier | Account Status |
+|---|---|---|---|---|
+| 1 | **MGR-001** | Chief Executive Officer (CEO) | Executive Committee | Verified Active Shareholder |
+| 2 | **MGR-002** | General Member | General Membership | Verified Active Shareholder |
+| 3 | **MGR-003** | Secretary | Executive Committee | Verified Active Shareholder |
+| 4 | **MGR-004** | Chairman | Executive Committee | Verified Active Shareholder |
+| 5 | **MGR-005** | General Member | General Membership | Verified Active Shareholder |
+| 6 | **MGR-006** | Compliance Officer | Executive Committee | Verified Active Shareholder |
+| 7 | **MGR-007** | Member (Estate Escrow) | Deceased Member Custody | Estate Escrow Protocol |
+| 8 | **MGR-008** | General Member | General Membership | Verified Active Shareholder |
+| 9 | **MGR-009** | Research Officer / Analyst | Executive Committee | Verified Active Shareholder |
+| 10 | **MGR-010** | Vice Chairman | Executive Committee | Verified Active Shareholder |
+| 11 | **MGR-011** | Treasurer | Executive Committee | Verified Active Shareholder |
 
-*Note on Registration Reserve Pool:* 11 Members × KES 1,000/= Registration Fee = **KES 11,000.00** held in the Group Reserve Account toward formal LLP registration.
+- **Total Reconciled Capital Contributions:** KES 710,675.00 across 11 official member accounts.
+- **Registration Reserve Pool:** 11 Members × KES 1,000/= Registration Fee = **KES 11,000.00** held in the Group Reserve Account toward formal registration.
+- **Privacy & Data Protection Notice:** In accordance with the Kenya Data Protection Act 2019 (DPA), Article 31 of the Constitution of Kenya, and club confidentiality bylaws, individual member personal names, phone numbers, and individual equity amounts are omitted from public repositories. Audited share registries and KYC identity vaults are restricted to authenticated shareholders and authorized executive officers within the secure portal.
 
 ---
 
