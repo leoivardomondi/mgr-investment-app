@@ -998,7 +998,7 @@ export default function DashboardView({ onOpenDepositModal }) {
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Bereavement Notice: Demise of Member Frederick Ongule Seunda"
+                  placeholder="e.g. Executive Governance or Treasury Notice"
                   value={annFormData.title}
                   onChange={(e) => setAnnFormData({ ...annFormData, title: e.target.value })}
                   className="w-full p-2 border border-slate-300 rounded-lg focus:ring-1 focus:ring-[var(--brand-primary)] focus:outline-hidden font-bold"
@@ -1024,7 +1024,7 @@ export default function DashboardView({ onOpenDepositModal }) {
                 <textarea
                   rows={4}
                   required
-                  placeholder="Write full notice details, instructions, bereavement details, or action items..."
+                  placeholder="Write full notice details, instructions, or action items..."
                   value={annFormData.content}
                   onChange={(e) => setAnnFormData({ ...annFormData, content: e.target.value })}
                   className="w-full p-2 border border-slate-300 rounded-lg focus:ring-1 focus:ring-[var(--brand-primary)] focus:outline-hidden text-xs leading-relaxed"

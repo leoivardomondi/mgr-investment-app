@@ -380,7 +380,7 @@ export default function AuthGateModal() {
                     required
                     value={identifier}
                     onChange={(e) => setIdentifier(e.target.value)}
-                    placeholder="e.g. MGR-001, MGR-004, MGR-011 or registered email"
+                    placeholder="e.g. MGR-001 or your personal email"
                     className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-base sm:text-sm font-semibold text-slate-900 focus:outline-none focus:border-[#1D3B2A] min-h-[44px]"
                   />
                 </div>
@@ -472,7 +472,7 @@ export default function AuthGateModal() {
                     required
                     value={signupName}
                     onChange={(e) => setSignupName(e.target.value)}
-                    placeholder="e.g. John Kennedy Obalah, Sarah Njoki..."
+                    placeholder="e.g. First and Last Name"
                     className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-base sm:text-sm font-semibold text-slate-900 focus:outline-none focus:border-[#1D3B2A] min-h-[44px]"
                   />
                 </div>
@@ -487,7 +487,7 @@ export default function AuthGateModal() {
                       required
                       value={signupEmail}
                       onChange={(e) => setSignupEmail(e.target.value)}
-                      placeholder="e.g. member@mgrinvestment.com"
+                      placeholder="e.g. yourname@gmail.com"
                       className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-base sm:text-sm font-semibold text-slate-900 focus:outline-none focus:border-[#1D3B2A] min-h-[44px]"
                     />
                   </div>
@@ -501,7 +501,7 @@ export default function AuthGateModal() {
                       required
                       value={signupPhone}
                       onChange={(e) => setSignupPhone(e.target.value)}
-                      placeholder="e.g. 0712 345 678 or +254..."
+                      placeholder="e.g. 0712 345 678"
                       className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-base sm:text-sm font-semibold text-slate-900 focus:outline-none focus:border-[#1D3B2A] min-h-[44px]"
                     />
                   </div>
@@ -661,7 +661,7 @@ export default function AuthGateModal() {
                     required
                     value={identifier}
                     onChange={(e) => setIdentifier(e.target.value)}
-                    placeholder="e.g. MGR-001, MGR-004, MGR-011 or registered email"
+                    placeholder="e.g. MGR-001 or your personal email"
                     className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-base sm:text-sm font-semibold text-slate-900 focus:outline-none focus:border-[#1D3B2A] min-h-[44px]"
                   />
                   <p className="text-[11px] text-slate-500 mt-1">

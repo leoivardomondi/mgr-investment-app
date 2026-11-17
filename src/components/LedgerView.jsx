@@ -1328,7 +1328,7 @@ export default function LedgerView() {
                 <input
                   type="email"
                   required
-                  placeholder="e.g. member@mgrinvest.co.ke"
+                  placeholder="e.g. recipient@gmail.com"
                   value={emailModal.recipientEmail}
                   onChange={(e) => setEmailModal(prev => ({ ...prev, recipientEmail: e.target.value }))}
                   className="w-full px-3 py-2 rounded-lg text-xs font-medium text-slate-900 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)]"
@@ -1344,7 +1344,7 @@ export default function LedgerView() {
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g. Sarah Njoki"
+                  placeholder="e.g. Recipient Name"
                   value={emailModal.recipientName}
                   onChange={(e) => setEmailModal(prev => ({ ...prev, recipientName: e.target.value }))}
                   className="w-full px-3 py-2 rounded-lg text-xs font-medium text-slate-900 border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)]"

@@ -835,7 +835,7 @@ export default function MembersView({ onOpenDepositModal, onOpenDataEditor }) {
               <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
               <input
                 type="text"
-                placeholder="Search member by name, ID (e.g. MGR-011), or role..."
+                placeholder="Search member by name, ID, or role..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[var(--brand-primary)]"
@@ -1367,7 +1367,7 @@ export default function MembersView({ onOpenDepositModal, onOpenDataEditor }) {
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Dr Paul Mwangi"
+                  placeholder="e.g. First and Last Name"
                   value={prospectForm.name}
                   onChange={(e) => setProspectForm({ ...prospectForm, name: e.target.value })}
                   className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-900"
@@ -2229,7 +2229,7 @@ export default function MembersView({ onOpenDepositModal, onOpenDataEditor }) {
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Beneficiary of Late Frederick Ongule Seunda"
+                  placeholder="e.g. Declared Estate Beneficiary / Next of Kin"
                   value={deceasedModal.beneficiaryName}
                   onChange={(e) => setDeceasedModal({ ...deceasedModal, beneficiaryName: e.target.value })}
                   className="w-full p-2 border border-slate-300 rounded-lg focus:ring-1 focus:ring-[var(--brand-primary)] focus:outline-hidden"
@@ -2321,7 +2321,7 @@ export default function MembersView({ onOpenDepositModal, onOpenDataEditor }) {
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Leoivard Omondi Ongule"
+                  placeholder="e.g. First and Last Name"
                   value={newMemberForm.name}
                   onChange={(e) => setNewMemberForm({ ...newMemberForm, name: e.target.value })}
                   className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-900 focus:outline-none focus:border-[var(--brand-primary)]"

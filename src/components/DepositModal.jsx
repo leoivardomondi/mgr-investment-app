@@ -238,7 +238,7 @@ export default function DepositModal({ isOpen, onClose }) {
             <textarea
               required
               rows={2}
-              placeholder="Paste full M-Pesa / Bank SMS confirmation here, e.g. 'UJSGF05XHV Confirmed. Ksh17,000.00 sent to ETICA CAPITAL LTD for account 34236M on 28/10/26 at 5:10 PM... (Paybill Bus No: 4096483 | Client Code: 34236M)'..."
+              placeholder="Paste full M-Pesa or Bank SMS confirmation here (e.g. 'QK891280LM Confirmed. Ksh5,000 sent to ETICA CAPITAL LTD for account 34236M on ...')..."
               value={transactionMessage}
               onChange={(e) => setTransactionMessage(e.target.value)}
               className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs text-slate-900 leading-snug focus:outline-none focus:border-[var(--brand-primary)]"
