@@ -1,76 +1,135 @@
-# MGR Investment Group — Private Wealth Ledger & Governance Portal
+# MGR Investment Group — Financial Ledger & Governance Portal
 
-Official accountancy, treasury management, and corporate governance web application for **MGR Investment Group** (MGR Club / LLP), designed for high-fidelity member share tracking, CMA-regulated MMF reconciliations, pro-rata dividend compounding, mutual credit management, bereavement succession escrow, and constitutional governance.
+An institutional-grade, mobile-responsive treasury management and corporate governance web application designed for private investment clubs (*chamas*), partnerships, and cooperative funds. 
 
----
-
-## 🏛️ Official Member Governance Structure (Schedule 1)
-
-| # | Member ID | Governance Position | Committee Tier | Account Status |
-|---|---|---|---|---|
-| 1 | **MGR-001** | Chief Executive Officer (CEO) | Executive Committee | Verified Active Shareholder |
-| 2 | **MGR-002** | General Member | General Membership | Verified Active Shareholder |
-| 3 | **MGR-003** | Secretary | Executive Committee | Verified Active Shareholder |
-| 4 | **MGR-004** | Chairman | Executive Committee | Verified Active Shareholder |
-| 5 | **MGR-005** | General Member | General Membership | Verified Active Shareholder |
-| 6 | **MGR-006** | Compliance Officer | Executive Committee | Verified Active Shareholder |
-| 7 | **MGR-007** | Member (Estate Escrow) | Deceased Member Custody | Estate Escrow Protocol |
-| 8 | **MGR-008** | General Member | General Membership | Verified Active Shareholder |
-| 9 | **MGR-009** | Research Officer / Analyst | Executive Committee | Verified Active Shareholder |
-| 10 | **MGR-010** | Vice Chairman | Executive Committee | Verified Active Shareholder |
-| 11 | **MGR-011** | Treasurer | Executive Committee | Verified Active Shareholder |
-
-- **Total Reconciled Capital Contributions:** KES 710,675.00 across 11 official member accounts.
-- **Registration Reserve Pool:** 11 Members × KES 1,000/= Registration Fee = **KES 11,000.00** held in the Group Reserve Account toward formal registration.
-- **Privacy & Data Protection Notice:** In accordance with the Kenya Data Protection Act 2019 (DPA), Article 31 of the Constitution of Kenya, and club confidentiality bylaws, individual member personal names, phone numbers, and individual equity amounts are omitted from public repositories. Audited share registries and KYC identity vaults are restricted to authenticated shareholders and authorized executive officers within the secure portal.
+The system provides automated double-entry ledger bookkeeping, Capital Markets Authority (CMA) regulated money market fund (MMF) yield reconciliation, pro-rata dividend distribution, 80% share-backed mutual credit, 24-hour single-executive PIN-protected KYC vaults, and democratic resolution ratification under Kenyan law (Cap 30A & Companies Act).
 
 ---
 
-## 💼 Group Portfolio & Treasury Assets
+## 🚀 Key Functional Modules & How the App Works
 
-- **Mansa-X Special Fund (Standard Investment Bank):** KES 541,587.00 (KES 500,000 principal + KES 41,587 Q3 net accrued return ~20% annualized).
-- **Etica Capital Money Market Fund:** KES 250,209.74 (Liquid capital preservation reserve).
-- **Equity Bank Kenya (Chama Joint Account):** KES 2,512.00 (Primary commercial clearing account with lowest ledger fees).
-- **Group Reserve & Statutory Pool:** KES 11,000.00+ (Non-refundable registration fees and loan interest earnings).
+### 1. Portfolio & Self-Service Equity Dashboard
+* **Personal Capital Accounts:** Each verified shareholder accesses a personal dashboard tracking cumulative deposits, monthly contributions, and time-weighted accrued yield.
+* **Confidentiality by Design:** General members view only their own holdings and aggregate group performance; peer member shares and individual deposit histories remain confidential and restricted to the Executive Committee under Cap 30A privacy regulations.
+* **Instant Deposit Logging:** Members log cash or M-Pesa deposits directly with transaction SMS codes and timestamps for treasurer verification.
 
----
+### 2. Treasury, MMF & Dividend Reconciliation
+* **Dual-Fund Yield Attribution:** Automates pro-rata yield distribution across high-yield offshore/special funds (e.g. Mansa-X) and liquid capital preservation reserves (e.g. Etica Capital MMF).
+* **Compounding Ledger:** Automatically prorates monthly interest into member share capital using holding-period weighted formulas, ensuring early depositors earn proportional returns.
+* **Double-Entry General Ledger:** Full balance sheet, income statement (P&L), and statement of members' capital with exportable CSV/PDF audit reports.
 
-## 📜 Official Legal Documents & Charters (Pre-Rendered PDFs)
+### 3. 80% Share-Backed Mutual Credit & Emergency Loans
+* **Constitutional 80% Cap:** Eligible active members can request emergency loans capped at 80% of their unencumbered share capital.
+* **Zero Club Default Risk:** Member shares serve as direct collateral. The club exercises an automatic statutory right of set-off against member capital balances upon default or withdrawal.
+* **Peer-to-Peer or Treasury Funding:** Supports group reserve disbursements or peer-member cash collateral swaps where collateral is transferred to the funding member until repaid.
 
-1. **[MGR Club Constitution / LLP Agreement](public/documents/MGR_Club_Constitution_LLP_Agreement.pdf):** 12 Articles covering Founding Stability Mandate (6.0), Banking & Dual Signatories (8.2), 3-Tier IPS Governance (8.5), Emergency Borrowing Limits (10.5), and Schedule 1 Member Register.
-2. **[Investment Policy Statement & SMART Objectives Charter](public/documents/MGR_Investment_Policy_and_Objectives.pdf):** Vision, Mission, 10 Strategic Objectives, 6 SMART Targets, 3-Tier IPS Protocol, Dynamic Yield Oversight, Tactical KES 200,000 Reallocation, and the 6 Member Research Portfolios.
-3. **[Member 90% Emergency Credit & Set-Off Guideline](public/documents/MGR_Emergency_Credit_and_SetOff_Policy.pdf):** 90% borrowing limit against member deposits, 10% monthly interest, 30-day term, and mandatory right of set-off.
-4. **[Bereavement Succession & Estate Exit Protocol](public/documents/MGR_Bereavement_Succession_Exit_Protocol.pdf):** 1:1 par value internal buyout for deceased member shares, 100% payout to beneficiaries, zero disruption of MMF lock-in cycles.
-5. **[Treasury Holding-Period Yield Prorating Policy](public/documents/MGR_Treasury_Yield_Prorating_Policy.pdf):** Pro-rata capital holding-period yield attribution and unanimous active member ratification rules.
+### 4. Democratic Governance & Resolution Voting
+* **Unanimous Financial Ratification:** Sensitive capital transfers, asset reallocations, and policy amendments require member voting and executive ratification before execution.
+* **Audit Trail & Action Logs:** Every privileged modification, document access, and transaction approval is permanently recorded with actor identity, timestamp, IP address, and browser/device metadata.
 
----
-
-## 🚀 Tech Stack & Architecture
-
-- **Frontend:** React 19, Vite, Tailwind CSS, Lucide Icons, Inconsolata & Newsreader typography.
-- **Backend API:** Lightweight PHP (`public/api.php`) with dual database support:
-  - **SQLite (Default):** Zero-configuration local database with automatic WAL mode and schema auto-migration.
-  - **MySQL (cPanel Production):** Automatically connects when MySQL credentials are provided.
-- **Security & Kenyan Law Compliance:**
-  - Article 31 of Constitution of Kenya (Right to Privacy) and Kenya Data Protection Act 2019.
-  - 24-Hour single-executive PIN protection for member confidential KYC files (National ID, KRA PIN, Passport Photo).
-  - RBAC (Role-Based Access Control) for Super Admins, Treasury Admin, Executive Officers, and General Members.
-- **PWA / Android WebAPK:** Installable on Android (WebAPK / Chrome), iOS (Safari Add to Home Screen), and desktop.
+### 5. Confidential KYC & Legal Identity Vault
+* **Expiring PIN Protection:** Member national identification, KRA PIN certificates, and passport photos are encrypted and sealed.
+* **Single-Executive Authorization:** Even the Chairman or CEO cannot inspect member files without an explicit 4-digit PIN generated by the member, which automatically expires after 24 hours.
 
 ---
 
-## 💻 Local Development & Build
+## 🏛️ System Roles & Access Hierarchy (RBAC)
+
+The portal implements strict Role-Based Access Control (RBAC) with clearly segregated responsibilities:
+
+| Access Tier | Primary Roles | Operational Responsibilities |
+|---|---|---|
+| **System Administrator** | IT Webmaster | cPanel web hosting infrastructure, SMTP mail routing, database synchronization, SSL security, and telemetry audit registers. |
+| **Executive Leadership** | CEO & Chairman | Presiding over general meetings, executive committee resolutions, statutory incorporation, and governance oversight. |
+| **Treasury Custodian** | Treasurer / CFO | Fund reconciliation (Etica MMF & Mansa X), loan disbursements, dividend allocation, and double-entry ledger postings. |
+| **Executive Officers** | Secretary, Compliance, Research | Secretarial minutes, regulatory compliance audits, fund performance intelligence, and membership reviews. |
+| **General Members** | Shareholders | Self-service statements, deposit recording, 80% emergency loan applications, and democratic resolution voting. |
+
+---
+
+## 🛠️ Technology Stack & Architecture
+
+* **Frontend:** React 19, Vite, Tailwind CSS, Lucide React Icons.
+* **Typography & UI:** Tailored institutional British-Kenyan banking theme (`Inconsolata`, `Newsreader`, warm parchment `#FAF8F5`, deep forest green `#1D3B2A`, and antique gold `#C5A059`).
+* **Backend API:** Lightweight, standalone PHP service (`public/api.php`) with zero external composer dependencies.
+* **Database Architecture:**
+  * **SQLite (Default):** Zero-configuration local database (`./mgr_data/mgr_database.sqlite`) with automatic WAL mode, foreign key enforcement, and self-migrating schema.
+  * **MySQL (Enterprise / Shared DB):** Seamless automatic failover to MySQL when `db_config.php` credentials are provided on cPanel.
+* **Client-Server Synchronization:** Offline-first progressive web app (PWA) with automatic two-way background state sync.
+
+---
+
+## 💻 Local Development Setup
+
+### Prerequisites
+* **Node.js** (v18.0 or higher) & **npm**
+* **PHP** (v8.0 or higher with PDO SQLite extension enabled)
+
+### Getting Started
 
 ```bash
-# Install dependencies
+# 1. Clone the repository
+git clone https://github.com/leoivardomondi/mgr-investment-app.git
+cd mgr-investment-app
+
+# 2. Install dependencies
 npm install
 
-# Start local development server
+# 3. Start local development server
 npm run dev
+```
 
-# Run linter
+The application will be accessible at `http://localhost:5173`.
+
+### Production Build
+
+```bash
+# Run ESLint & code analysis
 npm run lint
 
-# Build production bundle and compile all official PDFs
+# Build production assets for deployment
+npm run build
+
+# Build full cPanel distribution package with pre-rendered PDFs
 npm run build:cpanel
 ```
+
+---
+
+## 🌐 Production cPanel Deployment
+
+The application is built to deploy easily onto standard Linux/Apache cPanel shared hosting or dedicated VPS environments:
+
+1. **Build Distribution Package:** Run `npm run build:cpanel` to generate the self-contained `mgr-investment-cpanel-deploy.zip`.
+2. **Upload to cPanel:**
+   * Open cPanel **File Manager** and navigate to your target root (e.g. `public_html/` or a subfolder `public_html/portal/`).
+   * Upload `mgr-investment-cpanel-deploy.zip` and extract its contents directly into the directory.
+3. **Configure Permissions:**
+   * Ensure the `mgr_data/` directory has write permissions (`chmod 755` or `775`) so the PHP script can initialize and write to `mgr_database.sqlite`.
+4. **(Optional) Configure MySQL:**
+   * Copy `db_config.example.php` to `db_config.php` and supply your cPanel MySQL database name, user, and password.
+   * If `db_config.php` is omitted or empty, the application automatically uses the zero-config SQLite engine.
+5. **(Optional) Configure SMTP Mail Relay:**
+   * In the authenticated portal under **Admin & Mail**, configure your cPanel SMTP credentials (host, port 465/587, email, and password) for automated transactional emails and one-time password (OTP) verification codes.
+
+---
+
+## 📱 Mobile Installation (Android APK & iOS PWA)
+
+* **Android:** Visit the deployed URL in Google Chrome. Tap the **Install Mobile App** button or the browser menu (**⋮**) -> **Install App / Add to Home Screen** to install as a standalone WebAPK.
+* **iOS (iPhone/iPad):** Open Safari, navigate to the portal, tap the **Share** button (**↑**), and select **Add to Home Screen**.
+* **Offline Access:** The built-in Service Worker (`public/sw.js`) caches application shells and assets for seamless offline operation.
+
+---
+
+## 🔒 Security & Privacy Compliance
+
+* **Kenya Data Protection Act 2019 (DPA):** Zero leakage of personal identification, member lists, or contact records to unauthenticated visitors.
+* **Authentication Safeguards:** Dual authentication options (salted bcrypt password or time-sensitive 6-digit email OTP) with session inactivity timeout.
+* **Auditability:** Complete forensic logging of all user activities including sign-ins, ledger adjustments, KYC requests, and data exports.
+
+---
+
+## 📄 License & Governance
+
+Proprietary software developed exclusively for **MGR Investment Group**. All rights reserved under the Laws of Kenya.
