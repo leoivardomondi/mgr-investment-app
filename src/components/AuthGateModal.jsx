@@ -168,12 +168,23 @@ export default function AuthGateModal() {
 
   const getRoleBadge = (memberId) => {
     const u = rbacUsers.find(r => r.memberId === memberId);
+    if (u?.positionTitle && u.positionTitle !== 'Member') {
+      if (u.positionTitle.includes('CEO')) {
+        return { label: 'CEO', style: 'bg-[#F6EFEA] text-[#6E3C1B] border border-[#E3D0C1]' };
+      }
+      if (u.positionTitle.includes('Chairman') && !u.positionTitle.includes('Vice')) {
+        return { label: 'Chairman', style: 'bg-[#F6EFEA] text-[#6E3C1B] border border-[#E3D0C1]' };
+      }
+      if (u.positionTitle === 'Treasurer') {
+        return { label: 'Treasurer', style: 'bg-[#EDF1ED] text-[#1D3B2A] border border-[#CCD7CD]' };
+      }
+    }
     if (!u) return { label: 'Member', style: 'bg-[#F8F7F4] text-[#4A4742] border border-[#DDD9D0]' };
     if (u.accessLevel === 'super_admin') {
-      return { label: 'Super Admin', style: 'bg-[#F6EFEA] text-[#6E3C1B] border border-[#E3D0C1]' };
+      return { label: u.positionTitle || 'Executive Leadership', style: 'bg-[#F6EFEA] text-[#6E3C1B] border border-[#E3D0C1]' };
     }
     if (u.accessLevel === 'treasury_admin') {
-      return { label: 'Treasury Admin', style: 'bg-[#EDF1ED] text-[#1D3B2A] border border-[#CCD7CD]' };
+      return { label: 'Treasurer', style: 'bg-[#EDF1ED] text-[#1D3B2A] border border-[#CCD7CD]' };
     }
     if (u.accessLevel === 'executive_officer') {
       return { label: 'Executive Officer', style: 'bg-[#F4F1EA] text-[#2C3824] border border-[#D8D2C4]' };
@@ -240,13 +251,14 @@ export default function AuthGateModal() {
 
             <div className="bg-black/25 border border-white/10 rounded-xl p-3.5 space-y-2 text-xs">
               <p className="font-bold text-[var(--accent-gold-light)] uppercase tracking-wider text-[10px]">
-                Access Hierarchy &amp; Governance
+                App Governance &amp; System Access Hierarchy
               </p>
-              <ul className="space-y-1.5 text-[11px] text-white/85">
-                <li>• <strong>Super Admins (CEO &amp; Chairman):</strong> Full system, RBAC permission grants, mail server &amp; ledger control.</li>
-                <li>• <strong>Treasury Admin (Treasurer):</strong> MMF &amp; Mansa X reconciliation, dividend distributions, deposit verification.</li>
-                <li>• <strong>Executive Officers:</strong> Policy governance, compliance, research advisories &amp; member approvals.</li>
-                <li>• <strong>General Members:</strong> Personal share statement, M-Pesa deposit logging, voting &amp; 10-member ratification.</li>
+              <ul className="space-y-2 text-[11px] text-white/85 leading-snug">
+                <li>• <strong>System Administrator:</strong> IT web infrastructure, cPanel mail routing (SMTP), SQLite/MySQL database synchronization &amp; audit security.</li>
+                <li>• <strong>Executive Leadership (CEO &amp; Chairman):</strong> Corporate governance, general meeting presidency, executive committee resolutions &amp; statutory incorporation (Companies Act).</li>
+                <li>• <strong>Treasury Custodian (Treasurer):</strong> Custody of Etica MMF &amp; Mansa X reconciliations, double-entry ledger, loan disbursements &amp; dividend distribution.</li>
+                <li>• <strong>Executive Officers (Secretary, Compliance, Research, Vice Chair):</strong> Legal compliance audits, secretarial registers, fund performance intelligence &amp; committee actions.</li>
+                <li>• <strong>General Members (Shareholders):</strong> Self-service equity ledger, personal deposit logging, 80% share-backed loans &amp; democratic voting / unanimous ratification.</li>
               </ul>
             </div>
           </div>

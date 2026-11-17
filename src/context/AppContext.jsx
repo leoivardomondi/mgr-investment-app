@@ -3281,9 +3281,9 @@ export function AppProvider({ children }) {
     if (!hasPermission('manage_access_control') && !isSuperAdmin) {
       triggerExecRestriction(
         'Manage User Roles & Access Privileges',
-        'Granting or modifying member roles, positions, and system permissions is restricted to Super Administrators (CEO / Chairman).'
+        'Granting or modifying member roles, positions, and system permissions is restricted to System Administrators and Executive Leadership.'
       );
-      return { ok: false, error: 'Super Administrator permission required' };
+      return { ok: false, error: 'Administrator permission required' };
     }
 
     let effectiveMemberId = memberId;

@@ -1167,7 +1167,7 @@ export default function OfficialDocumentsView() {
                 <div className="bank-card p-4 bg-white space-y-1.5">
                   <h5 className="font-bold text-xs text-[#1D3B2A] flex items-center gap-1.5">
                     <Users className="w-4 h-4 text-[#1D3B2A] shrink-0" />
-                    <span>3. Democratic Ratification (10-Member Veto)</span>
+                    <span>3. Democratic Ratification (Unanimous Shareholder Veto)</span>
                   </h5>
                   <p className="text-[11px] text-slate-600 leading-relaxed">
                     Major capital movements (such as moving KES 200,000 from Etica MMF to Mansa X) require democratic ratification by the general membership before execution.

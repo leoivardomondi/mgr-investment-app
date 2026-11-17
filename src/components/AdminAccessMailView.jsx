@@ -48,33 +48,33 @@ const PERMISSION_DEFINITIONS = [
 const ACCESS_TIER_OPTIONS = [
   {
     id: 'super_admin',
-    label: 'Super Administrator (CEO / Chairman)',
+    label: 'System & Security Administrator (IT)',
     badgeClass: 'bg-[#F6EFEA] text-[#6E3C1B] border border-[#E3D0C1]',
-    description: 'Unrestricted administrative control over RBAC permissions, mail server, treasury, and all member records.'
+    description: 'Technical administration of system infrastructure, SMTP mail routing, SQLite/MySQL database synchronization, and security baseline.'
   },
   {
     id: 'treasury_admin',
-    label: 'Treasury Administrator (Treasurer)',
+    label: 'Treasury Administrator (Treasurer / CFO)',
     badgeClass: 'bg-[#EDF1ED] text-[#1D3B2A] border border-[#CCD7CD]',
-    description: 'Full financial authority to reconcile Etica MMF & Mansa X deposits, issue loans, distribute dividends, and manage the ledger.'
+    description: 'Full financial authority to reconcile Etica MMF & Mansa X deposits, issue member loans, distribute dividends, and manage the double-entry ledger.'
   },
   {
     id: 'executive_officer',
-    label: 'Executive Committee Officer',
+    label: 'Executive Leadership & Committee Officer (CEO, Chairman, Secretary, Compliance, Research)',
     badgeClass: 'bg-[#F4F1EA] text-[#2C3824] border border-[#D8D2C4]',
-    description: 'Position-based authority for Vice Chairman, Secretary, Compliance Officer, and Research Officer.'
+    description: 'Corporate governance authority for presiding over meetings, executive resolutions, statutory incorporation (Companies Act), policy drafting, and compliance.'
   },
   {
     id: 'general_member',
     label: 'General Member (Verified Shareholder)',
     badgeClass: 'bg-[#F7F6F2] text-[#3E4238] border border-[#E2DDD3]',
-    description: 'Self-service access to view statements, record own deposits, apply for 80% loans, and vote/ratify.'
+    description: 'Self-service access to view personal statements, record M-Pesa deposits, apply for 80% share-backed loans, and vote/ratify club resolutions.'
   },
   {
     id: 'estate_beneficiary',
     label: 'Estate Beneficiary (Read-Only Escrow)',
     badgeClass: 'bg-[#F9ECEC] text-[#6B2424] border border-[#E6C7C7]',
-    description: 'Read-only access for declared beneficiaries of deceased members under Bylaw Clause 4.2.'
+    description: 'Read-only custody access for declared beneficiaries of deceased members under Constitution Clause 4.2.'
   }
 ];
 
@@ -86,6 +86,7 @@ const OFFICIAL_POSITIONS = [
   'Secretary',
   'Compliance Officer',
   'Research Officer',
+  'System Administrator (IT)',
   'Member',
   'Beneficiary / Estate Record'
 ];
@@ -200,7 +201,9 @@ export default function AdminAccessMailView() {
   const handlePositionPresetChange = (newPos) => {
     setEditPosition(newPos);
     let autoLevel = editAccessLevel;
-    if (newPos.includes('CEO') || newPos.includes('Chairman')) {
+    if (newPos.includes('System Administrator') || newPos.includes('IT')) {
+      autoLevel = 'super_admin';
+    } else if (newPos.includes('CEO') || newPos.includes('Chairman')) {
       if (!newPos.includes('Vice')) autoLevel = 'super_admin';
       else autoLevel = 'executive_officer';
     } else if (newPos === 'Treasurer') {

@@ -201,7 +201,7 @@ export default function GovernanceView() {
               </h3>
             </div>
             <p className="text-xs text-slate-600 leading-relaxed">
-              In accordance with MGR Investment Club rules, any financial action initiated by the Executive Committee (e.g. MMF yield distributions, asset rebalancing, capital reallocations) strictly requires <strong>unanimous approval from all 10 active members</strong> before any funds are debited or credited.
+              In accordance with MGR Investment Club rules, any financial action initiated by the Executive Committee (e.g. MMF yield distributions, asset rebalancing, capital reallocations) strictly requires <strong>unanimous approval from all active voting shareholders</strong> before any funds are debited or credited.
             </p>
           </div>
 
