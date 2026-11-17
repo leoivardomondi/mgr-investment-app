@@ -729,7 +729,9 @@ export default function MembersView({ onOpenDepositModal, onOpenDataEditor }) {
                     <p className="text-[10px] text-slate-500">{m.role} • Joined {m.joinedDate}</p>
                   </div>
                   <div className="text-right">
-                    <p className="font-bold text-[var(--brand-primary)]">KES {m.shares.toLocaleString()}</p>
+                    <p className="font-bold text-[var(--brand-primary)]">
+                      {isCurrentMemberExec || m.id === currentMember?.id ? `KES ${m.shares.toLocaleString()}` : 'KES ••••••'}
+                    </p>
                     <p className="text-[9px] text-slate-400">Shares</p>
                   </div>
                 </div>
@@ -939,20 +941,28 @@ export default function MembersView({ onOpenDepositModal, onOpenDataEditor }) {
                     <div className="bg-slate-50 p-2 rounded-lg">
                       <p className="text-[10px] text-slate-500 uppercase font-semibold">Member Deposits</p>
                       <p className="text-xs sm:text-sm font-bold text-slate-900 mt-0.5 font-mono-num">
-                        KES {member.shares.toLocaleString()}
+                        {isCurrentMemberExec || member.id === currentMember?.id
+                          ? `KES ${member.shares.toLocaleString()}`
+                          : 'KES ••••••'}
                       </p>
                       <p className="text-[10px] text-slate-600 font-medium font-mono-num">
-                        {equityPct}% equity
+                        {isCurrentMemberExec || member.id === currentMember?.id
+                          ? `${equityPct}% equity`
+                          : 'Confidential'}
                       </p>
                     </div>
 
                     <div className="bg-emerald-50/60 p-2 rounded-lg border border-emerald-100">
                       <p className="text-[10px] text-emerald-800 uppercase font-semibold">Yield Deposits</p>
                       <p className="text-xs sm:text-sm font-bold text-emerald-900 mt-0.5 font-mono-num">
-                        + KES {(creditedYieldDeps + accruedMemberYield).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        {isCurrentMemberExec || member.id === currentMember?.id
+                          ? `+ KES ${(creditedYieldDeps + accruedMemberYield).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                          : '+ KES ••••••'}
                       </p>
                       <p className="text-[10px] text-emerald-700 font-medium truncate">
-                        {isNewTreasurer ? 'Starts Q4 (Oct)' : creditedYieldDeps > 0 ? `Credited + Accrued` : `Q3 Accrued Yield`}
+                        {isCurrentMemberExec || member.id === currentMember?.id
+                          ? (isNewTreasurer ? 'Starts Q4 (Oct)' : creditedYieldDeps > 0 ? `Credited + Accrued` : `Q3 Accrued Yield`)
+                          : 'Executive Only'}
                       </p>
                     </div>
                   </div>
@@ -1108,19 +1118,27 @@ export default function MembersView({ onOpenDepositModal, onOpenDataEditor }) {
                             </div>
                           </td>
                           <td className="py-2.5 px-3 text-right text-slate-600">
-                            KES {regDeposits.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                            {isCurrentMemberExec || m.id === currentMember?.id
+                              ? `KES ${regDeposits.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                              : 'KES ••••••'}
                           </td>
                           <td className="py-2.5 px-3 text-right font-semibold text-slate-900">
-                            KES {principalDeposits.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                            {isCurrentMemberExec || m.id === currentMember?.id
+                              ? `KES ${principalDeposits.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                              : 'KES ••••••'}
                           </td>
                           <td className="py-2.5 px-3 text-right text-slate-400 font-normal">
-                            0.00 <span className="text-[9px] text-slate-400">(Undistributed)</span>
+                            {isCurrentMemberExec || m.id === currentMember?.id ? '0.00' : '••••••'} <span className="text-[9px] text-slate-400">(Undistributed)</span>
                           </td>
                           <td className="py-2.5 px-3 text-right font-bold text-slate-900">
-                            KES {Number(m.shares || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                            {isCurrentMemberExec || m.id === currentMember?.id
+                              ? `KES ${Number(m.shares || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                              : 'KES ••••••'}
                           </td>
                           <td className="py-2.5 px-3 text-right font-bold text-[var(--brand-primary)]">
-                            {sharePct.toFixed(2)}%
+                            {isCurrentMemberExec || m.id === currentMember?.id
+                              ? `${sharePct.toFixed(2)}%`
+                              : '••••%'}
                           </td>
                         </tr>
                       );
@@ -1403,7 +1421,10 @@ export default function MembersView({ onOpenDepositModal, onOpenDataEditor }) {
       )}
 
       {/* Member Details Modal */}
-      {selectedMemberModal && (
+      {selectedMemberModal && (() => {
+        const liveMember = activeModalMember || selectedMemberModal;
+        const isSelfOrExec = isCurrentMemberExec || liveMember.id === currentMember?.id;
+        return (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 animate-in fade-in">
           <div className="bg-white max-w-lg w-full rounded-2xl p-5 sm:p-6 shadow-2xl border border-slate-200 relative max-h-[90vh] overflow-y-auto">
             <button
@@ -1550,6 +1571,18 @@ export default function MembersView({ onOpenDepositModal, onOpenDataEditor }) {
                 </div>
               </div>
 
+            {!isSelfOrExec ? (
+              <div className="p-5 my-4 bg-[#FAF8F5] border border-[#D8D2C4] rounded-xl text-center space-y-2.5">
+                <div className="w-10 h-10 mx-auto rounded-full bg-[#1D3B2A]/10 text-[#1D3B2A] flex items-center justify-center">
+                  <Lock className="w-5 h-5 text-[#1D3B2A]" />
+                </div>
+                <h4 className="text-sm font-bold text-slate-900">Member Financial Records Confidential</h4>
+                <p className="text-xs text-slate-600 max-w-md mx-auto leading-relaxed">
+                  Under MGR Investment Group rules and Cap 30A financial confidentiality regulations, individual member deposit records, share balances, and yield distributions are confidential to each shareholder and restricted to the Executive Committee.
+                </p>
+              </div>
+            ) : (
+              <>
             {/* Financial Ledger Breakdown: Member Deposits vs. Yield Deposits */}
             <div className="space-y-3 py-3">
               {(() => {
@@ -2041,42 +2074,57 @@ export default function MembersView({ onOpenDepositModal, onOpenDataEditor }) {
                 );
               })()}
             </div>
+            </>
+            )}
 
             {/* Quick Actions */}
             <div className="pt-3 border-t border-slate-100 flex items-center space-x-2">
-              <button
-                type="button"
-                onClick={() => setKycModalMember(activeModalMember || selectedMemberModal)}
-                className="py-2 px-3 bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-900 font-bold text-xs rounded-lg transition flex items-center gap-1.5 cursor-pointer shrink-0"
-                title="View or upload confidential KYC & legal documents under member PIN"
-              >
-                <Lock className="w-3.5 h-3.5 text-amber-700" />
-                <span>KYC Vault</span>
-              </button>
-              <button
-                onClick={() => {
-                  setSelectedMemberModal(null);
-                  onOpenDepositModal();
-                }}
-                className="flex-1 py-2 bg-[var(--brand-primary)] hover:bg-[var(--brand-primary-hover)] text-white font-semibold text-xs rounded-lg shadow-xs transition"
-              >
-                Deposit Shares
-              </button>
-              {isCurrentMemberExec && selectedMemberModal.status !== 'Deceased' && (
+              {isSelfOrExec ? (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => setKycModalMember(activeModalMember || selectedMemberModal)}
+                    className="py-2 px-3 bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-900 font-bold text-xs rounded-lg transition flex items-center gap-1.5 cursor-pointer shrink-0"
+                    title="View or upload confidential KYC & legal documents under member PIN"
+                  >
+                    <Lock className="w-3.5 h-3.5 text-amber-700" />
+                    <span>KYC Vault</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      setSelectedMemberModal(null);
+                      onOpenDepositModal();
+                    }}
+                    className="flex-1 py-2 bg-[var(--brand-primary)] hover:bg-[var(--brand-primary-hover)] text-white font-semibold text-xs rounded-lg shadow-xs transition cursor-pointer"
+                  >
+                    Deposit Shares
+                  </button>
+                  {isCurrentMemberExec && selectedMemberModal.status !== 'Deceased' && (
+                    <button
+                      type="button"
+                      onClick={() => handleOpenMarkDeceased(selectedMemberModal)}
+                      className="py-2 px-2.5 bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-800 font-semibold text-xs rounded-lg transition flex items-center justify-center gap-1 shrink-0 cursor-pointer"
+                      title="Record member demise and transfer capital to estate escrow"
+                    >
+                      <AlertTriangle className="w-3.5 h-3.5 text-rose-600" />
+                      <span>Mark Deceased</span>
+                    </button>
+                  )}
+                </>
+              ) : (
                 <button
                   type="button"
-                  onClick={() => handleOpenMarkDeceased(selectedMemberModal)}
-                  className="py-2 px-2.5 bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-800 font-semibold text-xs rounded-lg transition flex items-center justify-center gap-1 shrink-0"
-                  title="Record member demise and transfer capital to estate escrow"
+                  onClick={() => setSelectedMemberModal(null)}
+                  className="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-xs rounded-lg transition cursor-pointer"
                 >
-                  <AlertTriangle className="w-3.5 h-3.5 text-rose-600" />
-                  <span>Mark Deceased</span>
+                  Close Member Record
                 </button>
               )}
             </div>
           </div>
         </div>
-      )}
+        );
+      })()}
 
       {/* Mark Member as Deceased & Estate Transition Modal */}
       {deceasedModal.isOpen && (

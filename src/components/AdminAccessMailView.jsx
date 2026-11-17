@@ -294,7 +294,7 @@ export default function AdminAccessMailView() {
           <div className="space-y-1.5">
             <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-white/10 text-[var(--accent-gold-light)] border border-white/15">
               <ShieldCheck className="w-3.5 h-3.5" />
-              <span>SQLite Security, Role-Based Access Control &amp; cPanel Mail</span>
+              <span>System Governance, Access Privileges &amp; Institutional Mail</span>
             </div>
             <h1 className="font-editorial text-xl sm:text-2xl font-bold text-white">
               Administration, Member Access Privileges &amp; Mail Dispatch

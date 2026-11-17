@@ -1311,22 +1311,28 @@ export default function MMFStatementView() {
                       </div>
                     </td>
                     <td className="py-2.5 px-3 text-right font-bold text-slate-900">
-                      KES {member.shares.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      {isCurrentMemberExec || member.id === currentMember?.id
+                        ? `KES ${member.shares.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                        : 'KES ••••••'}
                     </td>
                     <td className="py-2.5 px-3 text-right text-slate-600">
-                      1,000.00
+                      {isCurrentMemberExec || member.id === currentMember?.id ? '1,000.00' : '••••••'}
                     </td>
                     <td className="py-2.5 px-3 text-center text-slate-500 font-sans">
                       {member.daysActiveInPeriod} Days
                     </td>
                     <td className="py-2.5 px-3 text-right font-semibold text-slate-700">
-                      {(member.proportion * 100).toFixed(2)}%
+                      {isCurrentMemberExec || member.id === currentMember?.id
+                        ? `${(member.proportion * 100).toFixed(2)}%`
+                        : '••••%'}
                     </td>
                     <td className="py-2.5 px-3 text-right text-slate-400 font-normal">
-                      0.00 <span className="text-[9px] text-slate-400">(Undistributed)</span>
+                      {isCurrentMemberExec || member.id === currentMember?.id ? '0.00' : '••••••'} <span className="text-[9px] text-slate-400">(Undistributed)</span>
                     </td>
                     <td className="py-2.5 px-3 text-right font-bold text-[var(--brand-primary)]">
-                      KES {member.shares.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      {isCurrentMemberExec || member.id === currentMember?.id
+                        ? `KES ${member.shares.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                        : 'KES ••••••'}
                     </td>
                   </tr>
                 );

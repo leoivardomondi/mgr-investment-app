@@ -336,7 +336,7 @@ export default function LoansView({ onOpenDataEditor }) {
                       .filter(m => m.id !== selectedBorrowerId && m.status === 'Active')
                       .map(m => (
                         <option key={m.id} value={m.id}>
-                          {m.name} ({m.role}) — Capital: KES {m.shares.toLocaleString()}
+                          {m.name} ({m.role}){isCurrentMemberExec ? ` — Capital: KES ${m.shares.toLocaleString()}` : ''}
                         </option>
                       ))}
                   </select>

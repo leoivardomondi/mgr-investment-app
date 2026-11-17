@@ -465,7 +465,7 @@ export default function Header({ onOpenDataEditor, onOpenProfileModal }) {
                                   </span>
                                 </div>
                                 <p className="text-[10px] text-slate-500 font-mono-num">
-                                  KES {member.shares.toLocaleString()} shares
+                                  {isCurrentMemberExec || member.id === currentMember?.id ? `KES ${member.shares.toLocaleString()} shares` : 'Confidential • Executive Only'}
                                 </p>
                               </div>
                             </button>
@@ -503,7 +503,7 @@ export default function Header({ onOpenDataEditor, onOpenProfileModal }) {
                                   </span>
                                 </div>
                                 <p className="text-[10px] text-slate-500 font-mono-num">
-                                  KES {member.shares.toLocaleString()} shares
+                                  {isCurrentMemberExec || member.id === currentMember?.id ? `KES ${member.shares.toLocaleString()} shares` : 'Confidential • Executive Only'}
                                 </p>
                               </div>
                             </button>

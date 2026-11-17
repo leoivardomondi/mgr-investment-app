@@ -28,6 +28,7 @@ export default function LedgerView() {
     loans, 
     totalMemberShares,
     currentMember,
+    isCurrentMemberExec,
     sendReportEmail,
     showToast
   } = useApp();
@@ -724,17 +725,23 @@ export default function LedgerView() {
                         </td>
                         <td className="py-2.5 px-3 font-sans text-slate-600">{m.role}</td>
                         <td className="py-2.5 px-3 text-right font-bold text-slate-900">
-                          {m.shares.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                          {isCurrentMemberExec || m.id === currentMember?.id
+                            ? m.shares.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                            : '••••••'}
                         </td>
-                        <td className="py-2.5 px-3 text-right text-slate-600">1,000.00</td>
+                        <td className="py-2.5 px-3 text-right text-slate-600">
+                          {isCurrentMemberExec || m.id === currentMember?.id ? '1,000.00' : '••••••'}
+                        </td>
                         <td className="py-2.5 px-3 text-right text-slate-400 font-normal">
-                          0.00 <span className="text-[9px] text-slate-400">(Undistributed)</span>
+                          {isCurrentMemberExec || m.id === currentMember?.id ? '0.00' : '••••••'} <span className="text-[9px] text-slate-400">(Undistributed)</span>
                         </td>
                         <td className="py-2.5 px-3 text-right font-bold text-[var(--brand-primary)]">
-                          KES {m.shares.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                          {isCurrentMemberExec || m.id === currentMember?.id
+                            ? `KES ${m.shares.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                            : 'KES ••••••'}
                         </td>
                         <td className="py-2.5 px-3 text-right font-semibold text-slate-700">
-                          {pct.toFixed(2)}%
+                          {isCurrentMemberExec || m.id === currentMember?.id ? `${pct.toFixed(2)}%` : '••••%'}
                         </td>
                       </tr>
                     );
@@ -1155,16 +1162,22 @@ export default function LedgerView() {
                           {m.role}
                         </td>
                         <td className="py-2 px-3 font-bold text-slate-900 text-right">
-                          {m.shares.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                          {isCurrentMemberExec || m.id === currentMember?.id
+                            ? m.shares.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                            : '••••••'}
                         </td>
                         <td className="py-2 px-3 font-bold text-emerald-700 text-right">
-                          + {totalYields.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                          {isCurrentMemberExec || m.id === currentMember?.id
+                            ? `+ ${totalYields.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                            : '+ ••••••'}
                         </td>
                         <td className="py-2 px-3 font-bold text-[var(--brand-primary)] text-right">
-                          {compoundedTotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                          {isCurrentMemberExec || m.id === currentMember?.id
+                            ? compoundedTotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                            : '••••••'}
                         </td>
                         <td className="py-2 px-3 font-semibold text-slate-700 text-right">
-                          {sharePct.toFixed(2)}%
+                          {isCurrentMemberExec || m.id === currentMember?.id ? `${sharePct.toFixed(2)}%` : '••••%'}
                         </td>
                         <td className="py-2 px-3 text-center font-sans">
                           {isDeceased ? (

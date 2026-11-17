@@ -887,17 +887,17 @@ export default function DashboardView({ onOpenDepositModal }) {
                           )}
                         </div>
                         <p className="text-[10px] text-slate-500 truncate">
-                          {member.role} • {sharePct.toFixed(2)}% Equity Stake
+                          {member.role} • {isCurrentMemberExec || member.id === currentMember?.id ? `${sharePct.toFixed(2)}% Equity Stake` : 'Confidential Stake'}
                         </p>
                       </div>
                     </div>
 
                     <div className="text-right shrink-0 pl-2">
                       <p className="font-bold font-mono-num text-xs text-slate-900">
-                        Deps: KES {member.shares.toLocaleString()}
+                        Deps: {isCurrentMemberExec || member.id === currentMember?.id ? `KES ${member.shares.toLocaleString()}` : 'KES ••••••'}
                       </p>
                       <p className="text-[10px] font-bold font-mono-num text-emerald-700">
-                        Yield Deps: +KES {totalMemberYields.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        Yield Deps: {isCurrentMemberExec || member.id === currentMember?.id ? `+KES ${totalMemberYields.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '+KES ••••••'}
                       </p>
                     </div>
                   </div>

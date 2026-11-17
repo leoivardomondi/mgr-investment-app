@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
-import MemberAvatarIcon from './MemberAvatarIcon';
 import PrivacyCharterModal from './PrivacyCharterModal';
 import {
   Landmark,
@@ -13,7 +12,6 @@ import {
   EyeOff,
   AlertCircle,
   CheckCircle2,
-  Users,
   Smartphone,
   UserPlus,
   Scale
@@ -21,8 +19,6 @@ import {
 
 export default function AuthGateModal() {
   const {
-    members,
-    rbacUsers,
     loginWithCredentials,
     signupUser,
     requestEmailOtp,
@@ -30,8 +26,8 @@ export default function AuthGateModal() {
   } = useApp();
 
   const [authMode, setAuthMode] = useState('password'); // 'password' | 'otp_request' | 'otp_verify' | 'signup'
-  const [identifier, setIdentifier] = useState('MGR-001');
-  const [password, setPassword] = useState('MGR@2026');
+  const [identifier, setIdentifier] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [otpCode, setOtpCode] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -44,7 +40,7 @@ export default function AuthGateModal() {
   const [showSignupPassword, setShowSignupPassword] = useState(false);
   const [signupConfirmPassword, setSignupConfirmPassword] = useState('');
   const [showSignupConfirmPassword, setShowSignupConfirmPassword] = useState(false);
-  const [signupPin, setSignupPin] = useState('1234');
+  const [signupPin, setSignupPin] = useState('');
   const [showSignupPin, setShowSignupPin] = useState(false);
   const [privacyAgreed, setPrivacyAgreed] = useState(false);
   const [showPrivacyModal, setShowPrivacyModal] = useState(false);
@@ -53,7 +49,6 @@ export default function AuthGateModal() {
   const [errorMsg, setErrorMsg] = useState('');
   const [infoMsg, setInfoMsg] = useState('');
   const [deferredPrompt, setDeferredPrompt] = useState(null);
-  const [showQuickPicker, setShowQuickPicker] = useState(false);
 
   useEffect(() => {
     const handler = (e) => {
@@ -164,35 +159,6 @@ export default function AuthGateModal() {
     if (!res.ok) {
       setErrorMsg(res.error || 'Failed to create member account.');
     }
-  };
-
-  const getRoleBadge = (memberId) => {
-    const u = rbacUsers.find(r => r.memberId === memberId);
-    if (u?.positionTitle && u.positionTitle !== 'Member') {
-      if (u.positionTitle.includes('CEO')) {
-        return { label: 'CEO', style: 'bg-[#F6EFEA] text-[#6E3C1B] border border-[#E3D0C1]' };
-      }
-      if (u.positionTitle.includes('Chairman') && !u.positionTitle.includes('Vice')) {
-        return { label: 'Chairman', style: 'bg-[#F6EFEA] text-[#6E3C1B] border border-[#E3D0C1]' };
-      }
-      if (u.positionTitle === 'Treasurer') {
-        return { label: 'Treasurer', style: 'bg-[#EDF1ED] text-[#1D3B2A] border border-[#CCD7CD]' };
-      }
-    }
-    if (!u) return { label: 'Member', style: 'bg-[#F8F7F4] text-[#4A4742] border border-[#DDD9D0]' };
-    if (u.accessLevel === 'super_admin') {
-      return { label: u.positionTitle || 'Executive Leadership', style: 'bg-[#F6EFEA] text-[#6E3C1B] border border-[#E3D0C1]' };
-    }
-    if (u.accessLevel === 'treasury_admin') {
-      return { label: 'Treasurer', style: 'bg-[#EDF1ED] text-[#1D3B2A] border border-[#CCD7CD]' };
-    }
-    if (u.accessLevel === 'executive_officer') {
-      return { label: 'Executive Officer', style: 'bg-[#F4F1EA] text-[#2C3824] border border-[#D8D2C4]' };
-    }
-    if (u.accessLevel === 'estate_beneficiary') {
-      return { label: 'Estate Escrow', style: 'bg-[#F9ECEC] text-[#6B2424] border border-[#E6C7C7]' };
-    }
-    return { label: 'General Member', style: 'bg-[#F8F7F4] text-[#4A4742] border border-[#DDD9D0]' };
   };
 
   return (
@@ -781,69 +747,6 @@ export default function AuthGateModal() {
                   </button>
                 </div>
               </form>
-            )}
-
-            {/* Quick Account Picker for Founding Members (Shown strictly on Log In tab) */}
-            {authMode !== 'signup' && (
-              <div className="mt-5 pt-4 border-t border-slate-200">
-                <button
-                  type="button"
-                  onClick={() => setShowQuickPicker(!showQuickPicker)}
-                  className="w-full flex items-center justify-between p-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-left transition cursor-pointer min-h-[42px]"
-                >
-                  <span className="text-xs font-bold text-slate-700 flex items-center gap-2">
-                    <Users className="w-4 h-4 text-[#1D3B2A] shrink-0" />
-                    <span>Founding Member Quick Pre-fill (11 Accounts)</span>
-                  </span>
-                  <span className="text-[11px] font-semibold text-[#1D3B2A] shrink-0">
-                    {showQuickPicker ? '▲ Hide List' : '▼ View (11 Members)'}
-                  </span>
-                </button>
-
-                {showQuickPicker && (
-                  <div className="mt-2.5 grid grid-cols-1 sm:grid-cols-2 gap-1.5 max-h-52 overflow-y-auto pr-1 animate-in fade-in">
-                    {members.map((m) => {
-                      const badge = getRoleBadge(m.id);
-                      const isSelected = identifier.toUpperCase() === m.id;
-                      return (
-                        <button
-                          key={m.id}
-                          type="button"
-                          onClick={() => {
-                            setIdentifier(m.id);
-                            setErrorMsg('');
-                          }}
-                          className={`p-2 rounded-xl border text-left flex items-center gap-2.5 transition cursor-pointer min-h-[44px] ${
-                            isSelected
-                              ? 'bg-[#EDF1ED] border-[#1D3B2A] ring-1 ring-[#1D3B2A]'
-                              : 'bg-white hover:bg-slate-50 border-slate-200/80'
-                          }`}
-                        >
-                          <MemberAvatarIcon member={m} size="sm" />
-                          <div className="min-w-0 flex-1">
-                            <div className="flex items-center justify-between gap-1">
-                              <span className="text-xs font-bold text-slate-900 truncate">
-                                {m.name}
-                              </span>
-                              <span className="font-mono-num text-[10px] font-bold text-slate-500 shrink-0">
-                                {m.id}
-                              </span>
-                            </div>
-                            <div className="flex items-center justify-between gap-1 mt-0.5">
-                              <span className="text-[10px] text-slate-600 truncate">
-                                {m.role}
-                              </span>
-                              <span className={`text-[9px] px-1.5 py-0.2 rounded font-bold shrink-0 ${badge.style}`}>
-                                {badge.label}
-                              </span>
-                            </div>
-                          </div>
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
             )}
 
             {/* Mobile-only app installation & paybill info */}
