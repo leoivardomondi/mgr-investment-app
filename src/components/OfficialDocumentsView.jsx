@@ -128,6 +128,23 @@ export default function OfficialDocumentsView() {
       pdfSize: '390 KB',
       pages: '4 Pages',
       summary: 'Operational manual detailing web app modules, mobile PWA home screen installation, 24-hour expiring KYC PIN vault, double-entry ledger, and member feedback checklist.'
+    },
+    {
+      id: 'statutory_streamlining_policy',
+      title: 'Statutory Policy Streamlining Instrument & 2027 Corporate Roadmap',
+      shortTitle: 'Streamlining Policy PDF',
+      ref: 'MGR/POL/2026/STREAMLINE-01',
+      date: 'Executive Directive 17th Nov 2026',
+      legalBasis: 'Cap 30A & Companies Act 2015 (No. 17 of 2015)',
+      badge: 'Executive Directive',
+      badgeColor: 'emerald',
+      icon: Scale,
+      pdfUrl: '/documents/MGR_Statutory_Policy_Streamlining_Instrument.pdf',
+      htmlUrl: '/documents/MGR_Statutory_Policy_Streamlining_Instrument.html',
+      filename: 'MGR_Statutory_Policy_Streamlining_Instrument.pdf',
+      pdfSize: '273 KB',
+      pages: '3 Pages',
+      summary: 'Directives of CEO John Oballa Ojwang on 2-stage adoption, 2027 Limited Company incorporation, streamlined Entry & Vetting, Exit valuation formula & set-off, and Triple Appropriations (Dividends, Honoraria, Reserves).'
     }
   ];
 
@@ -199,10 +216,10 @@ export default function OfficialDocumentsView() {
                       </span>
                     </div>
                     <span className={`text-[9px] font-mono-num font-bold px-1.5 py-0.5 rounded ${
-                      doc.badgeColor === 'emerald' ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' :
-                      doc.badgeColor === 'gold' ? 'bg-amber-50 text-amber-900 border border-amber-200' :
-                      doc.badgeColor === 'crimson' ? 'bg-rose-50 text-rose-800 border border-rose-200' :
-                      'bg-blue-50 text-blue-800 border border-blue-200'
+                      doc.badgeColor === 'emerald' ? 'bg-[#EDF1ED] text-[#1D3B2A] border border-[#CCD7CD]' :
+                      doc.badgeColor === 'gold' ? 'bg-[#FAF6EC] text-[#5A4518] border border-[#E8DCB8]' :
+                      doc.badgeColor === 'crimson' ? 'bg-[#F9ECEC] text-[#6B2424] border border-[#E6C7C7]' :
+                      'bg-[#F4F1EA] text-[#2C3824] border border-[#D8D2C4]'
                     }`}>
                       {doc.badge}
                     </span>
@@ -444,7 +461,7 @@ export default function OfficialDocumentsView() {
                   <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
                     <div className="flex items-center justify-between">
                       <span className="font-bold text-slate-900">5.3 Due Diligence</span>
-                      <span className="font-mono-num font-bold text-[10px] px-1.5 py-0.2 rounded bg-blue-100 text-blue-900">100% Review</span>
+                      <span className="font-mono-num font-bold text-[10px] px-1.5 py-0.2 rounded bg-[#EDF1ED] text-[#1D3B2A] border border-[#CCD7CD]">100% Review</span>
                     </div>
                     <p className="text-slate-600 leading-relaxed">
                       Conduct and document formal due diligence for <strong>100% of proposed investments</strong> prior to capital allocation.
@@ -454,7 +471,7 @@ export default function OfficialDocumentsView() {
                   <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
                     <div className="flex items-center justify-between">
                       <span className="font-bold text-slate-900">5.4 Risk Monitoring</span>
-                      <span className="font-mono-num font-bold text-[10px] px-1.5 py-0.2 rounded bg-purple-100 text-purple-900">Quarterly</span>
+                      <span className="font-mono-num font-bold text-[10px] px-1.5 py-0.2 rounded bg-[#FAF6EC] text-[#5A4518] border border-[#E8DCB8]">Quarterly</span>
                     </div>
                     <p className="text-slate-600 leading-relaxed">
                       Undertake formal portfolio performance and risk exposure reviews <strong>quarterly</strong> and report to Members.
@@ -607,7 +624,7 @@ export default function OfficialDocumentsView() {
                   <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
                     <div className="flex items-center justify-between">
                       <strong className="text-slate-900">1. Fixed Income Funds (FIFs)</strong>
-                      <span className="font-mono-num text-[10px] px-1.5 py-0.2 rounded bg-blue-100 text-blue-900">Credit</span>
+                      <span className="font-mono-num text-[10px] px-1.5 py-0.2 rounded bg-[#F4F1EA] text-[#2C3824] border border-[#D8D2C4]">Credit</span>
                     </div>
                     <p className="text-slate-600 leading-relaxed text-[11px]">
                       Institutional corporate debt funds, secured commercial paper, and high-yield private credit funds delivering stable coupon flows above savings rates.
@@ -617,7 +634,7 @@ export default function OfficialDocumentsView() {
                   <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
                     <div className="flex items-center justify-between">
                       <strong className="text-slate-900">2. Derivatives (NEXT Market)</strong>
-                      <span className="font-mono-num text-[10px] px-1.5 py-0.2 rounded bg-purple-100 text-purple-900">Hedging</span>
+                      <span className="font-mono-num text-[10px] px-1.5 py-0.2 rounded bg-[#ECE8DF] text-[#1D3B2A] border border-[#DDD5C5]">Hedging</span>
                     </div>
                     <p className="text-slate-600 leading-relaxed text-[11px]">
                       NSE Derivatives Market (NEXT) equity index futures, single-stock futures, and interest rate hedging to protect capital against market downturns.
@@ -627,7 +644,7 @@ export default function OfficialDocumentsView() {
                   <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
                     <div className="flex items-center justify-between">
                       <strong className="text-slate-900">3. REITs (Real Estate Trusts)</strong>
-                      <span className="font-mono-num text-[10px] px-1.5 py-0.2 rounded bg-amber-100 text-amber-900">Property</span>
+                      <span className="font-mono-num text-[10px] px-1.5 py-0.2 rounded bg-[#FAF6EC] text-[#5A4518] border border-[#E8DCB8]">Property</span>
                     </div>
                     <p className="text-slate-600 leading-relaxed text-[11px]">
                       CMA-regulated Income REITs (ILAM Fahari) and Development REITs (Acorn Student Accommodation) with mandatory &ge;80% net earnings distribution.
@@ -637,7 +654,7 @@ export default function OfficialDocumentsView() {
                   <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
                     <div className="flex items-center justify-between">
                       <strong className="text-slate-900">4. ETFs (Exchange Traded)</strong>
-                      <span className="font-mono-num text-[10px] px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-900">Gold Hedge</span>
+                      <span className="font-mono-num text-[10px] px-1.5 py-0.2 rounded bg-[#EDF1ED] text-[#1D3B2A] border border-[#CCD7CD]">Gold Hedge</span>
                     </div>
                     <p className="text-slate-600 leading-relaxed text-[11px]">
                       Listed commodity-backed funds (e.g. Absa NewGold ETF on the NSE), providing a liquid physical bullion hedge against inflation and currency depreciation.
@@ -647,7 +664,7 @@ export default function OfficialDocumentsView() {
                   <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
                     <div className="flex items-center justify-between">
                       <strong className="text-slate-900">5. Treasury Securities &amp; IFBs</strong>
-                      <span className="font-mono-num text-[10px] px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-900">Tax-Free</span>
+                      <span className="font-mono-num text-[10px] px-1.5 py-0.2 rounded bg-[#EDF1ED] text-[#1D3B2A] border border-[#CCD7CD]">Tax-Free</span>
                     </div>
                     <p className="text-slate-600 leading-relaxed text-[11px]">
                       CBK Treasury Bills (91/182/364-day) and Treasury Bonds, especially <strong>Infrastructure Bonds (IFBs)</strong> offering 100% tax-free coupon yields and sovereign backing.
@@ -657,7 +674,7 @@ export default function OfficialDocumentsView() {
                   <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
                     <div className="flex items-center justify-between">
                       <strong className="text-slate-900">6. Nairobi Securities Exchange</strong>
-                      <span className="font-mono-num text-[10px] px-1.5 py-0.2 rounded bg-blue-100 text-blue-900">Equities</span>
+                      <span className="font-mono-num text-[10px] px-1.5 py-0.2 rounded bg-[#F4F1EA] text-[#2C3824] border border-[#D8D2C4]">Equities</span>
                     </div>
                     <p className="text-slate-600 leading-relaxed text-[11px]">
                       Blue-chip dividend aristocrats (Safaricom, Equity Group, KCB Group, EABL, StanChart) for long-term equity compounding and franked dividends.
@@ -1199,6 +1216,116 @@ export default function OfficialDocumentsView() {
                   <div className="p-2 rounded bg-slate-50 border border-slate-200">
                     <strong>4. Notifications:</strong> Would you like SMS notifications integrated alongside the current cPanel Email OTP dispatch?
                   </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 7. STATUTORY POLICY STREAMLINING INSTRUMENT & 2027 ROADMAP */}
+          {selectedDocId === 'statutory_streamlining_policy' && (
+            <div className="space-y-4">
+              {/* Executive Directive Header */}
+              <div className="p-4 sm:p-5 bg-[#FAF8F5] rounded-xl border border-[#D8D2C4] space-y-2">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#E2DDD3] pb-2.5">
+                  <div>
+                    <span className="font-mono-num text-[10px] uppercase font-bold text-[#6E3C1B] tracking-wider block">
+                      Executive Directive • Directives of John Oballa Ojwang' (CEO)
+                    </span>
+                    <h4 className="font-editorial font-bold text-base text-slate-900 mt-0.5">
+                      Statutory Policy Streamlining Instrument &amp; 2027 Corporate Roadmap
+                    </h4>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => downloadDocumentPdf('/documents/MGR_Statutory_Policy_Streamlining_Instrument.pdf', 'MGR_Statutory_Policy_Streamlining_Instrument.pdf')}
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-white bg-[#1D3B2A] hover:opacity-95 px-3 py-1.5 rounded-lg transition shadow-xs cursor-pointer shrink-0"
+                    title="Download Official Streamlining Policy PDF"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    <span>Download Official PDF (273 KB)</span>
+                  </button>
+                </div>
+                <p className="text-xs text-slate-700 leading-relaxed">
+                  Codifies the CEO's governance directives of 17th November 2026. Affirms MGR Investment Group as a <strong>for-profit commercial investment enterprise</strong>, sets a binding target for incorporation as a <strong>Private Limited Company by Shares in 2027</strong> under the <strong>Companies Act 2015</strong>, establishes a two-stage ratification/adoption process, and formally streamlines Entry, Exit &amp; Settlement, and Triple Appropriations (Dividends, Honoraria, and Reserves).
+                </p>
+              </div>
+
+              {/* 2-Stage Adoption Roadmap */}
+              <div className="bank-card p-4 bg-white border border-[#D6D0C2] space-y-2">
+                <div className="flex items-center space-x-2">
+                  <span className="font-mono-num font-bold text-xs text-[#1D3B2A]">1.0</span>
+                  <h5 className="font-editorial font-bold text-sm text-slate-900">Two-Stage Constitutional Adoption Pathway</h5>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-700">
+                  <div className="p-3 rounded-lg bg-[#FAF8F5] border border-[#E2DDD3] space-y-1">
+                    <strong className="text-[#1D3B2A] block">Stage 1: Executive Committee Meeting</strong>
+                    <p className="text-[11px] text-slate-600 leading-relaxed">
+                      Convene the Executive Committee (Chairman Dan Aloo, CEO John Oballa, Treasurer Sarah Njoki, Secretary Alice Owuor) to debate, harmonize, and pass an executive resolution recommending the documents for adoption.
+                    </p>
+                  </div>
+                  <div className="p-3 rounded-lg bg-[#FAF8F5] border border-[#E2DDD3] space-y-1">
+                    <strong className="text-[#6E3C1B] block">Stage 2: Special General Meeting (SGM)</strong>
+                    <p className="text-[11px] text-slate-600 leading-relaxed">
+                      Issue statutory 14-day notice convening all 11 founding members to formally debate, vote upon, and enact the supreme Constitution and streamlined policies by a 2/3 constitutional majority.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* 2027 Companies Act Transition Card */}
+              <div className="bank-card p-4 bg-white border border-[#D6D0C2] space-y-2">
+                <div className="flex items-center space-x-2">
+                  <span className="font-mono-num font-bold text-xs text-[#6E3C1B]">2.0</span>
+                  <h5 className="font-editorial font-bold text-sm text-slate-900">2027 Limited Company by Shares Corporate Roadmap</h5>
+                </div>
+                <p className="text-xs text-slate-700 leading-relaxed">
+                  The Executive Committee is formally mandated to incorporate <strong>MGR INVESTMENT GROUP LIMITED</strong> under the <strong>Companies Act, No. 17 of 2015</strong> in FY 2027. Member capital (KES 710,675.00+) will convert into fully paid-up Ordinary Shares of equal par value, the Constitution converts into Articles of Association, and the Executive Committee becomes the initial Board of Directors.
+                </p>
+              </div>
+
+              {/* 3 Streamlined Policies Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                {/* Entry Policy */}
+                <div className="bank-card p-3.5 bg-white space-y-2">
+                  <span className="text-[10px] font-mono-num font-bold px-2 py-0.5 rounded bg-[#EDF1ED] text-[#1D3B2A] border border-[#CCD7CD] inline-block">
+                    Policy A: Entry
+                  </span>
+                  <h5 className="font-bold text-xs text-slate-900">Membership Admission &amp; Vetting</h5>
+                  <ul className="text-[11px] text-slate-600 space-y-1 leading-snug">
+                    <li>• Sponsoring: Backed by 2 active founding members.</li>
+                    <li>• Vetting: KYC verification under Kenya DPA 2019.</li>
+                    <li>• Registration Fee: KES 5,000 non-refundable to reserves.</li>
+                    <li>• Minimum Buy-In: KES 50,000 initial share capital.</li>
+                    <li>• Probation: 6-month window; zero borrowing eligibility; yields automatically compounded.</li>
+                  </ul>
+                </div>
+
+                {/* Exit Policy */}
+                <div className="bank-card p-3.5 bg-white space-y-2">
+                  <span className="text-[10px] font-mono-num font-bold px-2 py-0.5 rounded bg-[#F6EFEA] text-[#6E3C1B] border border-[#E3D0C1] inline-block">
+                    Policy B: Exit
+                  </span>
+                  <h5 className="font-bold text-xs text-slate-900">Valuation, Set-Off &amp; Settlement</h5>
+                  <ul className="text-[11px] text-slate-600 space-y-1 leading-snug">
+                    <li>• Advance Notice: Mandatory 90 to 180 days written notice.</li>
+                    <li>• Valuation: 1:1 Par + Prorated Yield &minus; Set-off &minus; 3% admin fee.</li>
+                    <li>• Mandatory Set-Off: 100% deduction of unpaid loans + interest.</li>
+                    <li>• Internal Buyout: Continuing members hold right of first refusal.</li>
+                    <li>• Staggered Payout: 50% in 90 days, 50% in 180 days.</li>
+                  </ul>
+                </div>
+
+                {/* Appropriations Policy */}
+                <div className="bank-card p-3.5 bg-white space-y-2">
+                  <span className="text-[10px] font-mono-num font-bold px-2 py-0.5 rounded bg-[#F4F1EA] text-[#2C3824] border border-[#D8D2C4] inline-block">
+                    Policy C: Appropriations
+                  </span>
+                  <h5 className="font-bold text-xs text-slate-900">Dividends, Honoraria &amp; Reserves</h5>
+                  <ul className="text-[11px] text-slate-600 space-y-1 leading-snug">
+                    <li>• <strong>Dividends (75%–85%):</strong> Paid strictly from net profits; holding-period pro-rated; cash or reinvestment.</li>
+                    <li>• <strong>Honoraria (3%–5% Capped):</strong> Executive reward payable ONLY on positive net profit exceeding 91-day T-Bill rate.</li>
+                    <li>• <strong>Reserves (10%–20%):</strong> Mandatory retention for stability, emergency loans &amp; 2027 Limited Co. incorporation.</li>
+                  </ul>
                 </div>
               </div>
             </div>

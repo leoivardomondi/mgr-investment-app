@@ -57,6 +57,16 @@ const SECTION_DOC_MAP = {
     htmlUrl: '/documents/MGR_Emergency_Credit_and_SetOff_Policy.html',
     size: '258 KB',
     badge: 'Credit Policy'
+  },
+  '13.0': {
+    id: '13.0',
+    label: 'Clause 13.0 (2027 Corporate Roadmap)',
+    title: 'Statutory Policy Streamlining Instrument & 2027 Corporate Roadmap',
+    pdfUrl: '/documents/MGR_Statutory_Policy_Streamlining_Instrument.pdf',
+    filename: 'MGR_Statutory_Policy_Streamlining_Instrument.pdf',
+    htmlUrl: '/documents/MGR_Statutory_Policy_Streamlining_Instrument.html',
+    size: '273 KB',
+    badge: 'Executive Directive'
   }
 };
 
@@ -132,8 +142,8 @@ export default function ConstitutionView() {
         },
         {
           clause: '4.2',
-          subtitle: 'Admission Procedures',
-          text: 'Applicants shall submit a formal membership application, agree in writing to abide by this Constitution and all club resolutions, pay the mandatory non-refundable registration fee of KES 1,000, and be vetted and admitted upon unanimous consensus of the Executive Committee.'
+          subtitle: 'Admission Procedures & Streamlined Entry Protocol',
+          text: 'Applicants shall be formally sponsored and vetted by not less than two (2) active founding members in good standing, submit certified national identity documents and KRA PIN certificates under the Kenya Data Protection Act 2019, remit a non-refundable admission registration fee of KES 5,000, tender an initial minimum share capital buy-in of KES 50,000 into the treasury account, and complete a mandatory six (6) month probationary evaluation period during which capital is locked into the interest-earning pool with zero loan borrowing eligibility.'
         },
         {
           clause: '4.3',
@@ -301,28 +311,28 @@ export default function ConstitutionView() {
     },
     {
       id: '9.0',
-      title: '9.0 Profits, Losses and Distributions',
-      tag: 'Yield Allocation',
+      title: '9.0 Profits, Losses and Triple Appropriations Policy',
+      tag: 'Triple Appropriations',
       content: [
         {
           clause: '9.1',
-          subtitle: 'Allocation of Profits',
+          subtitle: 'Allocation of Profits & Operating Surplus',
           text: 'Net profits and investment yields shall be credited to the retained surplus account and attributed pro-rata based on eligible member capital and active holding periods.'
         },
         {
           clause: '9.2',
-          subtitle: 'Treatment of Losses',
-          text: 'Systemic capital losses shall be apportioned among Members pro-rata to their capital contributions, subject to prior absorption by capital reserves.'
+          subtitle: 'Dividend Distribution Policy',
+          text: 'Dividends and investment yields shall be declared exclusively from audited net operating surplus, pro-rated by active holding-period capital weighting, distributed upon member choice of either direct liquidity payout or automated compounding into member equity, and gated by unanimous 100% active member ratification.'
         },
         {
           clause: '9.3',
-          subtitle: 'Retained Earnings',
-          text: 'The Club may retain 10% to 20% of periodic investment interest in a designated Group Reserve Account for operational and contingency buffers.'
+          subtitle: 'Executive Committee Honoraria Policy',
+          text: 'In recognition of active fiduciary stewardship, an annual honorarium capped strictly between 3% and 5% of net investment surplus may be appropriated to active Executive Committee officers, conditional upon the Club\'s annual net yield exceeding the prevailing Central Bank of Kenya 91-day Treasury Bill benchmark rate, with zero honoraria liability payable in deficit years, and subject to ratification at the Annual General Meeting.'
         },
         {
           clause: '9.4',
-          subtitle: 'Distribution Policies',
-          text: 'Distributions require holding-period prorating compliance, post-period capital exclusion, and unanimous member ratification.'
+          subtitle: 'Statutory Capital Reserves & Retention Policy',
+          text: 'Prior to any dividend declaration or honoraria appropriation, the Club shall mandatorily transfer between 10% and 20% of net investment earnings to the Statutory Capital Reserve Account to absorb unforeseen market shocks, safeguard treasury liquidity, and accumulate incorporation capital for the planned 2027 conversion into a Company Limited by Shares.'
         }
       ]
     },
@@ -334,13 +344,13 @@ export default function ConstitutionView() {
       content: [
         {
           clause: '10.1',
-          subtitle: 'Voluntary Exit',
-          text: 'A Member wishing to withdraw from MGR CLUB shall give not less than ninety (90) days\' written notice to the Coordinator or Secretary.'
+          subtitle: 'Voluntary Exit Notice',
+          text: 'A Member wishing to withdraw from MGR CLUB shall deliver not less than ninety (90) to one hundred and eighty (180) days\' advance written notice to the Executive Committee to safeguard active Money Market Fund lock-ins and ensure orderliness.'
         },
         {
           clause: '10.2',
-          subtitle: 'Valuation of the Exiting Member\'s Interest',
-          text: 'Valuation is determined using the most recent approved financial statements, taking into account: a) capital contributions made by the Member; b) additional savings or deposits; c) undistributed profits and retained earnings; d) losses attributable; and e) any outstanding obligations owed.'
+          subtitle: 'Valuation of the Exiting Member\'s Interest & Deductions',
+          text: 'Valuation of terminal exit dues shall be computed strictly in accordance with the Statutory Valuation Formula: Terminal Exit Payout = (Unencumbered Deposit Capital at 1:1 Par) + (Holding-Period Prorated Net Yield) - (Outstanding Loan Balances & Accrued 10% Interest) - (Three Percent [3%] Administrative & Processing Exit Levy). Cumulative statutory capital reserves remain indivisible and forfeited to the Club.'
         },
         {
           clause: '10.3',
@@ -349,8 +359,8 @@ export default function ConstitutionView() {
         },
         {
           clause: '10.4',
-          subtitle: 'Settlement of Exit Benefits',
-          text: 'Subject to Clause 10.3, net dues shall be paid within 90 to 180 days after valuation completion, either as a lump-sum or in instalments to safeguard club liquidity.'
+          subtitle: 'Settlement of Exit Benefits & Internal Buyout Right',
+          text: 'Settlement of net dues shall be executed in two equal tranches: fifty percent (50%) within ninety (90) days of valuation finalization, and the remaining fifty percent (50%) within one hundred and eighty (180) days. Continuing members hold the absolute Right of First Refusal to purchase the exiting member\'s equity shares at par value before any third-party buy-in is considered.'
         },
         {
           clause: '10.5',
@@ -410,6 +420,29 @@ export default function ConstitutionView() {
         {
           clause: '12.2',
           text: 'Upon dissolution, all liabilities shall first be discharged before remaining assets and reserves are distributed pro-rata to members\' capital accounts.'
+        }
+      ]
+    },
+    {
+      id: '13.0',
+      title: '13.0 Corporate Transformation: Company Limited by Shares (Companies Act 2015)',
+      tag: '2027 Corporate Roadmap',
+      highlight: true,
+      content: [
+        {
+          clause: '13.1',
+          subtitle: 'Corporate Conversion Mandate (FY 2027)',
+          text: 'Pursuant to the strategic commercial directives of the Founder and Executive Committee, MGR shall formally transition from an unincorporated investment club / partnership into a body corporate registered as a Private Company Limited by Shares under the Companies Act, No. 17 of 2015 (Laws of Kenya) in financial year 2027.'
+        },
+        {
+          clause: '13.2',
+          subtitle: 'Conversion of Member Capital into Ordinary Shares',
+          text: 'All cumulative unencumbered member capital deposits, verified ledger shares, and qualifying credited retained earnings standing to the credit of the eleven (11) founding members shall convert into fully paid-up Ordinary Shares at par value (KES 1.00 per share), with each shareholder issued a formal Share Certificate under the common seal of MGR Investment Group Limited.'
+        },
+        {
+          clause: '13.3',
+          subtitle: 'Two-Stage Constitutional Adoption & Ratification Procedure',
+          text: 'The legal adoption and statutory continuity of this Constitution and subsequent Articles of Association shall follow a strict two-stage ratification sequence: Stage 1 — Executive Committee Convening & Technical Review to formally discuss, fine-tune, and ratify the governance instruments; Stage 2 — Convening of a Special or Annual General Meeting of all Members to debate, adopt, and sign the foundational corporate charters.'
         }
       ]
     }
@@ -500,12 +533,12 @@ export default function ConstitutionView() {
           </div>
           <div className="p-2.5 bg-slate-50 rounded-lg border border-slate-200">
             <span className="text-[10px] uppercase text-slate-500 font-mono-num block">Leadership Stability</span>
-            <span className="font-bold text-emerald-800 font-editorial text-sm">3 Financial Years</span>
+            <span className="font-bold text-[#1D3B2A] font-editorial text-sm">3 Financial Years</span>
             <span className="text-[10px] text-slate-500 block">Clause 6.1 – 6.6</span>
           </div>
           <div className="p-2.5 bg-slate-50 rounded-lg border border-slate-200">
             <span className="text-[10px] uppercase text-slate-500 font-mono-num block">Emergency Loans</span>
-            <span className="font-bold text-[var(--accent-gold)] font-editorial text-sm">Up to 90% Shares</span>
+            <span className="font-bold text-[#8A6B32] font-editorial text-sm">Up to 90% Shares</span>
             <span className="text-[10px] text-slate-500 block">10%/Mo • 30 Days (10.5)</span>
           </div>
           <div className="p-2.5 bg-slate-50 rounded-lg border border-slate-200">
@@ -681,7 +714,7 @@ export default function ConstitutionView() {
                   <td className="py-2 px-3 text-right font-bold text-slate-900">{m.shares}</td>
                   <td className="py-2 px-3 text-center">
                     <span className={`text-[10px] font-bold px-1.5 py-0.2 rounded ${
-                      m.status === 'Active' ? 'bg-emerald-50 text-emerald-800' : 'bg-rose-50 text-rose-800'
+                      m.status === 'Active' ? 'bg-[#EDF1ED] text-[#1D3B2A] border border-[#CCD7CD]' : 'bg-[#F9ECEC] text-[#6B2424] border border-[#E6C7C7]'
                     }`}>
                       {m.status}
                     </span>

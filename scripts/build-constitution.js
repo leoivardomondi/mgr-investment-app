@@ -458,7 +458,8 @@ const HTML_CONTENT = `<!DOCTYPE html>
         <a class="toc-item" href="#art9"><span><span class="toc-num">9.0</span>Profits, Losses &amp; Distributions</span><span class="font-mono">P. 3</span></a>
         <a class="toc-item" href="#art10"><span><span class="toc-num">10.0</span>Member Exit &amp; Loan Settlement</span><span class="font-mono">P. 4</span></a>
         <a class="toc-item" href="#art11"><span><span class="toc-num">11.0</span>Constitutional Amendments</span><span class="font-mono">P. 5</span></a>
-        <a class="toc-item" href="#art12"><span><span class="toc-num">12.0</span>Dissolution and Winding Up</span><span class="font-mono">P. 5</span></a>
+        <a class="toc-item" href="#art12"><span><span class="toc-num">12.0</span>Dissolution &amp; Winding Up</span><span class="font-mono">P. 5</span></a>
+        <a class="toc-item" href="#art13"><span><span class="toc-num">13.0</span>2027 Co. Act Conversion</span><span class="font-mono">P. 5</span></a>
       </div>
     </div>
 
@@ -511,7 +512,12 @@ const HTML_CONTENT = `<!DOCTYPE html>
       <span class="clause-num">4.1</span> <strong>Eligibility for Membership:</strong> Membership shall be open to individuals who subscribe to the Vision, Mission, and Objectives of MGR CLUB, are of sound mind, have attained the age of eighteen (18) years, and are approved by the Executive Committee and general membership.
     </div>
     <div class="clause">
-      <span class="clause-num">4.2</span> <strong>Admission Procedures:</strong> Prospective members shall submit a formal application, agree in writing to be bound by this Constitution and all ratified resolutions, pay the prescribed non-refundable registration fee of KES 1,000, and be vetted and admitted upon unanimous consensus of the Executive Committee.
+      <span class="clause-num">4.2</span> <strong>Admission Procedures &amp; Entry Protocol:</strong> Every prospective member must be formally sponsored and seconded in writing by not less than two (2) active founding members in good standing, submit verified legal identity documents into the confidential KYC Vault under Kenya Data Protection Act 2019 standards, be unanimously recommended by the Executive Committee, and be ratified by not less than two-thirds (2/3) of the General Membership. Upon admission, the new entrant shall:
+      <ul class="sub-clause-list list-alpha">
+        <li>Pay a mandatory, non-refundable administrative registration fee of <strong>KES 5,000</strong> credited directly to Club Reserves;</li>
+        <li>Contribute a minimum initial share capital buy-in of <strong>KES 50,000</strong> (payable lump-sum or within three approved monthly installments) to prevent dilution of founding member equity; and</li>
+        <li>Observe a mandatory <strong>six (6) months probationary window</strong> during which the new entrant shall not be eligible for emergency borrowings or executive office, and all earned yields are automatically capitalized into share capital.</li>
+      </ul>
     </div>
     <div class="clause">
       <span class="clause-num">4.3</span> <strong>Rights and Obligations of Members:</strong> Every Member in good standing shall have the right to inspect audited statements, participate in general meetings, cast votes, apply for short-term emergency loans under Clause 10.5, and share in pro-rata investment yields. Each Member is strictly obligated to make punctual capital deposits, maintain fiduciary confidentiality, and uphold cooperative integrity.
@@ -649,19 +655,32 @@ const HTML_CONTENT = `<!DOCTYPE html>
 
     <!-- 9.0 PROFITS, LOSSES AND DISTRIBUTIONS -->
     <div class="article-header" id="art9">
-      <h2><span class="article-num">9.0</span> Profits, Losses and Distributions</h2>
+      <h2><span class="article-num">9.0</span> Profits, Losses and Triple Appropriations Policy</h2>
     </div>
     <div class="clause">
-      <span class="clause-num">9.1</span> <strong>Allocation of Profits:</strong> Net realized earnings and investment yields shall be credited to the Club's retained surplus account and attributed pro-rata to Members based on eligible capital and qualifying active holding period.
+      <span class="clause-num">9.1</span> <strong>Allocation of Realized Net Profits:</strong> Net realized earnings and investment yields shall be credited to the Club's audited surplus account. Under no circumstances shall capital deposits of members be utilized to pay distributions.
     </div>
     <div class="clause">
-      <span class="clause-num">9.2</span> <strong>Treatment of Losses:</strong> In the event of an unavoidable systemic capital loss, such deficit shall be apportioned among Members pro-rata to their capital contributions, subject to prior absorption by capital reserves.
+      <span class="clause-num">9.2</span> <strong>Dividend Policy:</strong> Distributable surplus (representing 75% to 85% of net realized annual profit) shall be attributed pro-rata based on qualifying active capital and verified holding-period days. Each Member may elect either cash disbursement or automated compounding into share capital. Declaration requires formal recommendation by the Treasurer and <strong>100% unanimous active member ratification</strong>.
     </div>
     <div class="clause">
-      <span class="clause-num">9.3</span> <strong>Retained Earnings:</strong> The Club may retain a proportion (e.g. 10% to 20%) of periodic interest yields in a Group Reserve Account to fund incorporation expenses, statutory fees, contingency buffers, and capital fortification.
+      <span class="clause-num">9.3</span> <strong>Executive Honoraria Policy:</strong> In recognition of the fiduciary time and operational liability assumed by active Executive Committee officers (Chairperson, CEO, Treasurer, Secretary, Research Officer), a discretionary honoraria pool may be appropriated, subject to strict statutory benchmarks:
+      <ul class="sub-clause-list list-alpha">
+        <li><strong>Positive Surplus Prerequisite:</strong> Payable strictly and exclusively in financial years yielding an audited net operating profit exceeding the prevailing 91-day Central Bank of Kenya (CBK) Treasury Bill benchmark;</li>
+        <li><strong>Statutory Pool Ceiling:</strong> Strictly capped at <strong>not more than five per cent (5%)</strong> of net realized annual investment surplus (or a modest flat annual stipend ratified at the AGM); and</li>
+        <li><strong>Non-Cumulative:</strong> Zero liability in deficit or negative-yield years. Must be disclosed in annual accounts and ratified at the AGM.</li>
+      </ul>
     </div>
     <div class="clause">
-      <span class="clause-num">9.4</span> <strong>Distribution Policies:</strong> No distribution of investment interest shall occur without compliance with ratified holding-period prorating rules, exclusion of post-period capital, and unanimous member ratification.
+      <span class="clause-num">9.4</span> <strong>Statutory Reserves &amp; Retention Policy:</strong> The Club shall mandatorily deduct and retain <strong>between ten per cent (10%) and twenty per cent (20%)</strong> of every periodic net surplus prior to dividend or honoraria declarations. The Reserve Fund shall serve as:
+      <ul class="sub-clause-list list-alpha">
+        <li>An institutional buffer against macroeconomic volatility and yield compression;</li>
+        <li>Liquidity backing for the 30-day emergency credit facility; and</li>
+        <li>The dedicated corporate incorporation and compliance fund for the <strong>2027 transition to a Company Limited by Shares</strong> under the Companies Act 2015. Reserves remain indivisible institutional capital and cannot be claimed by exiting members.</li>
+      </ul>
+    </div>
+    <div class="clause">
+      <span class="clause-num">9.5</span> <strong>Treatment of Losses:</strong> In the event of an unavoidable systemic capital loss, such deficit shall be apportioned among Members pro-rata to their capital contributions, subject to prior absorption by capital reserves.
     </div>
   </div>
 
@@ -673,17 +692,17 @@ const HTML_CONTENT = `<!DOCTYPE html>
     </div>
 
     <div class="clause">
-      <span class="clause-num">10.1</span> <strong>Voluntary Exit:</strong> A Member wishing to withdraw from MGR CLUB shall give not less than ninety (90) days' written notice to the Coordinator or Secretary.
+      <span class="clause-num">10.1</span> <strong>Voluntary Exit &amp; Advance Notice:</strong> A Member wishing to withdraw from MGR CLUB shall give not less than <strong>ninety (90) to one hundred and eighty (180) days' written notice</strong> to the Secretary and CEO. The extended notice window is legally mandatory to protect the Club from premature liquidation of fixed-income assets, MMF lock-ins, or infrastructure bonds attracting early-redemption penalties.
     </div>
 
     <div class="clause">
-      <span class="clause-num">10.2</span> <strong>Valuation of the Exiting Member's Interest:</strong> The value of the exiting Member's interest shall be determined using the most recent approved financial statements, taking into account:
+      <span class="clause-num">10.2</span> <strong>Valuation of Exiting Member's Interest:</strong> The net exit value shall be determined as of the notice expiry date based on audited book balances:
       <ul class="sub-clause-list list-alpha">
-        <li>capital contributions made by the Member;</li>
-        <li>additional savings or deposits standing to the Member's credit;</li>
-        <li>undistributed profits and retained earnings attributable to the Member;</li>
-        <li>losses attributable to the Member; and</li>
-        <li>any outstanding obligations owed by the Member to MGR CLUB.</li>
+        <li><strong>Share Deposits:</strong> Valued at 1:1 par value of unencumbered verified capital contributions;</li>
+        <li><strong>Prorated Net Yield:</strong> Attributed compound interest up to the date of notice expiry;</li>
+        <li><strong>Deductions:</strong> 100% deduction of any outstanding emergency borrowings, loan interest, or unfulfilled obligations;</li>
+        <li><strong>Administrative Exit Charge:</strong> A deduction of <strong>three per cent (3%)</strong> of gross entitlements to defray legal, audit, and transaction overhead; and</li>
+        <li><strong>Forfeiture of Reserves:</strong> Exiting members possess no claim over the accumulated statutory reserve fund, which remains the permanent property of MGR CLUB.</li>
       </ul>
     </div>
 
@@ -699,10 +718,10 @@ const HTML_CONTENT = `<!DOCTYPE html>
         </ul>
       </div>
       <div class="clause">
-        <span class="clause-num">10.4</span> <strong>Settlement of Exit Benefits:</strong> Subject to Clause 10.3, the net amount due to the exiting Member shall be paid within ninety (90) to one hundred and eighty (180) days after completion of the valuation process, either:
+        <span class="clause-num">10.4</span> <strong>Settlement Framework (Internal Buyout &amp; Staggered Tranches):</strong> Subject to mandatory set-off under Clause 10.3, the net amount due shall be settled through:
         <ul class="sub-clause-list list-alpha">
-          <li>as a lump-sum payment; or</li>
-          <li>in instalments, where immediate payment would adversely affect the liquidity position of MGR CLUB.</li>
+          <li><strong>Right of First Refusal:</strong> The exiting shares shall first be offered pro-rata to continuing active members to purchase at 1:1 par value within sixty (60) days, consolidating their equity stakes without drawing cash from Club institutional accounts; or</li>
+          <li><strong>Staggered Institutional Payout:</strong> Where settled from Club treasury funds, payment shall be executed in two equal tranches: <strong>Tranche 1 (50%)</strong> within ninety (90) days following valuation, and <strong>Tranche 2 (50%)</strong> within one hundred and eighty (180) days.</li>
         </ul>
       </div>
     </div>
@@ -793,6 +812,23 @@ const HTML_CONTENT = `<!DOCTYPE html>
     </div>
     <div class="clause">
       <span class="clause-num">12.2</span> Upon dissolution, all debts, liabilities, and external obligations shall first be fully discharged, after which the remaining net assets and reserves shall be distributed among Members pro-rata to their respective capital contributions.
+    </div>
+
+    <!-- 13.0 CORPORATE TRANSFORMATION (COMPANIES ACT 2015) -->
+    <div class="article-header" id="art13">
+      <h2><span class="article-num">13.0</span> Corporate Transformation: Company Limited by Shares (Companies Act 2015)</h2>
+    </div>
+    <div class="clause">
+      <span class="clause-num">13.1</span> <strong>Commercial Nature:</strong> MGR Investment Group is expressly declared and constituted as a for-profit commercial investment enterprise dedicated to compound wealth creation.
+    </div>
+    <div class="clause">
+      <span class="clause-num">13.2</span> <strong>2027 Limited Company Incorporation Mandate:</strong> The Executive Committee is formally mandated and directed to initiate and conclude the incorporation of <strong>MGR INVESTMENT GROUP LIMITED</strong> as a <strong>Private Company Limited by Shares</strong> under the <strong>Companies Act, No. 17 of 2015 (Laws of Kenya)</strong> during the 2027 financial year.
+    </div>
+    <div class="clause">
+      <span class="clause-num">13.3</span> <strong>Share Capital Conversion:</strong> Upon incorporation, the verified net member capital pool (standing at KES 710,675.00+ as of FY 2026) shall convert into fully paid-up Ordinary Shares of equal par value registered in the names of the 11 founding shareholders.
+    </div>
+    <div class="clause">
+      <span class="clause-num">13.4</span> <strong>Governance &amp; Articles of Association:</strong> This Constitution and its ratified streamlined policies shall seamlessly convert into the Articles of Association of the Company, and the Executive Committee shall transition into the initial Board of Directors subject to statutory fiduciary duties under Sections 142–148 of the Companies Act 2015.
     </div>
 
     <!-- SCHEDULE 1 -->

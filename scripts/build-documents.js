@@ -18,9 +18,10 @@ const edgePath = 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.
 const chromePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 const browserExe = fs.existsSync(edgePath) ? edgePath : chromePath;
 
-// Build Constitution and Member Orientation Guide
+// Build Constitution, Member Orientation Guide, and Streamlining Instrument
 import './build-constitution.js';
 import './build-member-guide-pdf.js';
+import './build-streamlined-policy-pdf.js';
 
 // Base styling for all official documents
 const SHARED_CSS = `

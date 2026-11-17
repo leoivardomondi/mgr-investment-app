@@ -642,7 +642,7 @@ export default function MembersView({ onOpenDepositModal, onOpenDataEditor }) {
               <div className="bg-white/10 p-3 rounded-xl border border-white/10 backdrop-blur-xs">
                 <span className="text-[10px] text-white/70 block uppercase font-bold">Pipeline Prospects</span>
                 <span className="text-lg font-bold text-white mt-0.5 block">{prospects.length} Prospect{prospects.length > 1 ? 's' : ''}</span>
-                <span className="text-[10px] text-emerald-300 font-semibold">1 Promised Next Week</span>
+                <span className="text-[10px] text-[var(--accent-gold-light)] font-semibold">1 Promised Next Week</span>
               </div>
             </div>
           </div>

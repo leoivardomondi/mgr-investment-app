@@ -46,7 +46,7 @@ function AppContent() {
               {toastMessage.type === 'error' ? (
                 <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
               ) : (
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                <CheckCircle2 className="w-4 h-4 text-[var(--accent-gold-light)] shrink-0 mt-0.5" />
               )}
               <div className="flex-1 min-w-0">
                 <p className="leading-snug">{toastMessage.message}</p>
@@ -73,7 +73,7 @@ function AppContent() {
             {toastMessage.type === 'error' ? (
               <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
             ) : (
-              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+              <CheckCircle2 className="w-4 h-4 text-[var(--accent-gold-light)] shrink-0 mt-0.5" />
             )}
             <div className="flex-1 min-w-0">
               <p className="leading-snug">{toastMessage.message}</p>

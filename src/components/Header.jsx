@@ -342,7 +342,7 @@ export default function Header({ onOpenDataEditor, onOpenProfileModal }) {
                         Authenticated Account
                       </span>
                       <div className="flex items-center gap-1.5">
-                        <span className="text-[9px] font-mono-num font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-900">
+                        <span className="text-[9px] font-mono-num font-bold px-1.5 py-0.5 rounded bg-[#EDF1ED] text-[#1D3B2A] border border-[#CCD7CD]">
                           {currentUserRbac?.accessLevel?.replace('_', ' ').toUpperCase() || 'ACTIVE'}
                         </span>
                         <button
@@ -603,7 +603,7 @@ export default function Header({ onOpenDataEditor, onOpenProfileModal }) {
           >
             <Bell className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
             {unreadCount > 0 && (
-              <span className="absolute -top-1 -right-1 min-w-[15px] h-3.5 sm:h-4 px-1 bg-emerald-500 text-white font-mono-num text-[8px] sm:text-[9px] font-black rounded-full flex items-center justify-center shadow leading-none">
+              <span className="absolute -top-1 -right-1 min-w-[15px] h-3.5 sm:h-4 px-1 bg-[#8B3A3A] text-white font-mono-num text-[8px] sm:text-[9px] font-black rounded-full flex items-center justify-center shadow leading-none border border-white/20">
                 {unreadCount}
               </span>
             )}

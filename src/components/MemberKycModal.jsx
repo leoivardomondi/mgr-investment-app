@@ -413,9 +413,9 @@ export default function MemberKycModal({ isOpen, onClose, member }) {
               <>
                 {/* Executive Re-Lock & Authorization Banner */}
                 {!isOwnProfile && (
-                  <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
-                    <div className="flex items-start sm:items-center space-x-2 text-emerald-900">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5 sm:mt-0" />
+                  <div className="p-3 bg-[#EDF1ED] border border-[#CCD7CD] rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                    <div className="flex items-start sm:items-center space-x-2 text-[#1D3B2A]">
+                      <CheckCircle2 className="w-4 h-4 text-[#1D3B2A] shrink-0 mt-0.5 sm:mt-0" />
                       <span className="text-xs font-semibold leading-snug">
                         Exclusive Access: Unlocked for you via <strong>{member.name}</strong>'s 24-hour authorization PIN.
                       </span>
@@ -426,7 +426,7 @@ export default function MemberKycModal({ isOpen, onClose, member }) {
                         lockMemberVault(member.id);
                         showToast(`Vault for ${member.name} locked.`);
                       }}
-                      className="py-1.5 px-3 bg-white border border-emerald-300 hover:bg-emerald-100 text-emerald-800 text-[11px] font-bold rounded-lg transition cursor-pointer flex items-center justify-center gap-1 shrink-0 min-h-[36px]"
+                      className="py-1.5 px-3 bg-white border border-[#CCD7CD] hover:bg-[#EDF1ED] text-[#1D3B2A] text-[11px] font-bold rounded-lg transition cursor-pointer flex items-center justify-center gap-1 shrink-0 min-h-[36px]"
                     >
                       <Lock className="w-3 h-3" />
                       <span>Lock Vault Again</span>

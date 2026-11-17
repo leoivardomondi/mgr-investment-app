@@ -709,11 +709,11 @@ export default function LoansView({ onOpenDataEditor }) {
                     </td>
                     <td className="py-2 px-3 text-center font-sans">
                       {memberLoanBalance > 0 ? (
-                        <span className="px-2 py-0.5 rounded-xs text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200">
+                        <span className="px-2 py-0.5 rounded-xs text-[10px] font-bold bg-[#FAF6EC] text-[#5A4518] border border-[#E8DCB8]">
                           Encumbered
                         </span>
                       ) : (
-                        <span className="px-2 py-0.5 rounded-xs text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                        <span className="px-2 py-0.5 rounded-xs text-[10px] font-bold bg-[#EDF1ED] text-[#1D3B2A] border border-[#CCD7CD]">
                           100% Unencumbered
                         </span>
                       )}
@@ -765,7 +765,7 @@ export default function LoansView({ onOpenDataEditor }) {
                       {loan.status === 'Active' && (
                         <button
                           onClick={() => updateLoan(loan.id, { status: 'Settled / Repaid', balanceRemaining: 0 })}
-                          className="px-2 py-0.5 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded text-[10px] font-bold hover:bg-emerald-100 transition"
+                          className="px-2 py-0.5 bg-[#EDF1ED] border border-[#CCD7CD] text-[#1D3B2A] rounded text-[10px] font-bold hover:bg-[#E2EBE2] transition"
                           title="Mark loan as fully repaid / settled"
                         >
                           Mark Settled

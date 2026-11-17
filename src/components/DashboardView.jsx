@@ -216,7 +216,7 @@ export default function DashboardView({ onOpenDepositModal }) {
               KES {currentMember.shares.toLocaleString()}
             </div>
             <p className="text-[11px] text-white/80 mt-0.5 font-medium">
-              Equates to <strong className="font-mono-num text-emerald-300">{myEquityPercent}%</strong> total club stake
+              Equates to <strong className="font-mono-num text-[var(--accent-gold-light)]">{myEquityPercent}%</strong> total club stake
             </p>
           </div>
         </div>
@@ -252,7 +252,7 @@ export default function DashboardView({ onOpenDepositModal }) {
 
                 <div>
                   <span className="text-white/70 block text-[10px] uppercase font-semibold">Yield Deposits (Credited & Accrued)</span>
-                  <p className="font-bold font-mono-num text-emerald-300 text-sm sm:text-base mt-0.5">
+                  <p className="font-bold font-mono-num text-[var(--accent-gold-light)] text-sm sm:text-base mt-0.5">
                     + KES {myTotalYieldDeposits.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </p>
                 </div>

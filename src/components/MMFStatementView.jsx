@@ -836,7 +836,7 @@ export default function MMFStatementView() {
                 }`}
               >
                 <span>Active</span>
-                <span className="text-[10px] bg-amber-100 text-amber-900 px-1.5 py-0.2 rounded-full font-bold">
+                <span className="text-[10px] bg-[#FAF6EC] text-[#5A4518] border border-[#E8DCB8] px-1.5 py-0.2 rounded-full font-bold">
                   {activeCount}
                 </span>
               </button>
@@ -844,12 +844,12 @@ export default function MMFStatementView() {
                 onClick={() => setAdvisoryFilter('solved')}
                 className={`h-7 px-2.5 rounded-md text-xs transition flex items-center gap-1 ${
                   advisoryFilter === 'solved'
-                    ? 'bg-white text-emerald-800 shadow-xs font-bold'
+                    ? 'bg-white text-[#1D3B2A] shadow-xs font-bold'
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 <span>Solved</span>
-                <span className="text-[10px] bg-emerald-100 text-emerald-800 px-1.5 py-0.2 rounded-full font-bold">
+                <span className="text-[10px] bg-[#EDF1ED] text-[#1D3B2A] border border-[#CCD7CD] px-1.5 py-0.2 rounded-full font-bold">
                   {solvedCount}
                 </span>
               </button>
@@ -921,12 +921,12 @@ export default function MMFStatementView() {
                       {adv.category || 'PORTFOLIO REALLOCATION ANALYSIS'}
                     </span>
                     {isSolved ? (
-                      <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-emerald-100 text-emerald-900 border border-emerald-300 flex items-center gap-1">
-                        <CheckCircle2 className="w-3 h-3 text-emerald-700" />
+                      <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-[#EDF1ED] text-[#1D3B2A] border border-[#CCD7CD] flex items-center gap-1">
+                        <CheckCircle2 className="w-3 h-3 text-[#1D3B2A]" />
                         <span>Solved on {adv.resolvedAt || 'Recent'} by {adv.resolvedBy || 'Executive Committee'}</span>
                       </span>
                     ) : (
-                      <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-amber-100 text-amber-900 border border-amber-300">
+                      <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-[#FAF6EC] text-[#5A4518] border border-[#E8DCB8]">
                         Active Alert
                       </span>
                     )}
@@ -1165,7 +1165,7 @@ export default function MMFStatementView() {
           >
             <div className="flex items-center justify-between">
               <span className="font-bold text-xs text-slate-900">Option C: Unweighted (Legacy)</span>
-              <span className="text-[10px] text-amber-700 font-bold bg-amber-100 px-1.5 py-0.5 rounded">
+              <span className="text-[10px] text-[#5A4518] font-bold bg-[#FAF6EC] border border-[#E8DCB8] px-1.5 py-0.5 rounded">
                 Dilutes Q3
               </span>
             </div>
@@ -1295,7 +1295,7 @@ export default function MMFStatementView() {
                         <div className="flex items-center space-x-1.5 flex-wrap">
                           <p className="truncate font-semibold">{member.name}</p>
                           {isLeoivard && (
-                            <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-amber-100 text-amber-900 border border-amber-200">
+                            <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-[#FAF6EC] text-[#5A4518] border border-[#E8DCB8]">
                               Starts Q4
                             </span>
                           )}

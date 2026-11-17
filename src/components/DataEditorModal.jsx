@@ -522,7 +522,7 @@ export default function DataEditorModal({ isOpen, onClose }) {
                           Auto-Match Deposit Messages to Standings
                         </button>
                       ) : (
-                        <span className="px-2 py-0.5 bg-white rounded border border-emerald-300 font-bold text-[10px] uppercase shrink-0">
+                        <span className="px-2 py-0.5 bg-[#EDF1ED] text-[#1D3B2A] rounded border border-[#CCD7CD] font-bold text-[10px] uppercase shrink-0">
                           100% Matched
                         </span>
                       )}

@@ -539,14 +539,14 @@ export default function LedgerView() {
           </div>
 
           {/* Balanced Sheet Equation Reconciliation Badge */}
-          <div className="p-3 bg-emerald-50 rounded-xs border border-emerald-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-emerald-950">
+          <div className="p-3 bg-[#EDF1ED] rounded-xs border border-[#CCD7CD] flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-[#1D3B2A]">
             <div className="flex items-center space-x-2">
-              <ShieldCheck className="w-4 h-4 text-emerald-700 shrink-0" />
+              <ShieldCheck className="w-4 h-4 text-[#1D3B2A] shrink-0" />
               <span>
                 <strong>Balanced Equation Confirmed:</strong> Total Assets (KES {totalComprehensiveAssets.toLocaleString(undefined, { minimumFractionDigits: 2 })}) = Total Liabilities (KES 0.00) + Member Deposits (KES {totalShares.toLocaleString(undefined, { minimumFractionDigits: 2 })}) + Group Reserves (KES {groupReserves.toLocaleString(undefined, { minimumFractionDigits: 2 })}) + Total Surplus (KES {retainedSurplus.toLocaleString(undefined, { minimumFractionDigits: 2 })})
               </span>
             </div>
-            <span className="font-bold text-emerald-800 bg-white px-2.5 py-1 rounded border border-emerald-300 self-start sm:self-auto font-mono-num text-[11px]">
+            <span className="font-bold text-[#1D3B2A] bg-white px-2.5 py-1 rounded border border-[#CCD7CD] self-start sm:self-auto font-mono-num text-[11px]">
               Variance: KES 0.00 (Balanced)
             </span>
           </div>
@@ -759,14 +759,14 @@ export default function LedgerView() {
           </div>
 
           {/* Balanced Sheet Summary Bar */}
-          <div className="p-3 bg-emerald-50 rounded border border-emerald-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-emerald-950">
+          <div className="p-3 bg-[#EDF1ED] rounded border border-[#CCD7CD] flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-[#1D3B2A]">
             <div className="flex items-center space-x-2">
-              <ShieldCheck className="w-4 h-4 text-emerald-700 shrink-0" />
+              <ShieldCheck className="w-4 h-4 text-[#1D3B2A] shrink-0" />
               <span>
                 <strong>Balanced Sheet Reconciliation:</strong> Net Member Deposits (KES {totalShares.toLocaleString()}) + Reg Fee Pool (KES 11,000) + Accrued Retained Surplus (KES {retainedSurplus.toLocaleString()}) = <strong>Total Assets (KES {totalComprehensiveAssets.toLocaleString()})</strong>
               </span>
             </div>
-            <span className="font-bold text-emerald-800 bg-white px-2 py-0.5 rounded border border-emerald-300 self-start sm:self-auto font-mono-num">
+            <span className="font-bold text-[#1D3B2A] bg-white px-2 py-0.5 rounded border border-[#CCD7CD] self-start sm:self-auto font-mono-num">
               Variance: KES 0.00 (Balanced)
             </span>
           </div>
@@ -1192,7 +1192,7 @@ export default function LedgerView() {
                   <td className="py-2.5 px-3 text-right text-[var(--accent-gold-light)]">
                     KES {totalMemberShares.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                   </td>
-                  <td className="py-2.5 px-3 text-right text-emerald-300">
+                  <td className="py-2.5 px-3 text-right text-[var(--accent-gold-light)]">
                     + KES {retainedSurplus.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                   </td>
                   <td className="py-2.5 px-3 text-right text-white">

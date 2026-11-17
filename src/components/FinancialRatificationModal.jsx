@@ -66,7 +66,7 @@ export default function FinancialRatificationModal() {
               disabled={isFullyRatified}
               className={`h-8 px-2.5 sm:px-3 rounded-lg text-[11px] sm:text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 transition whitespace-nowrap shrink-0 shadow-xs cursor-pointer ${
                 isFullyRatified
-                  ? 'bg-emerald-500 text-slate-950 cursor-default'
+                  ? 'bg-[#1D3B2A] text-white border border-white/20 cursor-default'
                   : 'bg-[var(--accent-gold-light)] hover:brightness-105 text-[var(--brand-primary)] active:scale-95'
               }`}
               title={isFullyRatified ? 'All 10 members ratified' : 'Click to sign for all 10 members and execute'}
@@ -183,8 +183,8 @@ export default function FinancialRatificationModal() {
                     <div className="flex items-center space-x-2.5 min-w-0">
                       <div className={`w-7 h-7 rounded-lg font-bold text-[10px] flex items-center justify-center shrink-0 ${
                         hasApproved 
-                          ? 'bg-emerald-100 text-emerald-800' 
-                          : 'bg-amber-100 text-amber-800'
+                          ? 'bg-[#EDF1ED] text-[#1D3B2A] border border-[#CCD7CD]' 
+                          : 'bg-[#FAF6EC] text-[#5A4518] border border-[#E8DCB8]'
                       }`}>
                         {m.avatar}
                       </div>
@@ -205,13 +205,13 @@ export default function FinancialRatificationModal() {
 
                     <div className="shrink-0">
                       {hasApproved ? (
-                        <span className="flex items-center space-x-1 px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full font-bold text-[10px]">
-                          <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                        <span className="flex items-center space-x-1 px-2 py-0.5 bg-[#EDF1ED] text-[#1D3B2A] border border-[#CCD7CD] rounded-full font-bold text-[10px]">
+                          <CheckCircle2 className="w-3 h-3 text-[#1D3B2A]" />
                           <span>Approved</span>
                         </span>
                       ) : (
-                        <span className="flex items-center space-x-1 px-2 py-0.5 bg-amber-50 text-amber-700 border border-amber-200 rounded-full font-bold text-[10px]">
-                          <Clock className="w-3 h-3 text-amber-600" />
+                        <span className="flex items-center space-x-1 px-2 py-0.5 bg-[#FAF6EC] text-[#5A4518] border border-[#E8DCB8] rounded-full font-bold text-[10px]">
+                          <Clock className="w-3 h-3 text-[#5A4518]" />
                           <span>Pending Approval</span>
                         </span>
                       )}
