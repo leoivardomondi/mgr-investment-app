@@ -16,7 +16,8 @@ import {
   Landmark,
   Coins,
   CheckCircle2,
-  ExternalLink
+  ExternalLink,
+  ArrowRight
 } from 'lucide-react';
 import { downloadDocumentPdf } from '../utils/documentDownloader';
 
