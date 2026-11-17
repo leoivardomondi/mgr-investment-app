@@ -196,131 +196,65 @@ export default function Header({ onOpenDataEditor, onOpenProfileModal }) {
           </div>
         </div>
 
-        {/* User Account Profile, Design Language & Alerts */}
-        <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
+        {/* Right Header Cluster: Executive Actions, Account Identity & Utilities */}
+        <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
           
-          {/* Quick Official Documents & PDF Repository */}
-          <button
-            onClick={() => setActiveTab('documents')}
-            className="h-8 sm:h-9 flex items-center gap-1.5 bg-white/10 hover:bg-white/15 border border-white/15 px-2 sm:px-2.5 rounded-lg text-xs text-white/90 hover:text-white transition shrink-0"
-            title="Official Club Documents, Charters & Downloadable PDFs"
-          >
-            <FileText className="w-3.5 h-3.5 text-[var(--accent-gold-light)] shrink-0" />
-            <span className="hidden md:inline text-[11px] font-semibold whitespace-nowrap">
-              Docs &amp; PDFs
-            </span>
-          </button>
+          {/* ZONE 1: EXECUTIVE ACTIONS (Ratify & Update Records) */}
+          <div className="flex items-center gap-1.5 shrink-0">
+            {/* Pending Financial Actions Ratification Button */}
+            {pendingRatificationCount > 0 && (
+              <button
+                onClick={() => setActiveRatificationModalId(pendingRatifications[0]?.id)}
+                className="h-8 sm:h-8.5 px-2.5 flex items-center gap-1.5 bg-[#FAF8F5]/15 hover:bg-[#FAF8F5]/25 text-[var(--accent-gold-light)] border border-[var(--accent-gold-light)]/40 font-bold text-xs rounded-lg shadow-xs transition shrink-0 relative cursor-pointer"
+                title="Financial action requires unanimous member ratification"
+              >
+                <Coins className="w-3.5 h-3.5 text-[var(--accent-gold-light)] shrink-0" />
+                <span className="hidden sm:inline text-[11px] font-bold">Ratify</span>
+                <span className="w-4 h-4 rounded-full bg-[var(--accent-gold-light)] text-slate-950 text-[10px] flex items-center justify-center font-black leading-none shadow-xs shrink-0">
+                  {pendingRatificationCount}
+                </span>
+              </button>
+            )}
 
-          {/* Design Language Switcher */}
-          <div className="relative">
-            <button
-              onClick={() => {
-                setShowDesignDropdown(!showDesignDropdown);
-                setShowMemberDropdown(false);
-                setShowNotifModal(false);
-              }}
-              className="h-8 sm:h-9 flex items-center gap-1.5 bg-white/10 hover:bg-white/15 border border-white/15 px-2 sm:px-2.5 rounded-lg text-xs text-white/90 hover:text-white transition shrink-0"
-              title="Switch Institutional Design Language"
-            >
-              <Palette className="w-3.5 h-3.5 text-[var(--accent-gold-light)] shrink-0" />
-              <span className="hidden xl:inline text-[11px] font-semibold whitespace-nowrap">
-                {activeDesignObj.name}
-              </span>
-              <ChevronDown className="w-3 h-3 text-white/60 shrink-0 hidden sm:inline" />
-            </button>
-
-            {showDesignDropdown && (
-              <>
-                {/* Backdrop to close on tap outside */}
-                <div
-                  className="fixed inset-0 z-40 bg-black/40 backdrop-blur-[1px]"
-                  onClick={() => setShowDesignDropdown(false)}
-                />
-                <div className="fixed top-14 inset-x-3 sm:inset-x-auto sm:right-12 md:sm:right-16 w-auto sm:w-80 max-w-[calc(100vw-24px)] mx-auto sm:mx-0 bg-white text-slate-800 border border-slate-200 rounded-xl shadow-2xl py-2 z-50 animate-in fade-in max-h-[calc(100vh-70px)] overflow-y-auto">
-                  <div className="px-3 py-2 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
-                    <div className="flex items-center space-x-1.5">
-                      <Palette className="w-3.5 h-3.5 text-amber-600" />
-                      <span className="text-[11px] font-bold text-slate-800 uppercase tracking-wider">
-                        Instant Theme
-                      </span>
-                      <span className="text-[10px] text-slate-500 font-normal">
-                        • Design Language
-                      </span>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => setShowDesignDropdown(false)}
-                      className="p-1 rounded-md text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 transition"
-                      title="Close menu"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
-                  </div>
-                  <div className="p-1.5 space-y-1">
-                    {DESIGN_LANGUAGES.map((dl) => {
-                      const isSelected = designLanguage === dl.id;
-                      return (
-                        <button
-                          key={dl.id}
-                          onClick={() => {
-                            setDesignLanguage(dl.id);
-                            setShowDesignDropdown(false);
-                          }}
-                          className={`w-full px-3 py-2.5 text-left flex items-center justify-between rounded-lg transition ${
-                            isSelected
-                              ? 'bg-slate-900 text-white'
-                              : 'hover:bg-slate-100 text-slate-800'
-                          }`}
-                        >
-                          <div className="flex items-center space-x-3 min-w-0">
-                            <div
-                              className="w-7 h-7 rounded-md border border-white/20 flex items-center justify-center shrink-0 shadow-xs"
-                              style={{ backgroundColor: dl.swatch }}
-                            >
-                              <span
-                                className="w-2.5 h-2.5 rounded-full"
-                                style={{ backgroundColor: dl.accent }}
-                              />
-                            </div>
-                            <div className="min-w-0">
-                              <div className="flex items-center gap-1.5">
-                                <span className="text-xs font-bold truncate">{dl.name}</span>
-                                <span className={`text-[9px] px-1.5 py-0.2 rounded font-semibold ${
-                                  isSelected ? 'bg-amber-500/20 text-amber-300' : 'bg-slate-100 text-slate-500'
-                                }`}>
-                                  {dl.badge}
-                                </span>
-                              </div>
-                              <p className={`text-[10px] truncate mt-0.5 ${isSelected ? 'text-slate-300' : 'text-slate-500'}`}>
-                                {dl.subtitle}
-                              </p>
-                            </div>
-                          </div>
-                          {isSelected && <Check className="w-4 h-4 text-amber-400 shrink-0 ml-2" />}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              </>
+            {/* Direct Data Editor / Update Records Button */}
+            {onOpenDataEditor && (
+              <button
+                onClick={handleOpenDataEditor}
+                className={`h-8 sm:h-8.5 flex items-center gap-1.5 px-2 sm:px-2.5 rounded-lg text-xs font-semibold transition border shrink-0 whitespace-nowrap cursor-pointer ${
+                  isCurrentMemberExec
+                    ? 'bg-white/10 hover:bg-white/15 border-white/15 text-white'
+                    : 'bg-white/5 hover:bg-white/10 border-white/10 text-white/80'
+                }`}
+                title={isCurrentMemberExec ? "Update, edit, or correct any member or account records" : "Restricted to Executive Committee"}
+              >
+                {isCurrentMemberExec ? (
+                  <Edit3 className="w-3.5 h-3.5 text-[var(--accent-gold-light)] shrink-0" />
+                ) : (
+                  <Lock className="w-3.5 h-3.5 text-amber-300 shrink-0" />
+                )}
+                <span className="hidden lg:inline text-[11px] font-bold">Update Records</span>
+              </button>
             )}
           </div>
 
-          {/* Member Profile & RBAC Switcher */}
-          <div className="relative">
+          {/* Institutional Divider */}
+          <div className="h-5 w-px bg-white/20 hidden sm:block shrink-0" />
+
+          {/* ZONE 2: MEMBER PROFILE & RBAC PERSONA DROPDOWN */}
+          <div className="relative shrink-0">
             <button
               onClick={() => {
                 setShowMemberDropdown(!showMemberDropdown);
                 setShowDesignDropdown(false);
                 setShowNotifModal(false);
               }}
-              className="h-8 sm:h-9 flex items-center gap-1.5 sm:gap-2 bg-white/10 hover:bg-white/15 border border-white/15 px-2 sm:px-2.5 rounded-lg text-xs transition shrink-0 max-w-[130px] sm:max-w-[200px]"
+              className="h-8 sm:h-8.5 flex items-center gap-1.5 sm:gap-2 bg-white/10 hover:bg-white/15 border border-white/15 px-2 sm:px-2.5 rounded-lg text-xs transition shrink-0 cursor-pointer max-w-[130px] sm:max-w-[210px]"
               title="Authenticated Member Account & Access Controls"
             >
               <MemberAvatarIcon
                 member={currentMember}
                 size="xs"
-                className="border-white/30"
+                className="border-white/30 shrink-0"
               />
               <div className="items-center gap-1.5 text-left hidden sm:flex min-w-0">
                 <span className="font-semibold text-xs text-white whitespace-nowrap leading-none truncate max-w-[110px]">
@@ -332,7 +266,7 @@ export default function Header({ onOpenDataEditor, onOpenProfileModal }) {
                   <User className="w-3.5 h-3.5 text-white/70 shrink-0" title="General Member" />
                 )}
               </div>
-              <ChevronDown className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-white/70 shrink-0" />
+              <ChevronDown className="w-3 h-3 text-white/70 shrink-0" />
             </button>
 
             {showMemberDropdown && (
@@ -614,95 +548,159 @@ export default function Header({ onOpenDataEditor, onOpenProfileModal }) {
             )}
           </div>
 
-          {/* Pending Financial Actions Ratification Button */}
-          {pendingRatificationCount > 0 && (
-            <button
-              onClick={() => setActiveRatificationModalId(pendingRatifications[0]?.id)}
-              className="h-8 w-8 sm:h-9 sm:w-auto sm:px-2.5 flex items-center justify-center gap-1.5 bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs rounded-lg shadow-xs transition shrink-0 relative cursor-pointer"
-              title="Financial action requires unanimous member ratification"
-            >
-              <Coins className="w-4 h-4 shrink-0" />
-              <span className="hidden sm:inline">Ratify</span>
-              <span className="absolute -top-1 -right-1 sm:static sm:top-auto sm:right-auto w-4 h-4 rounded-full bg-slate-950 text-amber-300 text-[10px] flex items-center justify-center font-black leading-none shadow-xs">
-                {pendingRatificationCount}
-              </span>
-            </button>
-          )}
+          {/* Institutional Divider */}
+          <div className="h-5 w-px bg-white/20 hidden sm:block shrink-0" />
 
-          {/* Install App (PWA / Android APK) Button */}
-          {!isStandaloneApp && (
-            <button
-              onClick={handleTriggerInstall}
-              className="h-8 sm:h-9 flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 rounded-lg text-xs font-bold bg-white/10 hover:bg-white/15 border border-white/15 text-[var(--paper-warm)] transition shrink-0 whitespace-nowrap cursor-pointer"
-              title="Install MGR Investment App on Android, iOS, or Desktop (PWA / APK)"
-            >
-              <Smartphone className="w-3.5 h-3.5 text-[var(--accent-gold-light)] shrink-0" />
-              <span className="hidden lg:inline">Install App</span>
-            </button>
-          )}
+          {/* ZONE 3: SYSTEM UTILITIES (Theme, Install, Alerts, Reset, SignOut) */}
+          <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
+            
+            {/* Design Language Switcher (Palette) */}
+            <div className="relative">
+              <button
+                onClick={() => {
+                  setShowDesignDropdown(!showDesignDropdown);
+                  setShowMemberDropdown(false);
+                  setShowNotifModal(false);
+                }}
+                className="h-8 w-8 sm:h-8.5 sm:w-8.5 flex items-center justify-center bg-white/10 hover:bg-white/15 border border-white/15 rounded-lg text-white transition shrink-0 cursor-pointer"
+                title={`Theme: ${activeDesignObj.name} (Click to change)`}
+              >
+                <Palette className="w-3.5 h-3.5 text-[var(--accent-gold-light)]" />
+              </button>
 
-          {/* Direct Data Editor / Update Records Button */}
-          {onOpenDataEditor && (
-            <button
-              onClick={handleOpenDataEditor}
-              className={`h-8 sm:h-9 flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 rounded-lg text-xs font-semibold transition border shrink-0 whitespace-nowrap ${
-                isCurrentMemberExec
-                  ? 'bg-white/10 hover:bg-white/20 border-white/15 text-white'
-                  : 'bg-white/5 hover:bg-white/10 border-white/10 text-white/80'
-              }`}
-              title={isCurrentMemberExec ? "Update, edit, or correct any member or account records" : "Restricted to Executive Committee"}
-            >
-              {isCurrentMemberExec ? (
-                <Edit3 className="w-3.5 h-3.5 text-[var(--accent-gold-light)] shrink-0" />
-              ) : (
-                <Lock className="w-3.5 h-3.5 text-amber-300 shrink-0" />
+              {showDesignDropdown && (
+                <>
+                  {/* Backdrop to close on tap outside */}
+                  <div
+                    className="fixed inset-0 z-40 bg-black/40 backdrop-blur-[1px]"
+                    onClick={() => setShowDesignDropdown(false)}
+                  />
+                  <div className="fixed top-14 inset-x-3 sm:inset-x-auto sm:right-16 md:sm:right-24 w-auto sm:w-80 max-w-[calc(100vw-24px)] mx-auto sm:mx-0 bg-white text-slate-800 border border-slate-200 rounded-xl shadow-2xl py-2 z-50 animate-in fade-in max-h-[calc(100vh-70px)] overflow-y-auto">
+                    <div className="px-3 py-2 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
+                      <div className="flex items-center space-x-1.5">
+                        <Palette className="w-3.5 h-3.5 text-amber-600" />
+                        <span className="text-[11px] font-bold text-slate-800 uppercase tracking-wider">
+                          Instant Theme
+                        </span>
+                        <span className="text-[10px] text-slate-500 font-normal">
+                          • Design Language
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setShowDesignDropdown(false)}
+                        className="p-1 rounded-md text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 transition cursor-pointer"
+                        title="Close menu"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                    <div className="p-1.5 space-y-1">
+                      {DESIGN_LANGUAGES.map((dl) => {
+                        const isSelected = designLanguage === dl.id;
+                        return (
+                          <button
+                            key={dl.id}
+                            onClick={() => {
+                              setDesignLanguage(dl.id);
+                              setShowDesignDropdown(false);
+                            }}
+                            className={`w-full px-3 py-2.5 text-left flex items-center justify-between rounded-lg transition cursor-pointer ${
+                              isSelected
+                                ? 'bg-slate-900 text-white'
+                                : 'hover:bg-slate-100 text-slate-800'
+                            }`}
+                          >
+                            <div className="flex items-center space-x-3 min-w-0">
+                              <div
+                                className="w-7 h-7 rounded-md border border-white/20 flex items-center justify-center shrink-0 shadow-xs"
+                                style={{ backgroundColor: dl.swatch }}
+                              >
+                                <span
+                                  className="w-2.5 h-2.5 rounded-full"
+                                  style={{ backgroundColor: dl.accent }}
+                                />
+                              </div>
+                              <div className="min-w-0">
+                                <div className="flex items-center gap-1.5">
+                                  <span className="text-xs font-bold truncate">{dl.name}</span>
+                                  <span className={`text-[9px] px-1.5 py-0.2 rounded font-semibold ${
+                                    isSelected ? 'bg-amber-500/20 text-amber-300' : 'bg-slate-100 text-slate-500'
+                                  }`}>
+                                    {dl.badge}
+                                  </span>
+                                </div>
+                                <p className={`text-[10px] truncate mt-0.5 ${isSelected ? 'text-slate-300' : 'text-slate-500'}`}>
+                                  {dl.subtitle}
+                                </p>
+                              </div>
+                            </div>
+                            {isSelected && <Check className="w-4 h-4 text-amber-400 shrink-0 ml-2" />}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </>
               )}
-              <span className="hidden md:inline">Update Records</span>
-            </button>
-          )}
+            </div>
 
-          {/* Notifications Bell */}
-          <button
-            onClick={() => {
-              setShowNotifModal(!showNotifModal);
-              setShowMemberDropdown(false);
-              setShowDesignDropdown(false);
-            }}
-            className="h-8 w-8 sm:h-9 sm:w-9 flex items-center justify-center bg-white/10 hover:bg-white/15 border border-white/15 rounded-lg text-white transition shrink-0 relative"
-            aria-label="Alerts"
-            title="Notifications & Alerts"
-          >
-            <Bell className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
-            {unreadCount > 0 && (
-              <span className="absolute -top-1 -right-1 min-w-[15px] h-3.5 sm:h-4 px-1 bg-[#8B3A3A] text-white font-mono-num text-[8px] sm:text-[9px] font-black rounded-full flex items-center justify-center shadow leading-none border border-white/20">
-                {unreadCount}
-              </span>
+            {/* Install App (PWA / Android APK) Button */}
+            {!isStandaloneApp && (
+              <button
+                onClick={handleTriggerInstall}
+                className="h-8 w-8 sm:h-8.5 sm:w-auto sm:px-2 flex items-center justify-center gap-1 bg-white/10 hover:bg-white/15 border border-white/15 rounded-lg text-xs text-[var(--paper-warm)] transition shrink-0 cursor-pointer"
+                title="Install MGR Investment App on Android, iOS, or Desktop (PWA / APK)"
+              >
+                <Smartphone className="w-3.5 h-3.5 text-[var(--accent-gold-light)] shrink-0" />
+                <span className="hidden xl:inline text-[11px] font-semibold">Install</span>
+              </button>
             )}
-          </button>
 
-          {/* Reset Baseline Figures Button */}
-          {isCurrentMemberExec && (
+            {/* Notifications Bell */}
             <button
               onClick={() => {
-                if (window.confirm("Restore official October 30, 2026 statement baseline figures?")) {
-                  resetToFactoryDefaults();
-                }
+                setShowNotifModal(!showNotifModal);
+                setShowMemberDropdown(false);
+                setShowDesignDropdown(false);
               }}
-              className="h-8 w-8 sm:h-9 sm:w-9 flex items-center justify-center bg-white/10 hover:bg-white/15 border border-white/15 rounded-lg text-white/80 hover:text-white transition shrink-0"
-              title="Reset to 30/10/2026 Baseline Figures"
+              className="h-8 w-8 sm:h-8.5 sm:w-8.5 flex items-center justify-center bg-white/10 hover:bg-white/15 border border-white/15 rounded-lg text-white transition shrink-0 relative cursor-pointer"
+              aria-label="Alerts"
+              title="Notifications & Alerts"
             >
-              <RotateCcw className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+              <Bell className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+              {unreadCount > 0 && (
+                <span className="absolute -top-1 -right-1 min-w-[15px] h-3.5 px-1 bg-[#8B3A3A] text-white font-mono-num text-[8px] sm:text-[9px] font-black rounded-full flex items-center justify-center shadow leading-none border border-white/20">
+                  {unreadCount}
+                </span>
+              )}
             </button>
-          )}
 
-          {/* Sign Out Button */}
-          <button
-            onClick={() => logoutSession()}
-            className="h-8 w-8 sm:h-9 sm:w-9 flex items-center justify-center bg-white/10 hover:bg-rose-500/30 border border-white/15 rounded-lg text-white/90 hover:text-white transition shrink-0"
-            title="Sign Out of MGR Portal"
-          >
-            <LogOut className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
-          </button>
+            {/* Reset Baseline Figures Button */}
+            {isCurrentMemberExec && (
+              <button
+                onClick={() => {
+                  if (window.confirm("Restore official October 30, 2026 statement baseline figures?")) {
+                    resetToFactoryDefaults();
+                  }
+                }}
+                className="h-8 w-8 sm:h-8.5 sm:w-8.5 flex items-center justify-center bg-white/10 hover:bg-white/15 border border-white/15 rounded-lg text-white/80 hover:text-white transition shrink-0 cursor-pointer"
+                title="Reset to 30/10/2026 Baseline Figures"
+              >
+                <RotateCcw className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+              </button>
+            )}
+
+            {/* Sign Out Button */}
+            <button
+              onClick={() => logoutSession()}
+              className="h-8 w-8 sm:h-8.5 sm:w-8.5 flex items-center justify-center bg-white/10 hover:bg-rose-500/30 border border-white/15 rounded-lg text-white/90 hover:text-white transition shrink-0 cursor-pointer"
+              title="Sign Out of MGR Portal"
+            >
+              <LogOut className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+            </button>
+
+          </div>
 
         </div>
       </div>

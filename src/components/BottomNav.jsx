@@ -20,9 +20,9 @@ export default function BottomNav() {
   const navItems = [
     { id: 'dashboard', label: 'Overview', shortLabel: 'Overview', icon: LayoutDashboard },
     { id: 'members', label: 'Members', shortLabel: 'Members', icon: Users },
-    { id: 'loans', label: 'Loans', shortLabel: 'Loans', icon: HandCoins, badge: '80%' },
-    { id: 'mmf', label: 'MMF & Dividends', shortLabel: 'MMF', icon: TrendingUp },
-    { id: 'marketplace', label: 'Estate Buyout', shortLabel: 'Estate', icon: ShoppingBag, badge: 'Deceased' },
+    { id: 'loans', label: 'Loans', shortLabel: 'Loans', icon: HandCoins },
+    { id: 'mmf', label: 'MMF & Treasury', shortLabel: 'Treasury', icon: TrendingUp },
+    { id: 'marketplace', label: 'Estate Escrow', shortLabel: 'Estate', icon: ShoppingBag },
     { 
       id: 'governance', 
       label: 'Voting & Policy', 
@@ -32,15 +32,15 @@ export default function BottomNav() {
       badgeType: 'alert'
     },
     { id: 'ledger', label: 'Ledger & P&L', shortLabel: 'Ledger', icon: Scale },
-    { id: 'documents', label: 'Documents & Charters', shortLabel: 'Docs', icon: FileText, badge: 'PDF' },
-    { id: 'admin', label: 'Admin, Access & Mail', shortLabel: 'Admin', icon: ShieldCheck, badge: 'RBAC' },
+    { id: 'documents', label: 'Documents', shortLabel: 'Docs', icon: FileText },
+    { id: 'admin', label: 'Admin & Mail', shortLabel: 'Admin', icon: ShieldCheck },
   ];
 
   return (
     <>
       {/* Desktop Sub-navigation Header (Hairline border & tactile pills) */}
-      <nav className="hidden md:flex bg-[var(--bg-surface)]/95 backdrop-blur-md border-b border-[var(--border-hairline)] px-3 sm:px-6 lg:px-10 py-1.5 sticky top-[54px] z-30 w-full">
-        <div className="w-full flex items-center justify-start lg:justify-between gap-2 overflow-x-auto no-scrollbar">
+      <nav className="hidden md:flex bg-[var(--bg-surface)]/95 backdrop-blur-md border-b border-[var(--border-hairline)] px-3 sm:px-6 lg:px-10 py-1.5 sticky top-[54px] z-30 w-full shadow-xs">
+        <div className="w-full flex items-center justify-start gap-1 sm:gap-1.5 xl:gap-2 overflow-x-auto no-scrollbar">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
@@ -48,21 +48,19 @@ export default function BottomNav() {
               <button
                 key={item.id}
                 onClick={() => setActiveTab(item.id)}
-                className={`mgr-nav-pill h-9 flex items-center gap-1.5 px-3 rounded-lg text-xs font-semibold whitespace-nowrap transition shrink-0 ${
+                className={`mgr-nav-pill h-8 sm:h-8.5 flex items-center gap-1.5 px-2.5 sm:px-3 rounded-lg text-xs font-semibold whitespace-nowrap transition shrink-0 cursor-pointer ${
                   isActive
                     ? 'bg-[var(--brand-primary)] text-white shadow-xs font-bold'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/80'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/90'
                 }`}
               >
-                <Icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-[var(--accent-gold-light)]' : ''}`} />
+                <Icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-[var(--accent-gold-light)]' : 'text-slate-500'}`} />
                 <span>{item.label}</span>
                 {item.badge && (
                   <span className={`font-mono-num text-[10px] px-1.5 py-0.5 rounded-full font-bold leading-none ${
                     isActive 
                       ? 'bg-white/20 text-white' 
-                      : item.badgeType === 'alert'
-                        ? 'bg-amber-100 text-amber-900 border border-amber-300'
-                        : 'bg-slate-100 text-slate-700 border border-slate-200'
+                      : 'bg-amber-100 text-amber-900 border border-amber-300'
                   }`}>
                     {item.badge}
                   </span>
