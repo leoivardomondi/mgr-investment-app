@@ -17,7 +17,8 @@ import {
   Coins,
   CheckCircle2,
   ExternalLink,
-  ArrowRight
+  ArrowRight,
+  Smartphone
 } from 'lucide-react';
 import { downloadDocumentPdf } from '../utils/documentDownloader';
 
@@ -110,6 +111,23 @@ export default function OfficialDocumentsView() {
       pdfSize: '226 KB',
       pages: '1 Page',
       summary: 'Holding-period weighted distribution rules, exclusion of post-period capital, full preservation of new member deposits, and mandatory 100% unanimous active member ratification gate.'
+    },
+    {
+      id: 'member_orientation_guide',
+      title: 'Member Web App Orientation Manual & Consultative Guide',
+      shortTitle: 'App User Manual PDF',
+      ref: 'MGR/CIR/2026/APP-01',
+      date: 'Circulated FY 2026 (Draft for Feedback)',
+      legalBasis: 'Cap 30A, Kenya Data Protection Act 2019 & Societies Act',
+      badge: 'Consultative Guide',
+      badgeColor: 'amber',
+      icon: Smartphone,
+      pdfUrl: '/documents/MGR_Member_App_Guide_and_Orientation_Circular.pdf',
+      htmlUrl: '/documents/MGR_Member_App_Guide_and_Orientation_Circular.html',
+      filename: 'MGR_Member_App_Guide_and_Orientation_Circular.pdf',
+      pdfSize: '390 KB',
+      pages: '4 Pages',
+      summary: 'Operational manual detailing web app modules, mobile PWA home screen installation, 24-hour expiring KYC PIN vault, double-entry ledger, and member feedback checklist.'
     }
   ];
 
@@ -1073,6 +1091,114 @@ export default function OfficialDocumentsView() {
                   <p className="text-xs text-slate-600">
                     The official 11 founding member register (001 John, 002 Alice, 003 Sarah, 004 Dan Aloo, 005 Moses, 006 Benjamin, 007 Frederick, 008 Richard, 009 Joash, 010 Josphat, 011 Leoivard) holding <strong>KES 710,675.00</strong> net member capital is enacted as Schedule 1.
                   </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 6. MEMBER WEB APP ORIENTATION MANUAL & CONSULTATIVE GUIDE */}
+          {selectedDocId === 'member_orientation_guide' && (
+            <div className="space-y-4">
+              {/* Consultative Notice Banner */}
+              <div className="p-4 sm:p-5 bg-[#FAF8F5] rounded-xl border border-[#D8D2C4] space-y-2">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#E2DDD3] pb-2.5">
+                  <div>
+                    <span className="font-mono-num text-[10px] uppercase font-bold text-[#6E3C1B] tracking-wider block">
+                      Consultative Circular • REF: MGR/CIR/2026/APP-01
+                    </span>
+                    <h4 className="font-editorial font-bold text-base text-slate-900 mt-0.5">
+                      Member Web App Orientation Manual &amp; Consultative Guide
+                    </h4>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => downloadDocumentPdf('/documents/MGR_Member_App_Guide_and_Orientation_Circular.pdf', 'MGR_Member_App_Guide_and_Orientation_Circular.pdf')}
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-white bg-[#1D3B2A] hover:opacity-95 px-3 py-1.5 rounded-lg transition shadow-xs cursor-pointer shrink-0"
+                    title="Download Official Member Orientation PDF"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    <span>Download Official PDF (390 KB)</span>
+                  </button>
+                </div>
+                <p className="text-xs text-slate-700 leading-relaxed">
+                  This document serves as the official operational guide for the newly deployed <strong>MGR Investment Group Web Application</strong>. It breaks down every module, explains the security safeguards protecting your identity files, details the step-by-step mobile installation process, and invites feedback from all 11 General Members prior to formal permanent adoption.
+                </p>
+              </div>
+
+              {/* Grid: 4 Key Mutual Advantages */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="bank-card p-4 bg-white space-y-1.5">
+                  <h5 className="font-bold text-xs text-[#1D3B2A] flex items-center gap-1.5">
+                    <CheckCircle2 className="w-4 h-4 text-[#1D3B2A] shrink-0" />
+                    <span>1. Real-Time Equity &amp; Yield Tracking</span>
+                  </h5>
+                  <p className="text-[11px] text-slate-600 leading-relaxed">
+                    Check your exact equity stake (e.g. 9.09%), cumulative monthly contributions, and accrued compound yield directly without waiting for annual AGM books.
+                  </p>
+                </div>
+
+                <div className="bank-card p-4 bg-white space-y-1.5">
+                  <h5 className="font-bold text-xs text-[#1D3B2A] flex items-center gap-1.5">
+                    <ShieldCheck className="w-4 h-4 text-[#1D3B2A] shrink-0" />
+                    <span>2. 24-Hour Secret PIN Vault (DPA 2019)</span>
+                  </h5>
+                  <p className="text-[11px] text-slate-600 leading-relaxed">
+                    Uploaded National ID, KRA PIN, and Passport photos remain permanently locked. Executives can only inspect files when you provide a single-use 24-hour expiring PIN.
+                  </p>
+                </div>
+
+                <div className="bank-card p-4 bg-white space-y-1.5">
+                  <h5 className="font-bold text-xs text-[#1D3B2A] flex items-center gap-1.5">
+                    <Users className="w-4 h-4 text-[#1D3B2A] shrink-0" />
+                    <span>3. Democratic Ratification (10-Member Veto)</span>
+                  </h5>
+                  <p className="text-[11px] text-slate-600 leading-relaxed">
+                    Major capital movements (such as moving KES 200,000 from Etica MMF to Mansa X) require democratic ratification by the general membership before execution.
+                  </p>
+                </div>
+
+                <div className="bank-card p-4 bg-white space-y-1.5">
+                  <h5 className="font-bold text-xs text-[#1D3B2A] flex items-center gap-1.5">
+                    <Smartphone className="w-4 h-4 text-[#1D3B2A] shrink-0" />
+                    <span>4. One-Tap Home Screen Mobile PWA</span>
+                  </h5>
+                  <p className="text-[11px] text-slate-600 leading-relaxed">
+                    Installs natively on Android (Chrome) and iPhone (Safari Add to Home Screen) as a full-screen application with zero app store download required.
+                  </p>
+                </div>
+              </div>
+
+              {/* Administrative Demarcation Notice */}
+              <div className="p-3.5 bg-[#FAF8F5] rounded-xl border border-[#D8D2C4] space-y-1.5 text-xs">
+                <span className="font-bold text-[#1D3B2A] block">
+                  ⚙️ Administrative Demarcation: Zero Technical Overhead for Members
+                </span>
+                <p className="text-[11px] text-slate-700 leading-relaxed">
+                  General members and executive officers do not need to manage servers, scripts, or databases. The <strong>System Administrator</strong> manages all cPanel web hosting, SMTP mail routing, SSL encryption, and SQLite/MySQL database synchronization automatically.
+                </p>
+              </div>
+
+              {/* Consultative Feedback Checklist */}
+              <div className="bank-card p-4 sm:p-5 bg-white border border-[#D6D0C2] space-y-3">
+                <h5 className="font-editorial font-bold text-sm text-slate-900">
+                  Members' Consultative Feedback Questionnaire
+                </h5>
+                <p className="text-xs text-slate-600">
+                  Members are invited to review the application and share feedback with the Executive Committee:
+                </p>
+                <div className="space-y-1.5 text-xs text-slate-700">
+                  <div className="p-2 rounded bg-slate-50 border border-slate-200">
+                    <strong>1. KYC Document PIN:</strong> Is the 24-hour expiration window practical for sharing your documents with executives?
+                  </div>
+                  <div className="p-2 rounded bg-slate-50 border border-slate-200">
+                    <strong>2. Deposit Logging:</strong> Are the M-Pesa transaction reference and destination fields simple and intuitive?
+                  </div>
+                  <div className="p-2 rounded bg-slate-50 border border-slate-200">
+                    <strong>3. Personal Statements:</strong> Does the statement display your share percentage, monthly deposits, and accrued interest clearly?
+                  </div>
+                  <div className="p-2 rounded bg-slate-50 border border-slate-200">
+                    <strong>4. Notifications:</strong> Would you like SMS notifications integrated alongside the current cPanel Email OTP dispatch?
+                  </div>
                 </div>
               </div>
             </div>
