@@ -98,18 +98,21 @@ npm run build:cpanel
 
 ## 🌐 Production cPanel Deployment
 
-The application is built to deploy easily onto standard Linux/Apache cPanel shared hosting or dedicated VPS environments:
+The application is built to deploy easily onto standard Linux/Apache cPanel shared hosting or dedicated VPS environments. Ready-to-extract deployment packages are versioned directly in this repository:
 
-1. **Build Distribution Package:** Run `npm run build:cpanel` to generate the self-contained `mgr-investment-cpanel-deploy.zip`.
-2. **Upload to cPanel:**
+* **[mgr-investment-cpanel-deploy.zip](mgr-investment-cpanel-deploy.zip) (Full Deployment Package):** Contains the complete compiled production bundle, `.htaccess` rewrite rules, `api.php`, assets, and all official legal PDF documents. Extract directly into your web root.
+* **[mgr-investment-cpanel-update-only.zip](mgr-investment-cpanel-update-only.zip) (Update Package):** For updating existing deployments without touching or overwriting the `mgr_data/` SQLite database or server `db_config.php`.
+
+### Deployment Steps:
+1. **Upload to cPanel:**
    * Open cPanel **File Manager** and navigate to your target root (e.g. `public_html/` or a subfolder `public_html/portal/`).
    * Upload `mgr-investment-cpanel-deploy.zip` and extract its contents directly into the directory.
-3. **Configure Permissions:**
+2. **Configure Permissions:**
    * Ensure the `mgr_data/` directory has write permissions (`chmod 755` or `775`) so the PHP script can initialize and write to `mgr_database.sqlite`.
-4. **(Optional) Configure MySQL:**
+3. **(Optional) Configure MySQL:**
    * Copy `db_config.example.php` to `db_config.php` and supply your cPanel MySQL database name, user, and password.
    * If `db_config.php` is omitted or empty, the application automatically uses the zero-config SQLite engine.
-5. **(Optional) Configure SMTP Mail Relay:**
+4. **(Optional) Configure SMTP Mail Relay:**
    * In the authenticated portal under **Admin & Mail**, configure your cPanel SMTP credentials (host, port 465/587, email, and password) for automated transactional emails and one-time password (OTP) verification codes.
 
 ---
