@@ -297,19 +297,19 @@ export default function MemberKycModal({ isOpen, onClose, member }) {
                     {member.id}
                   </span>
                   {isVaultUnlocked ? (
-                    <span className="inline-flex items-center gap-1 text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-200 border border-emerald-400/30">
+                    <span className="inline-flex items-center gap-1 text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/10 text-[var(--accent-gold-light)] border border-white/20">
                       <Unlock className="w-3 h-3" />
                       <span>Vault Unlocked</span>
                     </span>
                   ) : (
-                    <span className="inline-flex items-center gap-1 text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-200 border border-amber-400/30">
+                    <span className="inline-flex items-center gap-1 text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/10 text-amber-200/90 border border-white/15">
                       <Lock className="w-3 h-3" />
                       <span>PIN Protected</span>
                     </span>
                   )}
                 </div>
                 <p className="text-[11px] text-white/75 flex items-center gap-1 mt-0.5 truncate">
-                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-300 shrink-0" />
+                  <ShieldCheck className="w-3.5 h-3.5 text-[var(--accent-gold-light)] shrink-0" />
                   <span>Confidential KYC &amp; Legal Vault (Kenya DPA 2019)</span>
                 </p>
               </div>
@@ -458,8 +458,8 @@ export default function MemberKycModal({ isOpen, onClose, member }) {
                             <span>PIN Expired (24h Ended)</span>
                           </span>
                         ) : expStatus.hasExpiry ? (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-900 border border-emerald-300 animate-pulse">
-                            <Clock className="w-3 h-3 text-emerald-700" />
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-[#EDF1ED] text-[#1D3B2A] border border-[#CCD7CD]">
+                            <Clock className="w-3 h-3 text-[#1D3B2A]" />
                             <span>Expires in: {expStatus.label}</span>
                           </span>
                         ) : (
@@ -703,7 +703,7 @@ export default function MemberKycModal({ isOpen, onClose, member }) {
                           >
                             <div className="flex items-start space-x-2.5">
                               <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center shrink-0 ${
-                                isPdf ? 'bg-rose-100 text-rose-700' : isImg ? 'bg-sky-100 text-sky-700' : 'bg-slate-100 text-slate-700'
+                                isPdf ? 'bg-rose-50 text-rose-800 border border-rose-200' : isImg ? 'bg-[#F4F1EA] text-[#4A4F46] border border-[#DDD9D0]' : 'bg-slate-100 text-slate-700'
                               }`}>
                                 {isPdf ? <File className="w-4 h-4 sm:w-5 sm:h-5" /> : isImg ? <ImageIcon className="w-4 h-4 sm:w-5 sm:h-5" /> : <FileText className="w-4 h-4 sm:w-5 sm:h-5" />}
                               </div>

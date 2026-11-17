@@ -969,24 +969,24 @@ export default function OfficialDocumentsView() {
                 </div>
 
                 {/* 8.0 FINANCIAL MANAGEMENT & BANKING OPERATIONS */}
-                <div className="bank-card p-4 sm:p-5 bg-white border-2 border-emerald-300 space-y-3">
+                <div className="bank-card p-4 sm:p-5 bg-white border border-[#D6D0C2] space-y-3 shadow-xs">
                   <div className="flex items-center justify-between gap-2 border-b border-slate-100 pb-2">
                     <div className="flex items-center space-x-2">
-                      <span className="font-mono-num font-bold text-xs text-emerald-800">8.0</span>
+                      <span className="font-mono-num font-bold text-xs text-[#1D3B2A]">8.0</span>
                       <h4 className="font-editorial font-bold text-base text-slate-900">Financial Management &amp; Investment Governance</h4>
                     </div>
-                    <span className="text-[10px] font-mono-num font-bold px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200">
+                    <span className="text-[10px] font-mono-num font-bold px-2 py-0.5 rounded bg-[#EDF1ED] text-[#1D3B2A] border border-[#CCD7CD]">
                       Permanent Statutory Powers
                     </span>
                   </div>
 
                   <div className="space-y-3 text-xs text-slate-700 leading-relaxed">
                     {/* 8.2 Bank Accounts & Signatories */}
-                    <div className="p-3 bg-emerald-50/70 rounded-xl border border-emerald-200 space-y-1.5">
-                      <span className="font-bold text-emerald-950 font-editorial text-sm block">
+                    <div className="p-3 bg-[#F8F9F8] rounded-xl border border-[#D0DCD1] space-y-1.5">
+                      <span className="font-bold text-[#1D3B2A] font-editorial text-sm block">
                         8.2 Bank Accounts and Dual-Signatory Mandate
                       </span>
-                      <p className="text-[11px] text-emerald-900 leading-relaxed">
+                      <p className="text-[11px] text-[#2C3824] leading-relaxed">
                         All Club funds shall be held in designated operational and investment accounts opened in the Club's registered name with Central Bank of Kenya (CBK)-licensed commercial banks and Capital Markets Authority (CMA)-regulated institutions. All banking instructions and disbursements strictly require dual or triple authorized signatures of designated Executive Committee signatories (Chairperson, CEO, and Treasurer).
                       </p>
                     </div>

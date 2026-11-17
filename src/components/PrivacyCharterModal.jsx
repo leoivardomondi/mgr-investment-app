@@ -24,7 +24,7 @@ export default function PrivacyCharterModal({ isOpen, onClose }) {
             <div>
               <h2 className="font-bold text-base tracking-tight text-white flex items-center gap-2">
                 <span>Privacy &amp; Data Protection Charter</span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-200 border border-emerald-400/30">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-white/10 text-[var(--accent-gold-light)] border border-white/15">
                   Kenya DPA 2019
                 </span>
               </h2>

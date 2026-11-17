@@ -156,7 +156,7 @@ export default function Header({ onOpenDataEditor, onOpenProfileModal }) {
               <span
                 className={`hidden xl:inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-mono-num font-semibold uppercase tracking-wider border ${
                   dbSyncStatus?.mode === 'connected' || dbSyncStatus?.mode === 'saving'
-                    ? 'bg-emerald-500/20 text-emerald-200 border-emerald-400/30'
+                    ? 'bg-white/10 text-[var(--accent-gold-light)] border-white/20'
                     : 'bg-white/10 text-white/75 border-white/15'
                 }`}
                 title={
@@ -170,7 +170,7 @@ export default function Header({ onOpenDataEditor, onOpenProfileModal }) {
                     dbSyncStatus?.mode === 'saving'
                       ? 'bg-amber-300 animate-pulse'
                       : dbSyncStatus?.mode === 'connected'
-                        ? 'bg-emerald-400'
+                        ? 'bg-[var(--accent-gold)]'
                         : 'bg-slate-300'
                   }`}
                 />
@@ -562,10 +562,10 @@ export default function Header({ onOpenDataEditor, onOpenProfileModal }) {
           {!isStandaloneApp && (
             <button
               onClick={handleTriggerInstall}
-              className="h-8 sm:h-9 flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 rounded-lg text-xs font-bold bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/35 text-emerald-100 transition shrink-0 whitespace-nowrap cursor-pointer"
+              className="h-8 sm:h-9 flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 rounded-lg text-xs font-bold bg-white/10 hover:bg-white/15 border border-white/15 text-[var(--paper-warm)] transition shrink-0 whitespace-nowrap cursor-pointer"
               title="Install MGR Investment App on Android, iOS, or Desktop (PWA / APK)"
             >
-              <Smartphone className="w-3.5 h-3.5 text-emerald-300 shrink-0" />
+              <Smartphone className="w-3.5 h-3.5 text-[var(--accent-gold-light)] shrink-0" />
               <span className="hidden lg:inline">Install App</span>
             </button>
           )}

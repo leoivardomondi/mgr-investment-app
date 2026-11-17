@@ -658,17 +658,17 @@ export default function MMFStatementView() {
             </div>
 
             {/* Official Executive Policy Commentary on Bank, Return on Investment, IPS & Research */}
-            <div className="p-4 sm:p-5 bg-gradient-to-br from-emerald-50/80 via-white to-amber-50/60 rounded-xs border-2 border-emerald-300 shadow-xs space-y-3.5 text-xs">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2.5 border-b border-emerald-200">
+            <div className="p-4 sm:p-5 bg-[#FAF8F5] rounded-xs border border-[#DDD9D0] shadow-xs space-y-3.5 text-xs">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2.5 border-b border-[#DDD9D0]">
                 <div className="space-y-0.5">
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-800 font-mono-num block">
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-[#1D3B2A] font-mono-num block">
                     Official Executive Policy Commentary • Investment Policy Statement (I.P.S.)
                   </span>
                   <h4 className="font-editorial font-bold text-sm sm:text-base text-slate-900">
                     Banking Operations, Dynamic Yield Oversight &amp; Strategic Research Horizons
                   </h4>
                 </div>
-                <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-emerald-700 text-white self-start sm:self-center shrink-0">
+                <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-[#1D3B2A] text-white self-start sm:self-center shrink-0">
                   Ratified Club Directive
                 </span>
               </div>
@@ -677,9 +677,9 @@ export default function MMFStatementView() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 
                 {/* 1) Bank */}
-                <div className="p-3.5 bg-white rounded-xl border border-emerald-200 space-y-2">
-                  <div className="flex items-center space-x-2 text-emerald-900">
-                    <span className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 font-bold flex items-center justify-center text-[11px]">1</span>
+                <div className="p-3.5 bg-white rounded-xl border border-[#DDD9D0] space-y-2">
+                  <div className="flex items-center space-x-2 text-[#1D3B2A]">
+                    <span className="w-5 h-5 rounded-full bg-[#EDF1ED] text-[#1D3B2A] font-bold flex items-center justify-center text-[11px]">1</span>
                     <h5 className="font-bold text-xs">Bank: Equity Bank Kenya (Chama Joint Account)</h5>
                   </div>
                   <p className="text-slate-700 leading-relaxed text-[11px]">
@@ -688,9 +688,9 @@ export default function MMFStatementView() {
                 </div>
 
                 {/* 2) Return on Investment */}
-                <div className="p-3.5 bg-white rounded-xl border border-amber-200 space-y-2">
-                  <div className="flex items-center space-x-2 text-amber-900">
-                    <span className="w-5 h-5 rounded-full bg-amber-100 text-amber-800 font-bold flex items-center justify-center text-[11px]">2</span>
+                <div className="p-3.5 bg-white rounded-xl border border-[#DDD9D0] space-y-2">
+                  <div className="flex items-center space-x-2 text-[#6E3C1B]">
+                    <span className="w-5 h-5 rounded-full bg-[#F6EFEA] text-[#6E3C1B] font-bold flex items-center justify-center text-[11px]">2</span>
                     <h5 className="font-bold text-xs">Return on Investment (ROI Dynamics)</h5>
                   </div>
                   <div className="space-y-1.5 text-[11px] text-slate-700 leading-relaxed">
@@ -706,19 +706,19 @@ export default function MMFStatementView() {
               </div>
 
               {/* 3) Investment Policy Statement (I.P.S.) Process & Tactical KES 200,000 Reallocation */}
-              <div className="p-3.5 bg-white rounded-xl border border-slate-200 space-y-2">
+              <div className="p-3.5 bg-white rounded-xl border border-[#DDD9D0] space-y-2">
                 <div className="flex items-center space-x-2 text-slate-900">
-                  <span className="w-5 h-5 rounded-full bg-slate-100 text-slate-800 font-bold flex items-center justify-center text-[11px]">3</span>
+                  <span className="w-5 h-5 rounded-full bg-[#EDF1ED] text-[#1D3B2A] font-bold flex items-center justify-center text-[11px]">3</span>
                   <h5 className="font-bold text-xs">Investment Policy Statement (I.P.S.) Formulation &amp; Peer Comparison</h5>
                 </div>
                 <p className="text-slate-700 leading-relaxed text-[11px]">
                   The <strong>Investment Policy Statement (I.P.S.)</strong> shall be based on research from the <strong>Investment Officer / Analyst</strong>, discussed by the <strong>Executive Committee</strong>, and democratically ratified by the <strong>General Membership</strong>. Leadership has identified benchmark peers and market experts with whom notes are compared before floating ideas in MGR Investment Club.
                 </p>
-                <div className="p-2.5 bg-emerald-50 rounded-lg border border-emerald-200 text-[11px] text-emerald-950 flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 font-semibold">
+                <div className="p-2.5 bg-[#F8F9F8] rounded-lg border border-[#CCD7CD] text-[11px] text-[#1D3B2A] flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 font-semibold">
                   <span>
                     🔄 <strong>Immediate Action:</strong> Once Etica Capital MMF grants liquidity access to funds, we shall transfer <strong>KES 200,000/=</strong> into the Mansa X account (most competitive returns in the market).
                   </span>
-                  <span className="shrink-0 text-[10px] font-mono-num font-bold bg-white text-emerald-800 px-2 py-0.5 rounded border border-emerald-300">
+                  <span className="shrink-0 text-[10px] font-mono-num font-bold bg-white text-[#1D3B2A] px-2 py-0.5 rounded border border-[#CCD7CD]">
                     KES 200,000 Reallocation
                   </span>
                 </div>
@@ -1476,9 +1476,9 @@ export default function MMFStatementView() {
       {solveModal.isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in">
           <div className="bg-white rounded-2xl max-w-md w-full overflow-hidden shadow-2xl border border-slate-200">
-            <div className="bg-emerald-800 text-white p-4 flex items-center justify-between">
+            <div className="mgr-glass-header text-white p-4 flex items-center justify-between">
               <div className="flex items-center space-x-2">
-                <CheckCircle2 className="w-5 h-5 text-emerald-200" />
+                <CheckCircle2 className="w-5 h-5 text-[var(--accent-gold-light)]" />
                 <h3 className="font-bold text-base">Hit as Solved</h3>
               </div>
               <button 

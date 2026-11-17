@@ -38,31 +38,31 @@ const ACCESS_TIER_OPTIONS = [
   {
     id: 'super_admin',
     label: 'Super Administrator (CEO / Chairman)',
-    badgeClass: 'bg-amber-100 text-amber-900 border-amber-300',
+    badgeClass: 'bg-[#F6EFEA] text-[#6E3C1B] border border-[#E3D0C1]',
     description: 'Unrestricted administrative control over RBAC permissions, mail server, treasury, and all member records.'
   },
   {
     id: 'treasury_admin',
     label: 'Treasury Administrator (Treasurer)',
-    badgeClass: 'bg-emerald-100 text-emerald-900 border-emerald-300',
+    badgeClass: 'bg-[#EDF1ED] text-[#1D3B2A] border border-[#CCD7CD]',
     description: 'Full financial authority to reconcile Etica MMF & Mansa X deposits, issue loans, distribute dividends, and manage the ledger.'
   },
   {
     id: 'executive_officer',
     label: 'Executive Committee Officer',
-    badgeClass: 'bg-sky-100 text-sky-900 border-sky-300',
+    badgeClass: 'bg-[#F4F1EA] text-[#2C3824] border border-[#D8D2C4]',
     description: 'Position-based authority for Vice Chairman, Secretary, Compliance Officer, and Research Officer.'
   },
   {
     id: 'general_member',
     label: 'General Member (Verified Shareholder)',
-    badgeClass: 'bg-slate-100 text-slate-800 border-slate-300',
+    badgeClass: 'bg-[#F7F6F2] text-[#3E4238] border border-[#E2DDD3]',
     description: 'Self-service access to view statements, record own deposits, apply for 80% loans, and vote/ratify.'
   },
   {
     id: 'estate_beneficiary',
     label: 'Estate Beneficiary (Read-Only Escrow)',
-    badgeClass: 'bg-rose-100 text-rose-800 border-rose-200',
+    badgeClass: 'bg-[#F9ECEC] text-[#6B2424] border border-[#E6C7C7]',
     description: 'Read-only access for declared beneficiaries of deceased members under Bylaw Clause 4.2.'
   }
 ];
@@ -591,7 +591,7 @@ export default function AdminAccessMailView() {
                         key={perm.key}
                         className={`p-2 rounded-lg border text-xs flex items-start gap-2 transition ${
                           checked
-                            ? 'bg-white border-emerald-300 text-slate-900 font-semibold'
+                            ? 'bg-white border-[#1D3B2A] text-slate-900 font-semibold'
                             : 'bg-slate-100/70 border-slate-200 text-slate-500'
                         } ${canManageAccess ? 'cursor-pointer' : 'opacity-80'}`}
                       >
@@ -799,7 +799,7 @@ export default function AdminAccessMailView() {
                       <span className="text-xs font-bold text-slate-900 truncate">
                         {log.subject}
                       </span>
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 shrink-0">
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#EDF1ED] text-[#1D3B2A] border border-[#CCD7CD] shrink-0">
                         {log.status}
                       </span>
                     </div>

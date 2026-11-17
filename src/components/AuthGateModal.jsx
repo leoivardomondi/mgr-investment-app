@@ -167,20 +167,20 @@ export default function AuthGateModal() {
 
   const getRoleBadge = (memberId) => {
     const u = rbacUsers.find(r => r.memberId === memberId);
-    if (!u) return { label: 'Member', style: 'bg-slate-100 text-slate-700' };
+    if (!u) return { label: 'Member', style: 'bg-[#F8F7F4] text-[#4A4742] border border-[#DDD9D0]' };
     if (u.accessLevel === 'super_admin') {
-      return { label: 'Super Admin', style: 'bg-amber-100 text-amber-900 border border-amber-300' };
+      return { label: 'Super Admin', style: 'bg-[#F6EFEA] text-[#6E3C1B] border border-[#E3D0C1]' };
     }
     if (u.accessLevel === 'treasury_admin') {
-      return { label: 'Treasury Admin', style: 'bg-emerald-100 text-emerald-900 border border-emerald-300' };
+      return { label: 'Treasury Admin', style: 'bg-[#EDF1ED] text-[#1D3B2A] border border-[#CCD7CD]' };
     }
     if (u.accessLevel === 'executive_officer') {
-      return { label: 'Executive Officer', style: 'bg-sky-100 text-sky-900 border border-sky-300' };
+      return { label: 'Executive Officer', style: 'bg-[#F4F1EA] text-[#2C3824] border border-[#D8D2C4]' };
     }
     if (u.accessLevel === 'estate_beneficiary') {
-      return { label: 'Estate Escrow', style: 'bg-rose-100 text-rose-800 border border-rose-200' };
+      return { label: 'Estate Escrow', style: 'bg-[#F9ECEC] text-[#6B2424] border border-[#E6C7C7]' };
     }
-    return { label: 'General Member', style: 'bg-slate-100 text-slate-700 border border-slate-200' };
+    return { label: 'General Member', style: 'bg-[#F8F7F4] text-[#4A4742] border border-[#DDD9D0]' };
   };
 
   return (
@@ -205,9 +205,9 @@ export default function AuthGateModal() {
             </div>
 
             <div className="space-y-2 pt-2">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-200 border border-emerald-400/30">
-                <ShieldCheck className="w-3.5 h-3.5" />
-                <span>SQLite Security &amp; Role-Based Access</span>
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-white/10 text-[var(--accent-gold-light)] border border-white/15">
+                <ShieldCheck className="w-3.5 h-3.5 text-[var(--accent-gold-light)]" />
+                <span>Audited Private Share Registry • Cap 30A</span>
               </span>
               <h2 className="font-editorial text-2xl sm:text-3xl font-bold text-white leading-tight">
                 Authenticated Member &amp; Executive Portal

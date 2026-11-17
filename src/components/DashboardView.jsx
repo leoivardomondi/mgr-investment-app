@@ -655,17 +655,17 @@ export default function DashboardView({ onOpenDepositModal }) {
           <div className="h-3 w-full bg-slate-100 rounded-full overflow-hidden flex">
             <div 
               style={{ width: `${mansaXPercent}%` }} 
-              className="bg-emerald-600 h-full" 
+              className="bg-[var(--brand-primary)] h-full" 
               title={`Mansa X Special Funds: ${mansaXPercent}%`}
             />
             <div 
               style={{ width: `${eticaPercent}%` }} 
-              className="bg-amber-600 h-full" 
+              className="bg-[var(--accent-gold)] h-full" 
               title={`Etica Capital MMF: ${eticaPercent}%`}
             />
             <div 
               style={{ width: `${bankPercent}%` }} 
-              className="bg-sky-600 h-full" 
+              className="bg-[var(--accent-cyan)] h-full" 
               title={`Cash in Bank: ${bankPercent}%`}
             />
           </div>
