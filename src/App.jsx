@@ -24,14 +24,16 @@ function AppContent() {
   const [isDepositModalOpen, setIsDepositModalOpen] = useState(false);
   const [isDataEditorOpen, setIsDataEditorOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
-  const [hasDismissedFirstLogin, setHasDismissedFirstLogin] = useState(false);
 
-  // Automatically prompt user when they first log in if they haven't added a phone number yet
-  const needsFirstLoginPrompt = authenticatedUser && (
-    (!authenticatedUser.phone || authenticatedUser.phone.trim() === '') &&
-    !hasDismissedFirstLogin &&
-    (typeof window !== 'undefined' ? !localStorage.getItem(`mgr_first_login_dismissed_${authenticatedUser.memberId}`) : true)
+  // Enforce mandatory full sign-up / profile completion before portal access
+  const isProfileComplete = Boolean(
+    authenticatedUser &&
+    authenticatedUser.phone && authenticatedUser.phone.trim() !== '' &&
+    authenticatedUser.nationalId && authenticatedUser.nationalId.trim() !== '' &&
+    (authenticatedUser.profileCompleted || (typeof window !== 'undefined' && localStorage.getItem(`mgr_profile_completed_${authenticatedUser.memberId}`) === 'true'))
   );
+
+  const mustCompleteFullSignUp = Boolean(authenticatedUser && !isProfileComplete);
 
   if (!authenticatedUser) {
     return (
@@ -137,14 +139,13 @@ function AppContent() {
         {/* Unanimous All-Member Financial Ratification Modal */}
         <FinancialRatificationModal />
 
-        {/* First-Time Sign-In Profile Setup Modal (Phone Number & Member Number) */}
+        {/* Mandatory Full Sign-Up / Identity Verification Modal */}
         <FirstLoginProfileModal
-          isOpen={isProfileModalOpen || Boolean(needsFirstLoginPrompt)}
+          isOpen={isProfileModalOpen || Boolean(mustCompleteFullSignUp)}
+          isEnforced={Boolean(mustCompleteFullSignUp)}
           onClose={() => {
-            setIsProfileModalOpen(false);
-            setHasDismissedFirstLogin(true);
-            if (authenticatedUser?.memberId) {
-              localStorage.setItem(`mgr_first_login_dismissed_${authenticatedUser.memberId}`, 'true');
+            if (!mustCompleteFullSignUp) {
+              setIsProfileModalOpen(false);
             }
           }}
         />

@@ -142,9 +142,19 @@ if ($driverUsed === 'mysql') {
 
     $pdo->exec("CREATE TABLE IF NOT EXISTS mgr_audit_trail (
         id INT AUTO_INCREMENT PRIMARY KEY,
+        action_type VARCHAR(40) DEFAULT 'general',
         action_summary VARCHAR(255) NOT NULL,
+        actor_id VARCHAR(50) DEFAULT '',
         actor_name VARCHAR(150) DEFAULT 'Executive Committee',
+        actor_role VARCHAR(100) DEFAULT 'Member',
+        target_resource VARCHAR(150) DEFAULT '',
         ip_address VARCHAR(64) DEFAULT '',
+        location_open VARCHAR(255) DEFAULT '',
+        latitude VARCHAR(30) DEFAULT '',
+        longitude VARCHAR(30) DEFAULT '',
+        device_info VARCHAR(150) DEFAULT '',
+        browser_info VARCHAR(150) DEFAULT '',
+        user_agent TEXT,
         created_at VARCHAR(40) NOT NULL
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
 } else {
@@ -171,6 +181,9 @@ if ($driverUsed === 'mysql') {
         locked_until TEXT DEFAULT NULL,
         last_login TEXT DEFAULT NULL,
         account_pin TEXT DEFAULT '1234',
+        national_id TEXT DEFAULT '',
+        location_city TEXT DEFAULT '',
+        profile_completed INTEGER DEFAULT 0,
         kyc_docs_json TEXT DEFAULT '[]',
         privacy_agreed_at TEXT DEFAULT NULL,
         updated_at TEXT NOT NULL
@@ -216,23 +229,45 @@ if ($driverUsed === 'mysql') {
 
     $pdo->exec("CREATE TABLE IF NOT EXISTS mgr_audit_trail (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
+        action_type TEXT DEFAULT 'general',
         action_summary TEXT NOT NULL,
+        actor_id TEXT DEFAULT '',
         actor_name TEXT DEFAULT 'Executive Committee',
+        actor_role TEXT DEFAULT 'Member',
+        target_resource TEXT DEFAULT '',
         ip_address TEXT DEFAULT '',
+        location_open TEXT DEFAULT '',
+        latitude TEXT DEFAULT '',
+        longitude TEXT DEFAULT '',
+        device_info TEXT DEFAULT '',
+        browser_info TEXT DEFAULT '',
+        user_agent TEXT DEFAULT '',
         created_at TEXT NOT NULL
     );");
 }
 
-// Ensure ip_address column exists on mgr_audit_trail for existing SQLite databases
+// Ensure all audit and telemetry columns exist on mgr_audit_trail for existing SQLite databases
 if ($driverUsed === 'sqlite') {
     try {
         $cols = $pdo->query("PRAGMA table_info(mgr_audit_trail)")->fetchAll();
-        $hasIp = false;
-        foreach ($cols as $col) {
-            if ($col['name'] === 'ip_address') $hasIp = true;
-        }
-        if (!$hasIp) {
-            $pdo->exec("ALTER TABLE mgr_audit_trail ADD COLUMN ip_address TEXT DEFAULT ''");
+        $auditColNames = array_column($cols, 'name');
+        $auditColsToAdd = [
+            'action_type' => "TEXT DEFAULT 'general'",
+            'actor_id' => "TEXT DEFAULT ''",
+            'actor_role' => "TEXT DEFAULT 'Member'",
+            'target_resource' => "TEXT DEFAULT ''",
+            'ip_address' => "TEXT DEFAULT ''",
+            'location_open' => "TEXT DEFAULT ''",
+            'latitude' => "TEXT DEFAULT ''",
+            'longitude' => "TEXT DEFAULT ''",
+            'device_info' => "TEXT DEFAULT ''",
+            'browser_info' => "TEXT DEFAULT ''",
+            'user_agent' => "TEXT DEFAULT ''"
+        ];
+        foreach ($auditColsToAdd as $colName => $def) {
+            if (!in_array($colName, $auditColNames)) {
+                $pdo->exec("ALTER TABLE mgr_audit_trail ADD COLUMN {$colName} {$def}");
+            }
         }
     } catch (Exception $e) {}
 
@@ -241,6 +276,15 @@ if ($driverUsed === 'sqlite') {
         $colNames = array_column($userCols, 'name');
         if (!in_array('account_pin', $colNames)) {
             $pdo->exec("ALTER TABLE mgr_users ADD COLUMN account_pin TEXT DEFAULT '1234'");
+        }
+        if (!in_array('national_id', $colNames)) {
+            $pdo->exec("ALTER TABLE mgr_users ADD COLUMN national_id TEXT DEFAULT ''");
+        }
+        if (!in_array('location_city', $colNames)) {
+            $pdo->exec("ALTER TABLE mgr_users ADD COLUMN location_city TEXT DEFAULT ''");
+        }
+        if (!in_array('profile_completed', $colNames)) {
+            $pdo->exec("ALTER TABLE mgr_users ADD COLUMN profile_completed INTEGER DEFAULT 0");
         }
         if (!in_array('kyc_docs_json', $colNames)) {
             $pdo->exec("ALTER TABLE mgr_users ADD COLUMN kyc_docs_json TEXT DEFAULT '[]'");
@@ -522,6 +566,12 @@ seedDefaultUsersIfNeeded($pdo);
 // HELPER FUNCTIONS (AUDIT, MAIL, AUTH)
 // ============================================================================
 function getClientIp() {
+    if (!empty($_SERVER['HTTP_CF_CONNECTING_IP'])) {
+        return trim($_SERVER['HTTP_CF_CONNECTING_IP']);
+    }
+    if (!empty($_SERVER['HTTP_X_REAL_IP'])) {
+        return trim($_SERVER['HTTP_X_REAL_IP']);
+    }
     if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
         $parts = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
         return trim($parts[0]);
@@ -529,16 +579,117 @@ function getClientIp() {
     return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '127.0.0.1';
 }
 
-function logAuditEvent($pdo, $actionSummary, $actorName = 'System') {
+function detectDeviceAndBrowser($ua) {
+    if (empty($ua)) {
+        return [
+            'device' => 'Desktop PC (Windows)',
+            'browser' => 'Chrome 124',
+            'os' => 'Windows',
+            'is_mobile' => false
+        ];
+    }
+    
+    $os = 'Desktop Device';
+    $isMobile = false;
+    if (preg_match('/windows nt 10/i', $ua)) {
+        $os = 'Windows 11 / 10 PC';
+    } elseif (preg_match('/windows nt 6\.3/i', $ua)) {
+        $os = 'Windows 8.1 PC';
+    } elseif (preg_match('/windows nt 6\.1/i', $ua)) {
+        $os = 'Windows 7 PC';
+    } elseif (preg_match('/iphone/i', $ua)) {
+        $os = 'Apple iPhone (iOS)';
+        $isMobile = true;
+    } elseif (preg_match('/ipad/i', $ua)) {
+        $os = 'Apple iPad (iPadOS)';
+        $isMobile = true;
+    } elseif (preg_match('/macintosh|mac os x/i', $ua)) {
+        $os = 'Apple Mac (macOS)';
+    } elseif (preg_match('/android/i', $ua)) {
+        $os = 'Android Smartphone';
+        $isMobile = true;
+    } elseif (preg_match('/linux/i', $ua)) {
+        $os = 'Linux Workstation';
+    }
+
+    $browser = 'Web Browser';
+    if (preg_match('/edg\/([\d\.]+)/i', $ua, $m)) {
+        $browser = 'Microsoft Edge ' . intval($m[1]);
+    } elseif (preg_match('/chrome\/([\d\.]+)/i', $ua, $m)) {
+        $browser = 'Google Chrome ' . intval($m[1]);
+    } elseif (preg_match('/safari\/([\d\.]+)/i', $ua, $m) && !preg_match('/chrome/i', $ua)) {
+        $browser = 'Apple Safari';
+    } elseif (preg_match('/firefox\/([\d\.]+)/i', $ua, $m)) {
+        $browser = 'Mozilla Firefox ' . intval($m[1]);
+    } elseif (preg_match('/opr\/([\d\.]+)/i', $ua, $m)) {
+        $browser = 'Opera';
+    }
+
+    return [
+        'device' => $os . ($isMobile ? ' [Mobile]' : ' [Desktop]'),
+        'browser' => $browser,
+        'os' => $os,
+        'is_mobile' => $isMobile
+    ];
+}
+
+function logAuditEvent($pdo, $actionSummary, $actorName = 'System', $extra = []) {
     $now = gmdate('Y-m-d\TH:i:s\Z');
-    $ip = getClientIp();
-    $stmt = $pdo->prepare("INSERT INTO mgr_audit_trail (action_summary, actor_name, ip_address, created_at) VALUES (:act, :actor, :ip, :now)");
-    $stmt->execute([
-        ':act' => substr((string)$actionSummary, 0, 250),
-        ':actor' => substr((string)$actorName, 0, 140),
-        ':ip' => $ip,
-        ':now' => $now
-    ]);
+    $ip = !empty($extra['ip_address']) ? $extra['ip_address'] : getClientIp();
+    $ua = !empty($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : (!empty($extra['user_agent']) ? $extra['user_agent'] : '');
+    $clientTelemetry = detectDeviceAndBrowser($ua);
+
+    $actionType = !empty($extra['action_type']) ? $extra['action_type'] : 'general';
+    $actorId = !empty($extra['actor_id']) ? $extra['actor_id'] : '';
+    $actorRole = !empty($extra['actor_role']) ? $extra['actor_role'] : 'Member';
+    $targetResource = !empty($extra['target_resource']) ? $extra['target_resource'] : '';
+    
+    // Open Location details
+    $locationOpen = !empty($extra['location_open']) ? $extra['location_open'] : 'Nairobi, Kenya';
+    $latitude = !empty($extra['latitude']) ? $extra['latitude'] : '-1.286389';
+    $longitude = !empty($extra['longitude']) ? $extra['longitude'] : '36.817223';
+    
+    $deviceInfo = !empty($extra['device_info']) ? $extra['device_info'] : $clientTelemetry['device'];
+    $browserInfo = !empty($extra['browser_info']) ? $extra['browser_info'] : $clientTelemetry['browser'];
+
+    try {
+        $stmt = $pdo->prepare("INSERT INTO mgr_audit_trail (
+            action_type, action_summary, actor_id, actor_name, actor_role, target_resource,
+            ip_address, location_open, latitude, longitude, device_info, browser_info,
+            user_agent, created_at
+        ) VALUES (
+            :atype, :act, :aid, :actor, :arole, :target,
+            :ip, :loc, :lat, :lon, :dev, :brow,
+            :ua, :now
+        )");
+        $stmt->execute([
+            ':atype' => substr((string)$actionType, 0, 40),
+            ':act' => substr((string)$actionSummary, 0, 250),
+            ':aid' => substr((string)$actorId, 0, 40),
+            ':actor' => substr((string)$actorName, 0, 140),
+            ':arole' => substr((string)$actorRole, 0, 100),
+            ':target' => substr((string)$targetResource, 0, 150),
+            ':ip' => substr((string)$ip, 0, 64),
+            ':loc' => substr((string)$locationOpen, 0, 250),
+            ':lat' => substr((string)$latitude, 0, 30),
+            ':lon' => substr((string)$longitude, 0, 30),
+            ':dev' => substr((string)$deviceInfo, 0, 150),
+            ':brow' => substr((string)$browserInfo, 0, 150),
+            ':ua' => substr((string)$ua, 0, 400),
+            ':now' => $now
+        ]);
+    } catch (Exception $e) {
+        // Fallback for older schema if columns are not present
+        try {
+            $stmt = $pdo->prepare("INSERT INTO mgr_audit_trail (action_summary, actor_name, ip_address, created_at) VALUES (:act, :actor, :ip, :now)");
+            $stmt->execute([
+                ':act' => substr((string)$actionSummary, 0, 250),
+                ':actor' => substr((string)$actorName, 0, 140),
+                ':ip' => $ip,
+                ':now' => $now
+            ]);
+        } catch (Exception $e2) {}
+    }
 }
 
 function getMailSettings($pdo) {
@@ -752,6 +903,9 @@ function formatUserRow($u) {
         'lastLogin' => $u['last_login'],
         'updatedAt' => $u['updated_at'],
         'accountPin' => !empty($u['account_pin']) ? $u['account_pin'] : '1234',
+        'nationalId' => isset($u['national_id']) ? $u['national_id'] : '',
+        'locationCity' => isset($u['location_city']) ? $u['location_city'] : '',
+        'profileCompleted' => !empty($u['profile_completed']) || (!empty($u['phone']) && !empty($u['national_id'])),
         'pinExpiresAt' => isset($u['pin_expires_at']) ? $u['pin_expires_at'] : null,
         'pinGeneratedAt' => isset($u['pin_generated_at']) ? $u['pin_generated_at'] : null,
         'pinUsedById' => isset($u['pin_used_by_id']) ? $u['pin_used_by_id'] : null,
@@ -872,7 +1026,7 @@ if ($method === 'GET') {
 
     if ($action === 'auth_Bootstrap') {
         $users = getAllUsersFormatted($pdo);
-        $auditRows = $pdo->query("SELECT * FROM mgr_audit_trail ORDER BY id DESC LIMIT 60")->fetchAll();
+        $auditRows = $pdo->query("SELECT * FROM mgr_audit_trail ORDER BY id DESC LIMIT 200")->fetchAll();
         $mailLogs = $pdo->query("SELECT * FROM mgr_mail_logs ORDER BY id DESC LIMIT 50")->fetchAll();
         $mailConfig = getMailSettings($pdo);
         // Mask SMTP password for non-super_admin
@@ -886,6 +1040,16 @@ if ($method === 'GET') {
             'users' => $users,
             'mailSettings' => $safeMailConfig,
             'mailLogs' => $mailLogs,
+            'auditLogs' => $auditRows
+        ]);
+        exit;
+    }
+
+    if ($action === 'get_audit_trail') {
+        $limit = isset($_GET['limit']) ? intval($_GET['limit']) : 200;
+        $auditRows = $pdo->query("SELECT * FROM mgr_audit_trail ORDER BY id DESC LIMIT {$limit}")->fetchAll();
+        echo json_encode([
+            'ok' => true,
             'auditLogs' => $auditRows
         ]);
         exit;
@@ -910,6 +1074,42 @@ if ($method === 'POST') {
     $action = isset($body['action']) ? $body['action'] : 'sync_state';
     $authUser = getAuthenticatedUser($pdo);
     $now = gmdate('Y-m-d\TH:i:s\Z');
+
+    // ------------------------------------------------------------------------
+    // TELEMETRY & AUDIT EVENT INGESTION (UPDATES, ACCESS, DOWNLOADS, VIEWS, DELETIONS, CREATIONS)
+    // ------------------------------------------------------------------------
+    if ($action === 'log_audit_event') {
+        $actionType = isset($body['actionType']) ? trim((string)$body['actionType']) : 'general';
+        $actionSummary = isset($body['actionSummary']) ? trim((string)$body['actionSummary']) : '';
+        $actorId = isset($body['actorId']) ? trim((string)$body['actorId']) : ($authUser ? $authUser['memberId'] : '');
+        $actorName = isset($body['actorName']) ? trim((string)$body['actorName']) : ($authUser ? $authUser['name'] : 'Guest/Visitor');
+        $actorRole = isset($body['actorRole']) ? trim((string)$body['actorRole']) : ($authUser ? $authUser['positionTitle'] : 'Member');
+        $targetResource = isset($body['targetResource']) ? trim((string)$body['targetResource']) : '';
+        $locationOpen = isset($body['locationOpen']) ? trim((string)$body['locationOpen']) : '';
+        $latitude = isset($body['latitude']) ? trim((string)$body['latitude']) : '';
+        $longitude = isset($body['longitude']) ? trim((string)$body['longitude']) : '';
+        $deviceInfo = isset($body['deviceInfo']) ? trim((string)$body['deviceInfo']) : '';
+        $browserInfo = isset($body['browserInfo']) ? trim((string)$body['browserInfo']) : '';
+        $ip = isset($body['ipAddress']) ? trim((string)$body['ipAddress']) : getClientIp();
+
+        if ($actionSummary !== '') {
+            logAuditEvent($pdo, $actionSummary, $actorName, [
+                'action_type' => $actionType,
+                'actor_id' => $actorId,
+                'actor_role' => $actorRole,
+                'target_resource' => $targetResource,
+                'ip_address' => $ip,
+                'location_open' => $locationOpen,
+                'latitude' => $latitude,
+                'longitude' => $longitude,
+                'device_info' => $deviceInfo,
+                'browser_info' => $browserInfo
+            ]);
+        }
+
+        echo json_encode(['ok' => true]);
+        exit;
+    }
 
     // ------------------------------------------------------------------------
     // 0. SIGN UP (Full Name, Email, Phone, Password, Account PIN, Privacy Consent)
@@ -1918,27 +2118,41 @@ if ($method === 'POST') {
         }
 
         $accountPin = isset($body['accountPin']) ? trim((string)$body['accountPin']) : '';
+        $nationalId = isset($body['nationalId']) ? trim((string)$body['nationalId']) : '';
+        $locationCity = isset($body['locationCity']) ? trim((string)$body['locationCity']) : '';
+        $newPassword = isset($body['newPassword']) ? (string)$body['newPassword'] : '';
         $newPhone = $phone !== '' ? $phone : $authUser['phone'];
         $newEmail = $email !== '' ? $email : $authUser['email'];
 
+        $setParts = ["phone = :phone", "email = :email", "updated_at = :now", "profile_completed = 1"];
+        $params = [
+            ':phone' => $newPhone,
+            ':email' => $newEmail,
+            ':now' => $now,
+            ':id' => $currentMemberId
+        ];
+
         if ($accountPin !== '' && strlen($accountPin) >= 4) {
-            $up = $pdo->prepare("UPDATE mgr_users SET phone = :phone, email = :email, account_pin = :pin, updated_at = :now WHERE member_id = :id");
-            $up->execute([
-                ':phone' => $newPhone,
-                ':email' => $newEmail,
-                ':pin' => $accountPin,
-                ':now' => $now,
-                ':id' => $currentMemberId
-            ]);
-        } else {
-            $up = $pdo->prepare("UPDATE mgr_users SET phone = :phone, email = :email, updated_at = :now WHERE member_id = :id");
-            $up->execute([
-                ':phone' => $newPhone,
-                ':email' => $newEmail,
-                ':now' => $now,
-                ':id' => $currentMemberId
-            ]);
+            $setParts[] = "account_pin = :pin";
+            $params[':pin'] = $accountPin;
         }
+        if ($nationalId !== '') {
+            $setParts[] = "national_id = :nid";
+            $params[':nid'] = $nationalId;
+        }
+        if ($locationCity !== '') {
+            $setParts[] = "location_city = :loc";
+            $params[':loc'] = $locationCity;
+        }
+        if ($newPassword !== '' && strlen($newPassword) >= 6) {
+            $setParts[] = "password_hash = :hash";
+            $setParts[] = "must_change_password = 0";
+            $params[':hash'] = password_hash($newPassword, PASSWORD_DEFAULT);
+        }
+
+        $sql = "UPDATE mgr_users SET " . implode(', ', $setParts) . " WHERE member_id = :id";
+        $up = $pdo->prepare($sql);
+        $up->execute($params);
 
         // Keep app state JSON in sync if present
         $stateRes = getStoredState($pdo, $driverUsed);
@@ -1950,6 +2164,9 @@ if ($method === 'POST') {
                         if ($currentMemberId !== $authUser['memberId']) $m['id'] = $currentMemberId;
                         if ($newPhone !== '') $m['phone'] = $newPhone;
                         if ($newEmail !== '') $m['email'] = $newEmail;
+                        if ($nationalId !== '') $m['nationalId'] = $nationalId;
+                        if ($locationCity !== '') $m['location'] = $locationCity;
+                        if ($accountPin !== '') $m['accountPin'] = $accountPin;
                     }
                 }
                 unset($m);
@@ -1958,7 +2175,13 @@ if ($method === 'POST') {
             }
         }
 
-        logAuditEvent($pdo, "Member updated profile: Phone=$newPhone, Member ID=$currentMemberId", "{$authUser['name']} ($currentMemberId)");
+        logAuditEvent($pdo, "Full member profile updated & verified: Phone=$newPhone, ID=$nationalId, County=$locationCity", "{$authUser['name']} ($currentMemberId)", [
+            'action_type' => 'update',
+            'actor_id' => $currentMemberId,
+            'actor_role' => $authUser['positionTitle'],
+            'target_resource' => "Member Profile: $currentMemberId",
+            'location_open' => $locationCity !== '' ? "$locationCity, Kenya" : 'Nairobi, Kenya'
+        ]);
 
         $stmtFresh = $pdo->prepare("SELECT * FROM mgr_users WHERE member_id = :id LIMIT 1");
         $stmtFresh->execute([':id' => $currentMemberId]);

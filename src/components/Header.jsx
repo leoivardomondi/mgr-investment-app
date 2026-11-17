@@ -20,8 +20,13 @@ import {
   Smartphone,
   Download,
   X,
-  FileText
+  FileText,
+  KeyRound,
+  Eye,
+  EyeOff,
+  Copy
 } from 'lucide-react';
+import { recordAuditEvent } from '../utils/telemetry';
 
 const DESIGN_LANGUAGES = [
   {
@@ -76,6 +81,8 @@ export default function Header({ onOpenDataEditor, onOpenProfileModal }) {
   const [showKycVault, setShowKycVault] = useState(false);
   const [deferredPwaPrompt, setDeferredPwaPrompt] = useState(null);
   const [showInstallModal, setShowInstallModal] = useState(false);
+  const [showUserPin, setShowUserPin] = useState(false);
+  const [copiedPin, setCopiedPin] = useState(false);
   const [isStandaloneApp, setIsStandaloneApp] = useState(() => {
     if (typeof window === 'undefined') return false;
     return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
@@ -370,6 +377,70 @@ export default function Header({ onOpenDataEditor, onOpenProfileModal }) {
                       <span className="text-amber-700 font-semibold italic">Not added yet</span>
                     )}
                   </p>
+                  {/* Prominent 4-Digit Security PIN Display & Copy Widget */}
+                  <div className="mt-2.5 p-2.5 rounded-xl bg-[#FAF8F5] border border-[#E2DDD3] space-y-1.5 text-xs">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] uppercase font-bold text-[#1D3B2A] tracking-wider flex items-center gap-1.5">
+                        <KeyRound className="w-3.5 h-3.5 text-[#1D3B2A]" />
+                        <span>My 4-Digit Security PIN</span>
+                      </span>
+                      <span className="text-[9px] px-1.5 py-0.2 rounded font-mono-num font-bold bg-[#EDF1ED] text-[#1D3B2A] border border-[#CCD7CD]">
+                        Active PIN
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-between gap-2 bg-white p-2 rounded-lg border border-[#E2DDD3]">
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono-num font-extrabold text-base tracking-widest text-slate-900">
+                          {showUserPin ? (currentUserRbac?.accountPin || currentMember?.accountPin || '1234') : '••••'}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-1 shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const willShow = !showUserPin;
+                            setShowUserPin(willShow);
+                            if (willShow) {
+                              recordAuditEvent({
+                                actionType: 'view',
+                                actionSummary: 'Revealed secret 4-digit security PIN in header profile menu',
+                                targetResource: '4-Digit Security PIN'
+                              });
+                            }
+                          }}
+                          className="px-2 py-1 rounded text-[10px] font-bold text-[#1D3B2A] bg-[#EDF1ED] hover:bg-[#E2EBE2] border border-[#CCD7CD] transition cursor-pointer flex items-center gap-1"
+                          title={showUserPin ? 'Hide PIN' : 'Reveal PIN'}
+                        >
+                          {showUserPin ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
+                          <span>{showUserPin ? 'Hide' : 'Show'}</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const pinVal = currentUserRbac?.accountPin || currentMember?.accountPin || '1234';
+                            navigator.clipboard.writeText(pinVal);
+                            setCopiedPin(true);
+                            setTimeout(() => setCopiedPin(false), 2000);
+                            recordAuditEvent({
+                              actionType: 'access',
+                              actionSummary: 'Copied 4-digit security PIN to clipboard',
+                              targetResource: '4-Digit Security PIN'
+                            });
+                          }}
+                          className="px-2 py-1 rounded text-[10px] font-bold text-[#5A4518] bg-[#FAF6EC] hover:bg-[#F5EED8] border border-[#E8DCB8] transition cursor-pointer flex items-center gap-1"
+                          title="Copy PIN to clipboard"
+                        >
+                          {copiedPin ? <Check className="w-3 h-3 text-emerald-700" /> : <Copy className="w-3 h-3" />}
+                          <span>{copiedPin ? 'Copied!' : 'Copy'}</span>
+                        </button>
+                      </div>
+                    </div>
+                    <p className="text-[10px] text-slate-500 leading-snug">
+                      Use this PIN to authorize executive officers to inspect your KYC identity vault or confirm loan disbursements.
+                    </p>
+                  </div>
+
                   <button
                     type="button"
                     onClick={() => {
@@ -379,7 +450,7 @@ export default function Header({ onOpenDataEditor, onOpenProfileModal }) {
                     className="w-full mt-2 py-1.5 px-2 rounded-lg bg-[var(--brand-primary)] hover:opacity-95 text-white text-[10px] font-bold flex items-center justify-center gap-1.5 transition cursor-pointer"
                   >
                     <Smartphone className="w-3 h-3 text-[var(--accent-gold-light)]" />
-                    <span>{currentMember?.phone ? 'Update Phone & Member No.' : 'Add Phone & Member Number'}</span>
+                    <span>{currentMember?.phone ? 'Update Phone, ID & PIN' : 'Complete Full Registration'}</span>
                   </button>
 
                   <button

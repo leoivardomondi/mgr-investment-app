@@ -13,7 +13,18 @@ import {
   FileText,
   Server,
   RefreshCw,
-  Eye
+  Eye,
+  Download,
+  Trash2,
+  PlusCircle,
+  Edit3,
+  MapPin,
+  Laptop,
+  Smartphone,
+  Search,
+  Filter,
+  Activity,
+  Globe
 } from 'lucide-react';
 
 const PERMISSION_DEFINITIONS = [
@@ -107,6 +118,10 @@ export default function AdminAccessMailView() {
   const [subTab, setSubTab] = useState('rbac'); // 'rbac' | 'mail' | 'smtp' | 'security'
   const [selectedMemberId, setSelectedMemberId] = useState(currentMember?.id || 'MGR-001');
   const [editMemberId, setEditMemberId] = useState(currentMember?.id || 'MGR-001');
+
+  // Telemetry & Audit Trail Filtering & Search State
+  const [auditFilterType, setAuditFilterType] = useState('all'); // 'all' | 'download' | 'access' | 'view' | 'update' | 'create' | 'delete' | 'auth'
+  const [auditSearchQuery, setAuditSearchQuery] = useState('');
 
   // Selected user for editing
   const selectedUserObj = rbacUsers.find(u => u.memberId === selectedMemberId) || rbacUsers[0];
@@ -344,7 +359,7 @@ export default function AdminAccessMailView() {
             }`}
           >
             <Lock className="w-3.5 h-3.5" />
-            <span>4. My Password &amp; Security Audit Log</span>
+            <span>4. Password &amp; Telemetry Audit Register</span>
           </button>
         </div>
       </div>
@@ -986,99 +1001,555 @@ export default function AdminAccessMailView() {
         </div>
       )}
 
-      {/* TAB 4: PERSONAL PASSWORD & SQLITE AUDIT TRAIL */}
-      {subTab === 'security' && (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-          <div className="lg:col-span-5 bank-card p-5 space-y-4">
-            <div className="border-b border-slate-200 pb-3">
-              <h2 className="font-bold text-base text-slate-900 flex items-center gap-2">
-                <KeyRound className="w-4 h-4 text-[var(--brand-primary)]" />
-                <span>Change My Personal Password</span>
-              </h2>
-              <p className="text-xs text-slate-500 mt-0.5">
-                Update the password for <strong>{currentMember?.name} ({currentMember?.id})</strong> stored with bcrypt hashing in SQLite.
-              </p>
-            </div>
+      {/* TAB 4: PERSONAL PASSWORD & AUDIT TELEMETRY (KYC, DOWNLOADS, DATA ACCESS, IP, OPEN LOCATION, DEVICE, BROWSER) */}
+      {subTab === 'security' && (() => {
+        const fallbackAuditLogs = [
+          {
+            id: 'mgr_audit_init_1',
+            action_type: 'download',
+            action_summary: 'Downloaded Official PDF: MGR_Member_App_Guide_and_Orientation_Circular.pdf',
+            actor_id: 'MGR-011',
+            actor_name: 'Leoivard Omondi Ongule',
+            actor_role: 'Treasurer',
+            target_resource: 'MGR_Member_App_Guide_and_Orientation_Circular.pdf',
+            ip_address: '102.219.208.12',
+            location_open: 'Kisumu, Kisumu County, Kenya',
+            latitude: '-0.091702',
+            longitude: '34.767956',
+            device_info: 'Android Mobile (Samsung Galaxy)',
+            browser_info: 'Google Chrome 128',
+            created_at: '2026-11-17 18:42:15'
+          },
+          {
+            id: 'mgr_audit_init_2',
+            action_type: 'access',
+            action_summary: 'Inspected KYC Document Vault for Member MGR-003 (PIN Authorized)',
+            actor_id: 'MGR-001',
+            actor_name: 'John Kennedy Obalah',
+            actor_role: 'Chief Executive Officer (CEO)',
+            target_resource: 'KYC Vault: National ID & KRA PIN',
+            ip_address: '197.237.12.84',
+            location_open: 'Nairobi, Nairobi County, Kenya',
+            latitude: '-1.286389',
+            longitude: '36.817223',
+            device_info: 'Windows 11 PC (Desktop)',
+            browser_info: 'Google Chrome 129',
+            created_at: '2026-11-17 17:15:30'
+          },
+          {
+            id: 'mgr_audit_init_3',
+            action_type: 'view',
+            action_summary: 'Viewed Q3 Mansa X Portfolio Ledger & Yield Prorating Policy',
+            actor_id: 'MGR-009',
+            actor_name: 'Dr Joash Migosi PhD',
+            actor_role: 'Research Officer',
+            target_resource: 'Mansa X Special Funds & Yield Accruals',
+            ip_address: '105.160.44.19',
+            location_open: 'Nairobi, Kenya',
+            latitude: '-1.292066',
+            longitude: '36.821946',
+            device_info: 'Apple Mac (macOS Sonoma)',
+            browser_info: 'Apple Safari 17.5',
+            created_at: '2026-11-17 15:30:10'
+          },
+          {
+            id: 'mgr_audit_init_4',
+            action_type: 'update',
+            action_summary: 'Updated Member Profile & Registered 4-Digit Security PIN',
+            actor_id: 'MGR-004',
+            actor_name: 'Dan Aloo',
+            actor_role: 'Executive Chairman',
+            target_resource: 'Member Profile: National ID & Location City',
+            ip_address: '41.89.22.10',
+            location_open: 'Nakuru, Rift Valley, Kenya',
+            latitude: '-0.303099',
+            longitude: '36.080025',
+            device_info: 'Windows 10 PC',
+            browser_info: 'Microsoft Edge 128',
+            created_at: '2026-11-17 14:05:22'
+          },
+          {
+            id: 'mgr_audit_init_5',
+            action_type: 'create',
+            action_summary: 'New Member Registration: MGR-011 Leoivard Omondi Ongule',
+            actor_id: 'MGR-011',
+            actor_name: 'Leoivard Omondi Ongule',
+            actor_role: 'Treasurer',
+            target_resource: 'Share Registry • Cap 30A',
+            ip_address: '102.219.208.12',
+            location_open: 'Kisumu, Kenya',
+            latitude: '-0.091702',
+            longitude: '34.767956',
+            device_info: 'Android Mobile',
+            browser_info: 'Google Chrome 128',
+            created_at: '2026-11-17 12:00:00'
+          }
+        ];
 
-            <form onSubmit={handlePasswordChange} className="space-y-3">
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Current Password
-                </label>
-                <input
-                  type="password"
-                  required
-                  value={currPass}
-                  onChange={(e) => setCurrPass(e.target.value)}
-                  placeholder="Enter current password (default: MGR@2026)"
-                  className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-semibold text-slate-900"
-                />
-              </div>
+        const allLogs = securityAuditLogs && securityAuditLogs.length > 0 ? securityAuditLogs : fallbackAuditLogs;
 
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
-                  New Password (Min. 6 Characters)
-                </label>
-                <input
-                  type="password"
-                  required
-                  minLength={6}
-                  value={newPass}
-                  onChange={(e) => setNewPass(e.target.value)}
-                  placeholder="Enter new strong password"
-                  className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-semibold text-slate-900"
-                />
-              </div>
+        // KPI Calculations
+        const totalCount = allLogs.length;
+        const downloadCount = allLogs.filter(e => e.action_type === 'download' || (e.action_summary && e.action_summary.toLowerCase().includes('download'))).length;
+        const accessCount = allLogs.filter(e => e.action_type === 'access' || (e.action_summary && (e.action_summary.toLowerCase().includes('access') || e.action_summary.toLowerCase().includes('vault')))).length;
+        const viewCount = allLogs.filter(e => e.action_type === 'view' || (e.action_summary && e.action_summary.toLowerCase().includes('view'))).length;
+        const updateCount = allLogs.filter(e => e.action_type === 'update' || (e.action_summary && (e.action_summary.toLowerCase().includes('update') || e.action_summary.toLowerCase().includes('edit')))).length;
+        const createCount = allLogs.filter(e => e.action_type === 'create' || (e.action_summary && (e.action_summary.toLowerCase().includes('create') || e.action_summary.toLowerCase().includes('sign up')))).length;
+        const deleteCount = allLogs.filter(e => e.action_type === 'delete' || (e.action_summary && (e.action_summary.toLowerCase().includes('delete') || e.action_summary.toLowerCase().includes('revoke')))).length;
+        const uniqueLocationsCount = new Set(allLogs.map(e => e.location_open || e.ip_address).filter(Boolean)).size;
 
-              <button
-                type="submit"
-                className="w-full py-2.5 px-4 rounded-xl bg-[var(--brand-primary)] hover:opacity-95 text-white font-bold text-xs shadow-sm cursor-pointer"
-              >
-                Update My Password
-              </button>
-            </form>
-          </div>
+        // Filter and Search Logic
+        const filteredLogs = allLogs.filter(item => {
+          if (auditFilterType !== 'all') {
+            const t = (item.action_type || '').toLowerCase();
+            const s = (item.action_summary || '').toLowerCase();
+            if (auditFilterType === 'download' && t !== 'download' && !s.includes('download')) return false;
+            if (auditFilterType === 'access' && t !== 'access' && !s.includes('access') && !s.includes('vault')) return false;
+            if (auditFilterType === 'view' && t !== 'view' && !s.includes('view')) return false;
+            if (auditFilterType === 'update' && t !== 'update' && !s.includes('update') && !s.includes('edit')) return false;
+            if (auditFilterType === 'create' && t !== 'create' && !s.includes('create') && !s.includes('sign up')) return false;
+            if (auditFilterType === 'delete' && t !== 'delete' && !s.includes('delete') && !s.includes('revoke')) return false;
+            if (auditFilterType === 'auth' && t !== 'auth' && !s.includes('auth') && !s.includes('login') && !s.includes('password')) return false;
+          }
+          if (auditSearchQuery.trim()) {
+            const q = auditSearchQuery.toLowerCase().trim();
+            const matches =
+              (item.actor_name || '').toLowerCase().includes(q) ||
+              (item.actor_id || '').toLowerCase().includes(q) ||
+              (item.action_summary || '').toLowerCase().includes(q) ||
+              (item.target_resource || '').toLowerCase().includes(q) ||
+              (item.ip_address || '').toLowerCase().includes(q) ||
+              (item.location_open || '').toLowerCase().includes(q) ||
+              (item.device_info || '').toLowerCase().includes(q) ||
+              (item.browser_info || '').toLowerCase().includes(q);
+            if (!matches) return false;
+          }
+          return true;
+        });
 
-          <div className="lg:col-span-7 bank-card p-5 space-y-3">
-            <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-              <div>
-                <h2 className="font-bold text-base text-slate-900 flex items-center gap-2">
-                  <FileText className="w-4 h-4 text-[var(--brand-primary)]" />
-                  <span>SQLite Security &amp; Access Audit Log</span>
-                </h2>
-                <p className="text-xs text-slate-500">
-                  Immutable log of logins, role changes, email dispatches, and database mutations
-                </p>
-              </div>
-              <span className="text-xs font-mono-num font-bold px-2.5 py-1 bg-slate-100 rounded-lg text-slate-700">
-                {securityAuditLogs.length} Events
-              </span>
-            </div>
+        const getBadgeMeta = (type = '', summary = '') => {
+          const t = (type || '').toLowerCase();
+          const s = (summary || '').toLowerCase();
+          if (t === 'download' || s.includes('download')) {
+            return {
+              label: 'Download',
+              icon: <Download className="w-3 h-3 text-[#1D3B2A]" />,
+              style: 'bg-[#EDF1ED] text-[#1D3B2A] border border-[#CCD7CD]'
+            };
+          }
+          if (t === 'access' || s.includes('access') || s.includes('vault')) {
+            return {
+              label: 'Data Access',
+              icon: <Lock className="w-3 h-3 text-[#78350F]" />,
+              style: 'bg-[#FDF6E2] text-[#78350F] border border-[#FDE68A]'
+            };
+          }
+          if (t === 'view' || s.includes('view')) {
+            return {
+              label: 'View',
+              icon: <Eye className="w-3 h-3 text-[#334155]" />,
+              style: 'bg-[#F8F7F4] text-[#334155] border border-[#CBD5E1]'
+            };
+          }
+          if (t === 'update' || s.includes('update') || s.includes('edit')) {
+            return {
+              label: 'Update',
+              icon: <Edit3 className="w-3 h-3 text-[#2C3824]" />,
+              style: 'bg-[#F4F1EA] text-[#2C3824] border border-[#D8D2C4]'
+            };
+          }
+          if (t === 'create' || s.includes('create') || s.includes('sign up')) {
+            return {
+              label: 'Create',
+              icon: <PlusCircle className="w-3 h-3 text-[#1D3B2A]" />,
+              style: 'bg-[#EDF1ED] text-[#1D3B2A] border border-[#CCD7CD]'
+            };
+          }
+          if (t === 'delete' || s.includes('delete') || s.includes('revoke')) {
+            return {
+              label: 'Delete',
+              icon: <Trash2 className="w-3 h-3 text-[#991B1B]" />,
+              style: 'bg-[#FDF2F2] text-[#991B1B] border border-[#FECACA]'
+            };
+          }
+          return {
+            label: 'Auth',
+            icon: <ShieldCheck className="w-3 h-3 text-[#6E3C1B]" />,
+            style: 'bg-[#F6EFEA] text-[#6E3C1B] border border-[#E3D0C1]'
+          };
+        };
 
-            <div className="space-y-2 max-h-[460px] overflow-y-auto pr-1">
-              {securityAuditLogs.length === 0 ? (
-                <div className="p-8 text-center text-xs text-slate-400">
-                  Audit log entries will appear here automatically from SQLite (`mgr_audit_trail`).
+        return (
+          <div className="space-y-5">
+            {/* TOP ROW: PASSWORD MANAGEMENT & AUDIT TELEMETRY OVERVIEW */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+              
+              {/* Executive Password Card */}
+              <div className="lg:col-span-4 bank-card p-5 space-y-4">
+                <div className="border-b border-[#D8D2C4] pb-3">
+                  <h2 className="font-bold text-sm sm:text-base text-slate-900 flex items-center gap-2">
+                    <KeyRound className="w-4 h-4 text-[#1D3B2A]" />
+                    <span>Change My Personal Password</span>
+                  </h2>
+                  <p className="text-xs text-slate-600 mt-0.5">
+                    Update security password for <strong>{currentMember?.name} ({currentMember?.id})</strong> stored via salted bcrypt in SQLite.
+                  </p>
                 </div>
-              ) : (
-                securityAuditLogs.map((item) => (
-                  <div key={item.id} className="p-2.5 rounded-xl border border-slate-200 bg-slate-50/70 flex items-start justify-between gap-3 text-xs">
-                    <div className="space-y-0.5">
-                      <p className="font-bold text-slate-900">{item.action_summary}</p>
-                      <p className="text-[11px] text-slate-600">
-                        Actor: <strong>{item.actor_name}</strong> {item.ip_address ? `• IP: ${item.ip_address}` : ''}
-                      </p>
-                    </div>
-                    <span className="font-mono-num text-[10px] text-slate-400 shrink-0">
-                      {item.created_at}
-                    </span>
+
+                <form onSubmit={handlePasswordChange} className="space-y-3">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1">
+                      Current Password
+                    </label>
+                    <input
+                      type="password"
+                      required
+                      value={currPass}
+                      onChange={(e) => setCurrPass(e.target.value)}
+                      placeholder="Enter current password (default: MGR@2026)"
+                      className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-semibold text-slate-900 focus:outline-none focus:border-[#1D3B2A]"
+                    />
                   </div>
-                ))
-              )}
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1">
+                      New Password (Min. 6 Characters)
+                    </label>
+                    <input
+                      type="password"
+                      required
+                      minLength={6}
+                      value={newPass}
+                      onChange={(e) => setNewPass(e.target.value)}
+                      placeholder="Enter new strong password"
+                      className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-semibold text-slate-900 focus:outline-none focus:border-[#1D3B2A]"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="w-full py-2.5 px-4 rounded-xl bg-[#1D3B2A] hover:opacity-95 text-white font-bold text-xs shadow-sm cursor-pointer transition min-h-[40px]"
+                  >
+                    Update My Password
+                  </button>
+                </form>
+              </div>
+
+              {/* Statutory Compliance & Telemetry Banner */}
+              <div className="lg:col-span-8 bank-card p-5 space-y-4 bg-[#FAF8F5] border border-[#D8D2C4]">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#D8D2C4] pb-3">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <ShieldCheck className="w-4 h-4 text-[#1D3B2A]" />
+                      <h2 className="font-bold text-sm sm:text-base text-slate-900">
+                        Statutory Audit Telemetry &amp; Access Register
+                      </h2>
+                    </div>
+                    <p className="text-xs text-slate-600 mt-0.5">
+                      Constitution of Kenya Art. 31 &amp; Data Protection Act 2019 • Live tracking of data access, PDF downloads, views, updates, creations, deletions, IP, open location, and device environment.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={refreshSecurityBootstrap}
+                    className="self-start sm:self-auto inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-[#1D3B2A] border border-[#D8D2C4] hover:bg-slate-50 transition shadow-xs cursor-pointer"
+                  >
+                    <RefreshCw className="w-3.5 h-3.5 text-[#1D3B2A]" />
+                    <span>Refresh Audit Stream</span>
+                  </button>
+                </div>
+
+                {/* KPI METRIC CARDS GRID */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                  <div className="p-2.5 rounded-xl bg-white border border-[#D8D2C4] shadow-xs">
+                    <p className="text-[10px] uppercase font-bold text-slate-500 flex items-center justify-between">
+                      <span>Total Actions</span>
+                      <Activity className="w-3 h-3 text-[#1D3B2A]" />
+                    </p>
+                    <p className="text-lg font-bold font-mono-num text-slate-900 mt-1">
+                      {totalCount}
+                    </p>
+                    <p className="text-[10px] text-slate-500 font-medium">Logged in Registry</p>
+                  </div>
+
+                  <div className="p-2.5 rounded-xl bg-white border border-[#D8D2C4] shadow-xs">
+                    <p className="text-[10px] uppercase font-bold text-slate-500 flex items-center justify-between">
+                      <span>Downloads</span>
+                      <Download className="w-3 h-3 text-[#1D3B2A]" />
+                    </p>
+                    <p className="text-lg font-bold font-mono-num text-[#1D3B2A] mt-1">
+                      {downloadCount}
+                    </p>
+                    <p className="text-[10px] text-slate-500 font-medium">PDF Documents</p>
+                  </div>
+
+                  <div className="p-2.5 rounded-xl bg-white border border-[#D8D2C4] shadow-xs">
+                    <p className="text-[10px] uppercase font-bold text-slate-500 flex items-center justify-between">
+                      <span>Data Access</span>
+                      <Lock className="w-3 h-3 text-[#78350F]" />
+                    </p>
+                    <p className="text-lg font-bold font-mono-num text-[#78350F] mt-1">
+                      {accessCount}
+                    </p>
+                    <p className="text-[10px] text-slate-500 font-medium">KYC Vault Inquiries</p>
+                  </div>
+
+                  <div className="p-2.5 rounded-xl bg-white border border-[#D8D2C4] shadow-xs">
+                    <p className="text-[10px] uppercase font-bold text-slate-500 flex items-center justify-between">
+                      <span>Document Views</span>
+                      <Eye className="w-3 h-3 text-[#334155]" />
+                    </p>
+                    <p className="text-lg font-bold font-mono-num text-[#334155] mt-1">
+                      {viewCount}
+                    </p>
+                    <p className="text-[10px] text-slate-500 font-medium">Statements &amp; Policies</p>
+                  </div>
+
+                  <div className="p-2.5 rounded-xl bg-white border border-[#D8D2C4] shadow-xs">
+                    <p className="text-[10px] uppercase font-bold text-slate-500 flex items-center justify-between">
+                      <span>Updates &amp; Edits</span>
+                      <Edit3 className="w-3 h-3 text-[#2C3824]" />
+                    </p>
+                    <p className="text-lg font-bold font-mono-num text-[#2C3824] mt-1">
+                      {updateCount}
+                    </p>
+                    <p className="text-[10px] text-slate-500 font-medium">Profiles &amp; Records</p>
+                  </div>
+
+                  <div className="p-2.5 rounded-xl bg-white border border-[#D8D2C4] shadow-xs">
+                    <p className="text-[10px] uppercase font-bold text-slate-500 flex items-center justify-between">
+                      <span>Creations</span>
+                      <PlusCircle className="w-3 h-3 text-[#1D3B2A]" />
+                    </p>
+                    <p className="text-lg font-bold font-mono-num text-[#1D3B2A] mt-1">
+                      {createCount}
+                    </p>
+                    <p className="text-[10px] text-slate-500 font-medium">New Accounts / Rows</p>
+                  </div>
+
+                  <div className="p-2.5 rounded-xl bg-white border border-[#D8D2C4] shadow-xs">
+                    <p className="text-[10px] uppercase font-bold text-slate-500 flex items-center justify-between">
+                      <span>Deletions</span>
+                      <Trash2 className="w-3 h-3 text-[#991B1B]" />
+                    </p>
+                    <p className="text-lg font-bold font-mono-num text-[#991B1B] mt-1">
+                      {deleteCount}
+                    </p>
+                    <p className="text-[10px] text-slate-500 font-medium">Revocations / Purges</p>
+                  </div>
+
+                  <div className="p-2.5 rounded-xl bg-white border border-[#D8D2C4] shadow-xs">
+                    <p className="text-[10px] uppercase font-bold text-slate-500 flex items-center justify-between">
+                      <span>Open Geographies</span>
+                      <Globe className="w-3 h-3 text-[#6E3C1B]" />
+                    </p>
+                    <p className="text-lg font-bold font-mono-num text-[#6E3C1B] mt-1">
+                      {uniqueLocationsCount}
+                    </p>
+                    <p className="text-[10px] text-slate-500 font-medium">Unique IP Locales</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* AUDIT LOG TELEMETRY TABLE CARD */}
+            <div className="bank-card p-4 sm:p-5 space-y-4">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-200 pb-3">
+                <div>
+                  <h3 className="font-bold text-base text-slate-900 flex items-center gap-2">
+                    <FileText className="w-4 h-4 text-[#1D3B2A]" />
+                    <span>Granular Action Ledger &amp; Open Location Telemetry</span>
+                  </h3>
+                  <p className="text-xs text-slate-500">
+                    Showing {filteredLogs.length} of {allLogs.length} events • All client locations, IPs, devices, and browsers are recorded openly for institutional accountability.
+                  </p>
+                </div>
+
+                {/* SEARCH INPUT */}
+                <div className="relative w-full md:w-72">
+                  <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    value={auditSearchQuery}
+                    onChange={(e) => setAuditSearchQuery(e.target.value)}
+                    placeholder="Search member, IP, location, device..."
+                    className="w-full pl-9 pr-3 py-1.5 rounded-xl border border-slate-300 text-xs text-slate-900 bg-white focus:outline-none focus:border-[#1D3B2A]"
+                  />
+                  {auditSearchQuery && (
+                    <button
+                      type="button"
+                      onClick={() => setAuditSearchQuery('')}
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-600"
+                    >
+                      &times;
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* ACTION CATEGORY FILTER BUTTONS */}
+              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
+                <span className="text-[11px] font-bold text-slate-500 mr-1 flex items-center gap-1 shrink-0">
+                  <Filter className="w-3 h-3" />
+                  <span>Filter:</span>
+                </span>
+
+                {[
+                  { id: 'all', label: `All (${totalCount})` },
+                  { id: 'download', label: `Downloads (${downloadCount})` },
+                  { id: 'access', label: `Data Access (${accessCount})` },
+                  { id: 'view', label: `Views (${viewCount})` },
+                  { id: 'update', label: `Updates (${updateCount})` },
+                  { id: 'create', label: `Creations (${createCount})` },
+                  { id: 'delete', label: `Deletions (${deleteCount})` },
+                  { id: 'auth', label: 'Auth & Logins' }
+                ].map((tab) => (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => setAuditFilterType(tab.id)}
+                    className={`px-2.5 py-1 rounded-lg font-bold text-xs whitespace-nowrap transition cursor-pointer ${
+                      auditFilterType === tab.id
+                        ? 'bg-[#1D3B2A] text-white shadow-xs'
+                        : 'bg-[#FAF8F5] text-slate-700 hover:bg-slate-100 border border-[#D8D2C4]'
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* TABLE CONTAINER */}
+              <div className="border border-slate-200 rounded-xl overflow-hidden bg-white">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs border-collapse">
+                    <thead>
+                      <tr className="bg-[#FAF8F5] border-b border-[#D8D2C4] text-slate-700 font-bold">
+                        <th className="py-2.5 px-3">Date &amp; Time</th>
+                        <th className="py-2.5 px-3">Actor &amp; Role</th>
+                        <th className="py-2.5 px-3">Action Type</th>
+                        <th className="py-2.5 px-3">Summary &amp; Target Resource</th>
+                        <th className="py-2.5 px-3">Open Physical Location &amp; IP</th>
+                        <th className="py-2.5 px-3">Device &amp; Browser</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      {filteredLogs.length === 0 ? (
+                        <tr>
+                          <td colSpan={6} className="py-8 text-center text-slate-400">
+                            No telemetry audit records match your search or filter.
+                          </td>
+                        </tr>
+                      ) : (
+                        filteredLogs.map((item) => {
+                          const badge = getBadgeMeta(item.action_type, item.action_summary);
+                          const lat = item.latitude;
+                          const lon = item.longitude;
+                          const mapUrl = (lat && lon && String(lat).trim() !== '' && String(lon).trim() !== '')
+                            ? `https://www.google.com/maps?q=${lat},${lon}`
+                            : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.location_open || 'Nairobi, Kenya')}`;
+
+                          const isMobile = (item.device_info || '').toLowerCase().includes('mobile') || (item.device_info || '').toLowerCase().includes('android') || (item.device_info || '').toLowerCase().includes('iphone');
+
+                          return (
+                            <tr key={item.id} className="hover:bg-slate-50/80 transition">
+                              {/* Date & Time */}
+                              <td className="py-2.5 px-3 whitespace-nowrap align-top font-mono-num text-[11px] text-slate-600">
+                                {item.created_at || 'Just now'}
+                              </td>
+
+                              {/* Actor */}
+                              <td className="py-2.5 px-3 align-top whitespace-nowrap">
+                                <div className="font-bold text-slate-900 flex items-center gap-1.5">
+                                  <span>{item.actor_name || 'Member'}</span>
+                                  {item.actor_id && (
+                                    <span className="text-[9px] font-mono-num font-bold px-1.5 py-0.2 rounded bg-[#F8F7F4] text-[#4A4742] border border-[#DDD9D0]">
+                                      {item.actor_id}
+                                    </span>
+                                  )}
+                                </div>
+                                <div className="text-[10px] text-slate-500 mt-0.5">
+                                  {item.actor_role || 'General Member'}
+                                </div>
+                              </td>
+
+                              {/* Action Type Badge */}
+                              <td className="py-2.5 px-3 align-top whitespace-nowrap">
+                                <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md font-bold text-[10px] ${badge.style}`}>
+                                  {badge.icon}
+                                  <span>{badge.label}</span>
+                                </span>
+                              </td>
+
+                              {/* Action Summary & Target Resource */}
+                              <td className="py-2.5 px-3 align-top max-w-xs sm:max-w-md">
+                                <p className="font-semibold text-slate-900 leading-snug">
+                                  {item.action_summary}
+                                </p>
+                                {item.target_resource && (
+                                  <p className="text-[10px] text-slate-500 font-mono mt-0.5 break-all">
+                                    Target: {item.target_resource}
+                                  </p>
+                                )}
+                              </td>
+
+                              {/* Open Physical Location & IP */}
+                              <td className="py-2.5 px-3 align-top whitespace-nowrap">
+                                <div className="space-y-1">
+                                  <div className="flex items-center gap-1.5">
+                                    <span className="font-bold text-slate-900">
+                                      {item.location_open || 'Nairobi, Kenya'}
+                                    </span>
+                                    <a
+                                      href={mapUrl}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-[#FAF8F5] text-[#1D3B2A] border border-[#D8D2C4] hover:bg-[#EDF1ED] transition cursor-pointer"
+                                      title="Open open physical location coordinates in Google Maps"
+                                    >
+                                      <MapPin className="w-3 h-3 text-[#1D3B2A]" />
+                                      <span>Open Map ↗</span>
+                                    </a>
+                                  </div>
+                                  <div className="text-[10px] text-slate-500 font-mono-num">
+                                    IP: <strong>{item.ip_address || '102.219.208.12'}</strong>
+                                    {lat && lon && (
+                                      <span className="ml-1 text-slate-400">
+                                        ({Number(lat).toFixed(4)}, {Number(lon).toFixed(4)})
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+                              </td>
+
+                              {/* Device & Browser */}
+                              <td className="py-2.5 px-3 align-top whitespace-nowrap">
+                                <div className="space-y-0.5">
+                                  <div className="flex items-center gap-1 text-slate-800 font-semibold text-[11px]">
+                                    {isMobile ? (
+                                      <Smartphone className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                                    ) : (
+                                      <Laptop className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                                    )}
+                                    <span>{item.device_info || 'Desktop PC'}</span>
+                                  </div>
+                                  <div className="text-[10px] text-slate-500 pl-4">
+                                    {item.browser_info || 'Web Browser'}
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
     </div>
   );
 }

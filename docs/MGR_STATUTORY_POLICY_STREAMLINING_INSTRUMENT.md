@@ -202,3 +202,4 @@ Treasurer                             Secretary
 
 *MGR Investment Group • Operational Instrument REF: MGR/POL/2026/STREAMLINE-01*  
 *Enacted in Nairobi, Republic of Kenya • Governed by Cap 30A & Companies Act 2015*
+

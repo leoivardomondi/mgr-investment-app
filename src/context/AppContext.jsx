@@ -457,8 +457,33 @@ export function AppProvider({ children }) {
   });
 
   const [mailLogs, setMailLogs] = useState([]);
-  const [securityAuditLogs, setSecurityAuditLogs] = useState([]);
+  const [securityAuditLogs, setSecurityAuditLogs] = useState(() => {
+    try {
+      const raw = localStorage.getItem('mgr_audit_events_local');
+      if (raw) return JSON.parse(raw);
+    } catch {
+      // LocalStorage access error fallback
+    }
+    return [];
+  });
   const [unlockedMemberPins, setUnlockedMemberPins] = useState({});
+
+  useEffect(() => {
+    const handleAuditEvent = (e) => {
+      if (e?.detail) {
+        setSecurityAuditLogs(prev => [e.detail, ...prev.filter(x => x.id !== e.detail.id)]);
+      } else {
+        try {
+          const raw = localStorage.getItem('mgr_audit_events_local');
+          if (raw) setSecurityAuditLogs(JSON.parse(raw));
+        } catch {
+          // Ignore parse errors
+        }
+      }
+    };
+    window.addEventListener('mgr_audit_event_logged', handleAuditEvent);
+    return () => window.removeEventListener('mgr_audit_event_logged', handleAuditEvent);
+  }, []);
 
   useEffect(() => {
     localStorage.setItem(`${STORAGE_KEY}_rbacUsers`, JSON.stringify(rbacUsers));
@@ -614,7 +639,16 @@ export function AppProvider({ children }) {
         setMailLogs(data.mailLogs);
       }
       if (Array.isArray(data.auditLogs)) {
-        setSecurityAuditLogs(data.auditLogs);
+        setSecurityAuditLogs(prev => {
+          const map = new Map();
+          [...prev, ...data.auditLogs].forEach(item => {
+            if (item && (item.id || item.created_at)) {
+              const k = item.id || `${item.created_at}_${item.actor_name}`;
+              map.set(k, item);
+            }
+          });
+          return Array.from(map.values()).sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+        });
       }
     } catch {
       // Running locally without PHP server
@@ -3141,11 +3175,13 @@ export function AppProvider({ children }) {
     return generateNewMemberPin({ memberId, newPin });
   };
 
-  const updateUserProfile = async ({ phone, memberId, email, accountPin }) => {
+  const updateUserProfile = async ({ phone, memberId, email, accountPin, nationalId, locationCity, newPassword }) => {
     const cleanPhone = (phone || '').trim();
     const cleanMemberId = (memberId || currentMemberId).trim();
     const cleanEmail = (email || '').trim();
     const cleanPin = accountPin ? accountPin.trim() : null;
+    const cleanNationalId = (nationalId || '').trim();
+    const cleanLocation = (locationCity || '').trim();
 
     // 1. Update in-memory member registry
     setMembers(prev =>
@@ -3156,8 +3192,11 @@ export function AppProvider({ children }) {
             id: cleanMemberId,
             phone: cleanPhone || m.phone,
             email: cleanEmail || m.email,
+            nationalId: cleanNationalId || m.nationalId,
+            location: cleanLocation || m.location,
             ...(cleanPin ? { accountPin: cleanPin } : {}),
-            firstLoginCompleted: true
+            firstLoginCompleted: true,
+            profileCompleted: true
           };
         }
         return m;
@@ -3171,8 +3210,11 @@ export function AppProvider({ children }) {
         memberId: cleanMemberId,
         phone: cleanPhone || authenticatedUser.phone,
         email: cleanEmail || authenticatedUser.email,
+        nationalId: cleanNationalId || authenticatedUser.nationalId,
+        locationCity: cleanLocation || authenticatedUser.locationCity,
         ...(cleanPin ? { accountPin: cleanPin } : {}),
-        firstLoginCompleted: true
+        firstLoginCompleted: true,
+        profileCompleted: true
       };
       setAuthenticatedUser(updatedAuthUser);
       setRbacUsers(prev =>
@@ -3186,6 +3228,7 @@ export function AppProvider({ children }) {
 
     // 3. Mark in localStorage that first login setup is completed for this member
     localStorage.setItem(`mgr_first_login_done_${cleanMemberId}`, 'true');
+    localStorage.setItem(`mgr_profile_completed_${cleanMemberId}`, 'true');
 
     // 4. Send to backend api.php
     try {
@@ -3200,6 +3243,9 @@ export function AppProvider({ children }) {
           phone: cleanPhone,
           memberId: cleanMemberId,
           email: cleanEmail,
+          nationalId: cleanNationalId,
+          locationCity: cleanLocation,
+          ...(newPassword ? { newPassword } : {}),
           ...(cleanPin ? { accountPin: cleanPin } : {})
         })
       });
@@ -3215,7 +3261,7 @@ export function AppProvider({ children }) {
       // Local fallback
     }
 
-    showToast(`Profile updated: Phone (${cleanPhone}) and Member No. (${cleanMemberId}) saved!`);
+    showToast(`Full registration saved! Phone (${cleanPhone}) and 4-Digit Security PIN (${cleanPin || '1234'}) active.`);
     return { ok: true };
   };
 

@@ -8,6 +8,8 @@
  * browser download manager caching or repeating previously downloaded files.
  */
 
+import { recordAuditEvent } from './telemetry';
+
 export async function downloadDocumentPdf(pdfUrl, defaultFilename) {
   if (!pdfUrl) {
     console.error('downloadDocumentPdf: No pdfUrl provided');
@@ -15,6 +17,13 @@ export async function downloadDocumentPdf(pdfUrl, defaultFilename) {
   }
 
   const cleanFilename = defaultFilename || pdfUrl.split('/').pop().split('?')[0];
+
+  // Record audit log event for compliance and fiduciary monitoring
+  recordAuditEvent({
+    actionType: 'download',
+    actionSummary: `Downloaded official PDF: ${cleanFilename}`,
+    targetResource: cleanFilename
+  });
 
   try {
     const res = await fetch(`${pdfUrl}?_v=${Date.now()}`, {
