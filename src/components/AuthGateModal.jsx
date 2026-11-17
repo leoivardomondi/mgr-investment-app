@@ -214,19 +214,6 @@ export default function AuthGateModal() {
                 Sign in with your official Membership Number (<strong>MGR-001</strong> – <strong>MGR-011</strong>) or registered email address. New members may register directly for authenticated access.
               </p>
             </div>
-
-            <div className="bg-black/25 border border-white/10 rounded-xl p-3.5 space-y-2 text-xs">
-              <p className="font-bold text-[var(--accent-gold-light)] uppercase tracking-wider text-[10px]">
-                App Governance &amp; System Access Hierarchy
-              </p>
-              <ul className="space-y-2 text-[11px] text-white/85 leading-snug">
-                <li>• <strong>System Administrator:</strong> IT web infrastructure, cPanel mail routing (SMTP), SQLite/MySQL database synchronization &amp; audit security.</li>
-                <li>• <strong>Executive Leadership (CEO &amp; Chairman):</strong> Corporate governance, general meeting presidency, executive committee resolutions &amp; statutory incorporation (Companies Act).</li>
-                <li>• <strong>Treasury Custodian (Treasurer):</strong> Custody of Etica MMF &amp; Mansa X reconciliations, double-entry ledger, loan disbursements &amp; dividend distribution.</li>
-                <li>• <strong>Executive Officers (Secretary, Compliance, Research, Vice Chair):</strong> Legal compliance audits, secretarial registers, fund performance intelligence &amp; committee actions.</li>
-                <li>• <strong>General Members (Shareholders):</strong> Self-service equity ledger, personal deposit logging, 80% share-backed loans &amp; democratic voting / unanimous ratification.</li>
-              </ul>
-            </div>
           </div>
 
           <div className="pt-6 border-t border-white/15 mt-6 space-y-3">

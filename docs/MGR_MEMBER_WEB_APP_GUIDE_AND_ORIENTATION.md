@@ -213,6 +213,14 @@ classDiagram
   - Cryptographic security hashing (bcrypt) of member credentials.
   - Periodic automated off-site backups of the general ledger and document registry.
 
+### App Governance & System Access Hierarchy
+
+1. **System Administrator (IT Infrastructure):** Technical administration of web hosting infrastructure, cPanel mail routing (SMTP), SQLite/MySQL database synchronization, and forensic audit logging.
+2. **Executive Leadership (CEO & Chairman):** Corporate governance, general meeting presidency, executive committee resolutions, and statutory incorporation under the Companies Act.
+3. **Treasury Custodian (Treasurer / CFO):** Custody of Etica MMF & Mansa X reconciliations, double-entry ledger postings, 80% loan disbursements, and pro-rata dividend distributions.
+4. **Executive Officers (Secretary, Compliance, Research, Vice Chair):** Legal compliance audits, secretarial registers, fund performance intelligence, and member application reviews.
+5. **General Members (Shareholders):** Self-service equity ledger, personal deposit logging, 80% share-backed loans, and democratic voting / unanimous ratification.
+
 ---
 
 ## 6. Call for Member Review & Feedback

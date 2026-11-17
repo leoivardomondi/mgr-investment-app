@@ -546,6 +546,17 @@ const htmlContent = `<!DOCTYPE html>
     </ul>
   </div>
 
+  <div class="feature-card">
+    <h4>App Governance &amp; System Access Hierarchy</h4>
+    <ul>
+      <li><strong>System Administrator (IT Infrastructure):</strong> Technical administration of web hosting infrastructure, cPanel mail routing (SMTP), SQLite/MySQL database synchronization, and forensic audit logging.</li>
+      <li><strong>Executive Leadership (CEO &amp; Chairman):</strong> Corporate governance, general meeting presidency, executive committee resolutions, and statutory incorporation under the Companies Act.</li>
+      <li><strong>Treasury Custodian (Treasurer / CFO):</strong> Custody of Etica MMF &amp; Mansa X reconciliations, double-entry ledger postings, loan disbursements, and pro-rata dividend distributions.</li>
+      <li><strong>Executive Officers (Secretary, Compliance, Research, Vice Chair):</strong> Legal compliance audits, secretarial registers, fund performance intelligence, and member application reviews.</li>
+      <li><strong>General Members (Shareholders):</strong> Self-service equity ledger, personal deposit logging, 80% share-backed loans, and democratic voting / unanimous ratification.</li>
+    </ul>
+  </div>
+
   <h2>6. Member Feedback &amp; Consultative Review Checklist</h2>
   <div class="checklist-box">
     <h4>Members' Feedback Questionnaire</h4>
