@@ -70,7 +70,9 @@ export default function Header({ onOpenDataEditor, onOpenProfileModal }) {
     setDesignLanguage,
     dbSyncStatus,
     currentUserRbac,
-    canSwitchMemberPersona,
+    isSuperAdmin,
+    isRealSuperAdmin,
+    impersonatedAdmin,
     logoutSession,
     setActiveTab
   } = useApp();
@@ -121,10 +123,6 @@ export default function Header({ onOpenDataEditor, onOpenProfileModal }) {
   const unreadCount = notifications.filter(n => !n.read).length;
   const pendingRatifications = (pendingFinancialActions || []).filter(a => a.status === 'Pending Member Ratification');
   const pendingRatificationCount = pendingRatifications.length;
-
-  const execMembers = members.filter(m => m.committeeRole === 'Executive Committee');
-  const generalMembers = members.filter(m => m.committeeRole !== 'Executive Committee' && m.status !== 'Deceased');
-  const deceasedMembers = members.filter(m => m.status === 'Deceased');
 
   const activeDesignObj = DESIGN_LANGUAGES.find(d => d.id === designLanguage) || DESIGN_LANGUAGES[0];
 
@@ -399,17 +397,19 @@ export default function Header({ onOpenDataEditor, onOpenProfileModal }) {
                     <span>My Legal Documents &amp; Secret PIN</span>
                   </button>
                   <div className="flex items-center gap-1.5 mt-1.5">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setActiveTab('admin');
-                        setShowMemberDropdown(false);
-                      }}
-                      className="flex-1 py-1.5 px-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-[10px] font-bold flex items-center justify-center gap-1 transition cursor-pointer"
-                    >
-                      <Settings className="w-3 h-3 text-amber-300" />
-                      <span>Access &amp; Mail Admin</span>
-                    </button>
+                    {(isRealSuperAdmin || isSuperAdmin || impersonatedAdmin) && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setActiveTab('admin');
+                          setShowMemberDropdown(false);
+                        }}
+                        className="flex-1 py-1.5 px-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-[10px] font-bold flex items-center justify-center gap-1 transition cursor-pointer"
+                      >
+                        <Settings className="w-3 h-3 text-amber-300" />
+                        <span>Admin Dashboard</span>
+                      </button>
+                    )}
                     <button
                       type="button"
                       onClick={() => {
@@ -423,126 +423,6 @@ export default function Header({ onOpenDataEditor, onOpenProfileModal }) {
                     </button>
                   </div>
                 </div>
-
-                {canSwitchMemberPersona && (
-                  <>
-                    <div className="px-3 py-1.5 border-b border-slate-100 text-[10px] font-bold text-slate-500 uppercase tracking-wider flex items-center justify-between">
-                      <span>Admin Persona Preview</span>
-                      <span className="text-[10px] text-amber-700 font-semibold lowercase">click to preview</span>
-                    </div>
-
-                    <div className="max-h-80 overflow-y-auto divide-y divide-slate-100">
-                      {/* Executive Committee Section */}
-                      <div className="p-1">
-                        <div className="px-2.5 py-1 text-[10px] font-bold text-slate-900 bg-amber-50/80 border border-amber-200/60 rounded flex items-center justify-between">
-                          <span className="flex items-center space-x-1">
-                            <ShieldCheck className="w-3 h-3 text-amber-600" />
-                            <span>Executive Committee (7 Authorized)</span>
-                          </span>
-                          <span className="text-[9px] bg-slate-900 text-amber-300 px-1.5 py-0.2 rounded font-bold">Admin Authority</span>
-                        </div>
-
-                        <div className="mt-1 space-y-0.5">
-                          {execMembers.map(member => (
-                            <button
-                              key={member.id}
-                              onClick={() => {
-                                setCurrentMemberId(member.id);
-                                setShowMemberDropdown(false);
-                              }}
-                              className={`w-full px-2.5 py-1.5 text-left flex items-center space-x-2 rounded-lg hover:bg-slate-50 transition ${
-                                currentMember.id === member.id ? 'bg-slate-100 font-semibold text-slate-900 ring-1 ring-slate-300' : ''
-                              }`}
-                            >
-                              <MemberAvatarIcon member={member} size="sm" />
-                              <div className="flex-1 min-w-0">
-                                <div className="flex items-center justify-between">
-                                  <p className="text-xs text-slate-900 truncate">
-                                    {member.name}
-                                  </p>
-                                  <span className="text-[10px] font-semibold text-amber-700">
-                                    {member.role}
-                                  </span>
-                                </div>
-                                <p className="text-[10px] text-slate-500 font-mono-num">
-                                  {isCurrentMemberExec || member.id === currentMember?.id ? `KES ${member.shares.toLocaleString()} shares` : 'Confidential • Executive Only'}
-                                </p>
-                              </div>
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* General Members Section */}
-                      <div className="p-1">
-                        <div className="px-2.5 py-1 text-[10px] font-bold text-slate-600 bg-slate-100 rounded flex items-center justify-between">
-                          <span>General Members (Self-Service View)</span>
-                          <span className="text-[9px] text-slate-500 font-medium">Read-Only Treasury</span>
-                        </div>
-
-                        <div className="mt-1 space-y-0.5">
-                          {generalMembers.map(member => (
-                            <button
-                              key={member.id}
-                              onClick={() => {
-                                setCurrentMemberId(member.id);
-                                setShowMemberDropdown(false);
-                              }}
-                              className={`w-full px-2.5 py-1.5 text-left flex items-center space-x-2 rounded-lg hover:bg-slate-50 transition ${
-                                currentMember.id === member.id ? 'bg-slate-100 font-semibold text-slate-900 ring-1 ring-slate-300' : ''
-                              }`}
-                            >
-                              <MemberAvatarIcon member={member} size="sm" />
-                              <div className="flex-1 min-w-0">
-                                <div className="flex items-center justify-between">
-                                  <p className="text-xs text-slate-900 truncate">
-                                    {member.name}
-                                  </p>
-                                  <span className="text-[10px] text-slate-500">
-                                    {member.role}
-                                  </span>
-                                </div>
-                                <p className="text-[10px] text-slate-500 font-mono-num">
-                                  {isCurrentMemberExec || member.id === currentMember?.id ? `KES ${member.shares.toLocaleString()} shares` : 'Confidential • Executive Only'}
-                                </p>
-                              </div>
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Deceased Member Section */}
-                      {deceasedMembers.length > 0 && (
-                        <div className="p-1">
-                          <div className="px-2.5 py-1 text-[10px] font-bold text-rose-700 bg-rose-50 rounded flex items-center justify-between">
-                            <span>Estate / Bereaved Record</span>
-                            <span className="text-[9px] text-rose-600">Exit Clause</span>
-                          </div>
-                          <div className="mt-1 space-y-0.5">
-                            {deceasedMembers.map(member => (
-                              <div
-                                key={member.id}
-                                className="w-full px-2.5 py-1.5 text-left flex items-center space-x-2 rounded-lg bg-rose-50/50"
-                              >
-                                <div className="w-6 h-6 rounded bg-rose-200 text-rose-800 font-bold text-[9px] flex items-center justify-center shrink-0">
-                                  {member.avatar}
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                  <p className="text-xs text-slate-900 font-medium truncate">
-                                    {member.name}
-                                  </p>
-                                  <p className="text-[10px] text-rose-600 truncate font-mono-num">
-                                    Deceased (Sept 2026) • KES {member.shares.toLocaleString()} estate shares
-                                  </p>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </>
-                )}
                 </div>
               </>
             )}

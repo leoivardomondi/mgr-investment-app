@@ -13,8 +13,16 @@ import {
 } from 'lucide-react';
 
 export default function BottomNav() {
-  const { activeTab, setActiveTab, pendingFinancialActions } = useApp();
+  const {
+    activeTab,
+    setActiveTab,
+    pendingFinancialActions,
+    isSuperAdmin,
+    isRealSuperAdmin,
+    impersonatedAdmin
+  } = useApp();
 
+  const canAccessAdmin = Boolean(isRealSuperAdmin || isSuperAdmin || impersonatedAdmin);
   const pendingRatificationsCount = (pendingFinancialActions || []).filter(a => a.status === 'Pending Member Ratification').length;
 
   const navItems = [
@@ -33,7 +41,7 @@ export default function BottomNav() {
     },
     { id: 'ledger', label: 'Ledger & P&L', shortLabel: 'Ledger', icon: Scale },
     { id: 'documents', label: 'Documents', shortLabel: 'Docs', icon: FileText },
-    { id: 'admin', label: 'Admin & Mail', shortLabel: 'Admin', icon: ShieldCheck },
+    ...(canAccessAdmin ? [{ id: 'admin', label: 'Admin Dashboard', shortLabel: 'Admin', icon: ShieldCheck }] : []),
   ];
 
   return (

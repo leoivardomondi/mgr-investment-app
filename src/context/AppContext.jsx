@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useRef, useCallback } from 'react';
+import { recordAuditEvent } from '../utils/telemetry';
 import {
   INITIAL_MEMBERS,
   INITIAL_GROUP_ASSETS,
@@ -441,6 +442,24 @@ export function AppProvider({ children }) {
     return null;
   });
 
+  // Track original System Administrator when inspecting/impersonating another member account
+  const [impersonatedAdmin, setImpersonatedAdmin] = useState(() => {
+    try {
+      const saved = localStorage.getItem(`${STORAGE_KEY}_impersonatedAdmin`);
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  useEffect(() => {
+    if (impersonatedAdmin) {
+      localStorage.setItem(`${STORAGE_KEY}_impersonatedAdmin`, JSON.stringify(impersonatedAdmin));
+    } else {
+      localStorage.removeItem(`${STORAGE_KEY}_impersonatedAdmin`);
+    }
+  }, [impersonatedAdmin]);
+
   const [mailSettings, setMailSettings] = useState({
     transport: 'php_mail',
     fromName: 'MGR Investment Group Treasury',
@@ -517,7 +536,15 @@ export function AppProvider({ children }) {
   }, [currentUserRbac, currentMemberId]);
 
   const isSuperAdmin = currentUserRbac?.accessLevel === 'super_admin' || currentMemberId === 'MGR-001' || currentMemberId === 'MGR-004';
-  const canSwitchMemberPersona = isSuperAdmin || hasPermission('manage_access_control');
+  const isRealSuperAdmin = Boolean(
+    impersonatedAdmin ||
+    authenticatedUser?.accessLevel === 'super_admin' ||
+    authenticatedUser?.positionTitle?.toLowerCase().includes('system admin') ||
+    authenticatedUser?.memberId === 'MGR-001' ||
+    authenticatedUser?.memberId === 'MGR-004' ||
+    (!authenticatedUser && (currentMemberId === 'MGR-001' || currentMemberId === 'MGR-004'))
+  );
+  const canSwitchMemberPersona = isRealSuperAdmin;
 
   // Shared cPanel Database Synchronization State (api.php + SQLite/MySQL)
   const [dbSyncStatus, setDbSyncStatus] = useState({
@@ -2722,8 +2749,65 @@ export function AppProvider({ children }) {
     }
     setAuthToken('');
     setAuthenticatedUser(null);
+    setImpersonatedAdmin(null);
+    localStorage.removeItem(`${STORAGE_KEY}_impersonatedAdmin`);
     showToast('Signed out of MGR Investment Portal.');
   };
+
+  // Exclusive System Administrator Action: Log in as any member to test self-service views & audit permissions
+  const loginAsMember = useCallback((targetMemberId) => {
+    if (!isRealSuperAdmin) {
+      showToast('Restricted: Only the System Administrator can log in as another user.', 'error');
+      recordAuditEvent({
+        actionType: 'auth',
+        actionSummary: `Unauthorized attempt to log in as member ${targetMemberId} by ${currentUserRbac?.name || currentMemberId}`,
+        targetResource: `Member: ${targetMemberId}`
+      });
+      return false;
+    }
+    const targetMember = members.find(m => m.id === targetMemberId);
+    if (!targetMember) {
+      showToast(`Member ${targetMemberId} not found in roster.`, 'error');
+      return false;
+    }
+    const adminToStore = impersonatedAdmin || {
+      memberId: authenticatedUser?.memberId || currentMemberId,
+      name: authenticatedUser?.name || currentMember?.name || 'System Administrator',
+      accessLevel: authenticatedUser?.accessLevel || currentUserRbac?.accessLevel || 'super_admin',
+      positionTitle: authenticatedUser?.positionTitle || currentUserRbac?.positionTitle || 'System Administrator (IT)',
+      impersonatedAt: new Date().toISOString()
+    };
+    setImpersonatedAdmin(adminToStore);
+    setCurrentMemberId(targetMemberId);
+
+    recordAuditEvent({
+      actionType: 'access',
+      actionSummary: `System Administrator (${adminToStore.name} / ${adminToStore.memberId}) logged in as member ${targetMember.name} (${targetMember.id}) for view audit and technical support`,
+      targetResource: `Member Account: ${targetMember.id}`
+    });
+
+    showToast(`Logged in as ${targetMember.name} (${targetMember.id}). System Admin Impersonation active.`);
+    return true;
+  }, [isRealSuperAdmin, members, impersonatedAdmin, authenticatedUser, currentMemberId, currentUserRbac, currentMember]);
+
+  // Restore the real System Administrator session
+  const exitImpersonation = useCallback(() => {
+    if (!impersonatedAdmin) return;
+    const originalAdminId = impersonatedAdmin.memberId;
+    const originalAdminName = impersonatedAdmin.name;
+
+    recordAuditEvent({
+      actionType: 'access',
+      actionSummary: `System Administrator (${originalAdminName} / ${originalAdminId}) exited impersonation session and restored admin control`,
+      targetResource: `Admin Session: ${originalAdminId}`
+    });
+
+    setCurrentMemberId(originalAdminId);
+    setImpersonatedAdmin(null);
+    localStorage.removeItem(`${STORAGE_KEY}_impersonatedAdmin`);
+    setActiveTab('admin');
+    showToast(`Exited impersonation. Restored System Administrator session for ${originalAdminName}.`);
+  }, [impersonatedAdmin]);
 
   const changeOwnPassword = async (currentPassword, newPassword) => {
     try {
@@ -3635,6 +3719,10 @@ export function AppProvider({ children }) {
         rbacUsers,
         hasPermission,
         isSuperAdmin,
+        isRealSuperAdmin,
+        impersonatedAdmin,
+        loginAsMember,
+        exitImpersonation,
         canSwitchMemberPersona,
         buildDefaultPermissionsForRole,
         loginWithCredentials,

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AppProvider, useApp } from './context/AppContext';
 import Header from './components/Header';
 import BottomNav from './components/BottomNav';
@@ -20,10 +20,29 @@ import FirstLoginProfileModal from './components/FirstLoginProfileModal';
 import { CheckCircle2, AlertCircle } from 'lucide-react';
 
 function AppContent() {
-  const { activeTab, toastMessage, authenticatedUser } = useApp();
+  const {
+    activeTab,
+    setActiveTab,
+    toastMessage,
+    authenticatedUser,
+    isSuperAdmin,
+    isRealSuperAdmin,
+    impersonatedAdmin,
+    exitImpersonation,
+    currentMember
+  } = useApp();
   const [isDepositModalOpen, setIsDepositModalOpen] = useState(false);
   const [isDataEditorOpen, setIsDataEditorOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+
+  const canAccessAdmin = Boolean(isRealSuperAdmin || isSuperAdmin || impersonatedAdmin);
+
+  // Restrict Admin tab to System Administrator only
+  useEffect(() => {
+    if (activeTab === 'admin' && !canAccessAdmin) {
+      setActiveTab('dashboard');
+    }
+  }, [activeTab, canAccessAdmin, setActiveTab]);
 
   // Enforce mandatory full sign-up / profile completion before portal access
   const isProfileComplete = Boolean(
@@ -81,6 +100,32 @@ function AppContent() {
               <p className="leading-snug">{toastMessage.message}</p>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Sticky Impersonation Warning Banner (Exclusive to System Administrator) */}
+      {impersonatedAdmin && (
+        <div className="bg-[#6E3C1B] text-white px-3 sm:px-6 py-2 text-xs flex flex-wrap items-center justify-between gap-2 z-50 sticky top-0 shadow-md border-b border-white/20 animate-in fade-in">
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="w-5 h-5 rounded-full bg-[var(--accent-gold-light)] text-slate-950 flex items-center justify-center font-bold text-[11px] shrink-0">
+              !
+            </span>
+            <span className="font-medium truncate text-white/95 text-[11px] sm:text-xs">
+              <strong className="text-[var(--accent-gold-light)] uppercase tracking-wider text-[9px] sm:text-[10px] mr-1.5 font-bold bg-black/30 px-1.5 py-0.5 rounded border border-white/10">
+                System Admin Impersonation
+              </strong>
+              Currently viewing portal as <strong className="text-white underline">{currentMember?.name} ({currentMember?.id})</strong> • Real Admin: <strong>{impersonatedAdmin.name}</strong>
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={exitImpersonation}
+            className="px-3 py-1 bg-white hover:bg-slate-100 text-slate-900 rounded-lg font-bold text-[11px] sm:text-xs shadow-xs transition cursor-pointer flex items-center gap-1.5 shrink-0"
+            title="Restore System Administrator session and return to Admin Dashboard"
+          >
+            <span>Exit Persona &amp; Return to Admin Dashboard</span>
+            <span className="font-mono">➔</span>
+          </button>
         </div>
       )}
 

@@ -101,6 +101,10 @@ export default function AdminAccessMailView() {
     rbacUsers,
     hasPermission,
     isSuperAdmin,
+    isRealSuperAdmin,
+    impersonatedAdmin,
+    loginAsMember,
+    exitImpersonation,
     buildDefaultPermissionsForRole,
     adminUpdateUserAccess,
     changeOwnPassword,
@@ -113,12 +117,16 @@ export default function AdminAccessMailView() {
     setCurrentMemberId
   } = useApp();
 
-  const canManageAccess = isSuperAdmin || hasPermission('manage_access_control');
-  const canSendMail = isSuperAdmin || hasPermission('send_official_mail');
+  const canManageAccess = isSuperAdmin || isRealSuperAdmin || hasPermission('manage_access_control');
+  const canSendMail = isSuperAdmin || isRealSuperAdmin || hasPermission('send_official_mail');
 
-  const [subTab, setSubTab] = useState('rbac'); // 'rbac' | 'mail' | 'smtp' | 'security'
+  const [subTab, setSubTab] = useState('rbac'); // 'rbac' | 'impersonate' | 'mail' | 'smtp' | 'security'
   const [selectedMemberId, setSelectedMemberId] = useState(currentMember?.id || 'MGR-001');
   const [editMemberId, setEditMemberId] = useState(currentMember?.id || 'MGR-001');
+
+  // Impersonation Search & Filter State
+  const [impersonateSearch, setImpersonateSearch] = useState('');
+  const [impersonateFilter, setImpersonateFilter] = useState('all'); // 'all' | 'exec' | 'general' | 'deceased'
 
   // Telemetry & Audit Trail Filtering & Search State
   const [auditFilterType, setAuditFilterType] = useState('all'); // 'all' | 'download' | 'access' | 'view' | 'update' | 'create' | 'delete' | 'auth'
@@ -286,6 +294,47 @@ export default function AdminAccessMailView() {
     }
   };
 
+  const filteredImpersonateMembers = members.filter(m => {
+    if (impersonateFilter === 'exec' && m.committeeRole !== 'Executive Committee') return false;
+    if (impersonateFilter === 'general' && (m.committeeRole === 'Executive Committee' || m.status === 'Deceased')) return false;
+    if (impersonateFilter === 'deceased' && m.status !== 'Deceased') return false;
+
+    if (!impersonateSearch) return true;
+    const q = impersonateSearch.toLowerCase().trim();
+    const uRbac = rbacUsers.find(u => u.memberId === m.id);
+    return (
+      (m.name && m.name.toLowerCase().includes(q)) ||
+      (m.id && m.id.toLowerCase().includes(q)) ||
+      (m.phone && m.phone.toLowerCase().includes(q)) ||
+      (m.role && m.role.toLowerCase().includes(q)) ||
+      (uRbac?.positionTitle && uRbac.positionTitle.toLowerCase().includes(q)) ||
+      (uRbac?.email && uRbac.email.toLowerCase().includes(q))
+    );
+  });
+
+  if (!isRealSuperAdmin && !canManageAccess && !impersonatedAdmin) {
+    return (
+      <div className="bank-card p-8 text-center space-y-4 max-w-lg mx-auto my-12 bg-white border border-[#E2DDD3] shadow-md rounded-2xl">
+        <div className="w-14 h-14 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 flex items-center justify-center mx-auto">
+          <Lock className="w-7 h-7" />
+        </div>
+        <div className="space-y-1">
+          <h2 className="text-lg font-bold text-slate-900 font-editorial">
+            Restricted to System Administrator
+          </h2>
+          <p className="text-xs text-slate-600 leading-relaxed">
+            The Admin Dashboard, user impersonation controls, and server configuration are strictly restricted to the designated System Administrator. General members and non-admin executive officers cannot view or execute admin actions.
+          </p>
+        </div>
+        <div className="pt-2">
+          <span className="text-[11px] font-mono font-semibold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full border border-slate-200">
+            Current Session: {currentMember?.name} ({currentUserRbac?.accessLevel?.replace('_', ' ') || 'General Member'})
+          </span>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-5 pb-20 md:pb-8">
       {/* Top Banner */}
@@ -294,19 +343,19 @@ export default function AdminAccessMailView() {
           <div className="space-y-1.5">
             <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-white/10 text-[var(--accent-gold-light)] border border-white/15">
               <ShieldCheck className="w-3.5 h-3.5" />
-              <span>System Governance, Access Privileges &amp; Institutional Mail</span>
+              <span>System Administrator Dashboard &amp; Governance Console</span>
             </div>
             <h1 className="font-editorial text-xl sm:text-2xl font-bold text-white">
-              Administration, Member Access Privileges &amp; Mail Dispatch
+              Admin Dashboard, Account Impersonation &amp; System Control
             </h1>
             <p className="text-xs text-white/80 max-w-3xl leading-relaxed">
-              Grant custom access rights to each of the 11 members based on their membership tier and committee position, dispatch official treasury emails via your cPanel server, and inspect the SQLite security audit trail.
+              Exclusively available to the System Administrator to manage member access tiers, sign into member accounts for self-service audit &amp; support, dispatch official emails, and inspect the security audit trail.
             </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-2 shrink-0">
             <div className="bg-black/25 border border-white/15 rounded-xl px-3.5 py-2 text-xs">
-              <span className="text-[10px] uppercase tracking-wider text-white/60 block">Your Active Position &amp; Tier</span>
+              <span className="text-[10px] uppercase tracking-wider text-white/60 block">Active Admin Session</span>
               <span className="font-bold text-white">
                 {currentMember?.name} • <span className="text-[var(--accent-gold-light)]">{currentUserRbac?.positionTitle || currentMember?.role}</span>
               </span>
@@ -332,7 +381,17 @@ export default function AdminAccessMailView() {
             }`}
           >
             <UserCheck className="w-3.5 h-3.5" />
-            <span>1. Member Positions &amp; Access Matrix (11 Members)</span>
+            <span>1. Roles &amp; Permissions (RBAC)</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setSubTab('impersonate')}
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition cursor-pointer ${
+              subTab === 'impersonate' ? 'bg-white text-slate-900 shadow-xs' : 'bg-white/10 text-white/85 hover:bg-white/20'
+            }`}
+          >
+            <KeyRound className="w-3.5 h-3.5" />
+            <span>2. Log In As Member (Impersonation)</span>
           </button>
           <button
             type="button"
@@ -342,7 +401,7 @@ export default function AdminAccessMailView() {
             }`}
           >
             <Mail className="w-3.5 h-3.5" />
-            <span>2. Official Email Dispatch &amp; Outbox</span>
+            <span>3. Official Email Dispatch &amp; Outbox</span>
           </button>
           <button
             type="button"
@@ -352,7 +411,7 @@ export default function AdminAccessMailView() {
             }`}
           >
             <Server className="w-3.5 h-3.5" />
-            <span>3. cPanel Mail / SMTP Settings</span>
+            <span>4. cPanel Mail / SMTP Settings</span>
           </button>
           <button
             type="button"
@@ -362,7 +421,7 @@ export default function AdminAccessMailView() {
             }`}
           >
             <Lock className="w-3.5 h-3.5" />
-            <span>4. Password &amp; Telemetry Audit Register</span>
+            <span>5. Telemetry &amp; Security Logs</span>
           </button>
         </div>
       </div>
@@ -432,18 +491,18 @@ export default function AdminAccessMailView() {
                         <span className="font-mono-num font-bold text-slate-700">
                           {enabledCount}/15 privileges
                         </span>
-                        {canManageAccess && (
+                        {isRealSuperAdmin && (
                           <button
                             type="button"
                             onClick={(e) => {
                               e.stopPropagation();
-                              setCurrentMemberId(u.memberId);
+                              loginAsMember(u.memberId);
                             }}
-                            title="Preview portal as this member"
-                            className="px-1.5 py-0.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold flex items-center gap-1"
+                            title="Log in and view portal as this member"
+                            className="px-2 py-0.5 rounded bg-[#1D3B2A] hover:bg-[#13281C] text-white font-bold flex items-center gap-1 cursor-pointer text-[10px]"
                           >
-                            <Eye className="w-2.5 h-2.5" />
-                            <span>View As</span>
+                            <KeyRound className="w-2.5 h-2.5 text-[var(--accent-gold-light)]" />
+                            <span>Log In As</span>
                           </button>
                         )}
                       </div>
@@ -678,7 +737,232 @@ export default function AdminAccessMailView() {
         </div>
       )}
 
-      {/* TAB 2: OFFICIAL EMAIL DISPATCH & OUTBOX */}
+      {/* TAB 2: SYSTEM ADMIN LOG IN AS MEMBER (IMPERSONATION) */}
+      {subTab === 'impersonate' && (
+        <div className="space-y-4">
+          {/* Institutional Information & Security Notice */}
+          <div className="bank-card p-5 bg-white border border-[#E2DDD3] space-y-3 shadow-xs rounded-2xl">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-[#1D3B2A] text-[var(--accent-gold-light)] flex items-center justify-center shrink-0 shadow-inner">
+                  <KeyRound className="w-5 h-5" />
+                </div>
+                <div>
+                  <h2 className="text-base font-bold text-slate-900 font-editorial">
+                    System Administrator Account Impersonation &amp; Support Console
+                  </h2>
+                  <p className="text-xs text-slate-600">
+                    Strictly authorized for the System Administrator to test member self-service portals, audit personal shares, verify loan limits, and provide direct technical support.
+                  </p>
+                </div>
+              </div>
+
+              {impersonatedAdmin ? (
+                <div className="flex items-center gap-2 bg-amber-50 border border-amber-200 px-3 py-1.5 rounded-xl shrink-0">
+                  <div className="text-right">
+                    <span className="text-[10px] uppercase font-bold text-amber-800 block">Active Persona</span>
+                    <span className="text-xs font-bold text-slate-900">{currentMember?.name} ({currentMember?.id})</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={exitImpersonation}
+                    className="px-2.5 py-1 bg-amber-800 hover:bg-amber-900 text-white rounded-lg text-xs font-bold transition cursor-pointer flex items-center gap-1"
+                  >
+                    <span>Exit Persona</span>
+                    <span className="font-mono">➔</span>
+                  </button>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 bg-[#EDF1ED] border border-[#CCD7CD] px-3 py-1.5 rounded-xl text-xs shrink-0">
+                  <ShieldCheck className="w-4 h-4 text-[#1D3B2A]" />
+                  <span className="font-bold text-[#1D3B2A]">
+                    System Admin Status: Authenticated ({currentUserRbac?.name || currentMember?.name})
+                  </span>
+                </div>
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs text-slate-600">
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                <span className="font-bold text-slate-900 block mb-0.5">🔒 Zero Password Exposure</span>
+                <p className="text-[11px] leading-relaxed">
+                  You can inspect exactly what any member sees in their portal without accessing or resetting their private account password or 4-digit PIN.
+                </p>
+              </div>
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                <span className="font-bold text-slate-900 block mb-0.5">📜 Forensic Audit Logging</span>
+                <p className="text-[11px] leading-relaxed">
+                  Every account impersonation action is logged in the permanent security audit register with timestamp, device details, and original admin ID.
+                </p>
+              </div>
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                <span className="font-bold text-slate-900 block mb-0.5">⚡ Persistent Return Banner</span>
+                <p className="text-[11px] leading-relaxed">
+                  While impersonating, a prominent banner remains at the top of every page. One click returns you directly to this System Admin dashboard.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Member Search & Filter Bar */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+            <div className="relative flex-1 max-w-md">
+              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                placeholder="Search member by name, ID (e.g. MGR-002), phone, or position..."
+                value={impersonateSearch}
+                onChange={(e) => setImpersonateSearch(e.target.value)}
+                className="w-full pl-9 pr-4 py-2 bg-white rounded-xl border border-slate-200 text-xs focus:ring-1 focus:ring-[var(--brand-primary)] focus:outline-hidden"
+              />
+            </div>
+
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
+              {[
+                { id: 'all', label: 'All Members' },
+                { id: 'exec', label: 'Executive Committee (7)' },
+                { id: 'general', label: 'General Members' },
+                { id: 'deceased', label: 'Deceased Estate' }
+              ].map(f => (
+                <button
+                  key={f.id}
+                  type="button"
+                  onClick={() => setImpersonateFilter(f.id)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
+                    impersonateFilter === f.id
+                      ? 'bg-[var(--brand-primary)] text-white shadow-xs font-bold'
+                      : 'bg-white hover:bg-slate-100 text-slate-600 border border-slate-200'
+                  }`}
+                >
+                  {f.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Member Impersonation Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3.5">
+            {filteredImpersonateMembers.map(m => {
+              const uRbac = rbacUsers.find(u => u.memberId === m.id);
+              const isCurrent = currentMember?.id === m.id;
+              const isExec = m.committeeRole === 'Executive Committee';
+              const isDeceased = m.status === 'Deceased';
+
+              return (
+                <div
+                  key={m.id}
+                  className={`bank-card p-4 flex flex-col justify-between space-y-3 transition border rounded-2xl ${
+                    isCurrent
+                      ? 'bg-[var(--brand-tint)]/40 border-[var(--brand-primary)] ring-2 ring-[var(--brand-primary)]/20 shadow-md'
+                      : 'bg-white border-[#E2DDD3] hover:border-slate-300 shadow-xs'
+                  }`}
+                >
+                  <div className="space-y-2">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <MemberAvatarIcon member={m} size="md" />
+                        <div className="min-w-0">
+                          <h3 className="font-bold text-sm text-slate-900 truncate">
+                            {m.name}
+                          </h3>
+                          <div className="flex items-center gap-1.5 text-[11px] text-slate-600">
+                            <span className="font-mono-num font-bold text-slate-700 bg-slate-100 px-1 rounded">
+                              {m.id}
+                            </span>
+                            <span>•</span>
+                            <span className="font-semibold truncate text-[var(--brand-primary)]">
+                              {uRbac?.positionTitle || m.role}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full border shrink-0 ${
+                        isDeceased
+                          ? 'bg-rose-50 text-rose-800 border-rose-200'
+                          : isExec
+                            ? 'bg-amber-50 text-amber-900 border-amber-200'
+                            : 'bg-slate-50 text-slate-700 border-slate-200'
+                      }`}>
+                        {isDeceased ? 'DECEASED' : isExec ? 'EXECUTIVE' : 'GENERAL'}
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100 text-[11px]">
+                      <div>
+                        <span className="text-slate-400 block text-[10px]">Net Shares</span>
+                        <span className="font-mono-num font-bold text-slate-800">
+                          KES {Number(m.shares || 0).toLocaleString()}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-slate-400 block text-[10px]">Access Level</span>
+                        <span className="font-mono-num font-bold text-slate-800 capitalize">
+                          {uRbac?.accessLevel?.replace('_', ' ') || 'General Member'}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="text-[10px] text-slate-500 font-mono space-y-0.5 bg-slate-50 p-2 rounded-lg border border-slate-100">
+                      <div className="truncate">
+                        <span className="text-slate-400">Phone: </span>
+                        <strong className="text-slate-700">{m.phone || 'Not registered'}</strong>
+                      </div>
+                      <div className="truncate">
+                        <span className="text-slate-400">Email: </span>
+                        <span className="text-slate-700">{uRbac?.email || 'member@domain.com'}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="pt-2 border-t border-slate-100">
+                    {isCurrent ? (
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-[11px] font-bold text-[#1D3B2A] flex items-center gap-1.5">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                          <span>Currently Active</span>
+                        </span>
+                        {impersonatedAdmin && (
+                          <button
+                            type="button"
+                            onClick={exitImpersonation}
+                            className="px-2.5 py-1 bg-amber-800 hover:bg-amber-900 text-white rounded-lg text-[11px] font-bold transition cursor-pointer"
+                          >
+                            Exit Persona
+                          </button>
+                        )}
+                      </div>
+                    ) : (
+                      <button
+                        type="button"
+                        disabled={!isRealSuperAdmin}
+                        onClick={() => loginAsMember(m.id)}
+                        className={`w-full py-2 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition cursor-pointer ${
+                          isRealSuperAdmin
+                            ? 'bg-[#1D3B2A] hover:bg-[#13281C] text-white shadow-xs'
+                            : 'bg-slate-200 text-slate-500 cursor-not-allowed'
+                        }`}
+                        title={isRealSuperAdmin ? `Log in and view portal as ${m.name}` : 'Restricted to System Administrator'}
+                      >
+                        <KeyRound className="w-3.5 h-3.5 text-[var(--accent-gold-light)]" />
+                        <span>Log In As {m.name.split(' ')[0]} ➔</span>
+                      </button>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {filteredImpersonateMembers.length === 0 && (
+            <div className="bank-card p-8 text-center text-slate-500 text-xs">
+              No members matched your search query &ldquo;{impersonateSearch}&rdquo;.
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* TAB 3: OFFICIAL EMAIL DISPATCH & OUTBOX */}
       {subTab === 'mail' && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
           <div className="lg:col-span-6 bank-card p-5 space-y-4">
@@ -838,7 +1122,7 @@ export default function AdminAccessMailView() {
         </div>
       )}
 
-      {/* TAB 3: CPANEL MAIL / SMTP CONFIGURATION */}
+      {/* TAB 4: CPANEL MAIL / SMTP CONFIGURATION */}
       {subTab === 'smtp' && (
         <div className="bank-card p-5 max-w-3xl space-y-4">
           <div className="border-b border-slate-200 pb-3">
@@ -1004,7 +1288,7 @@ export default function AdminAccessMailView() {
         </div>
       )}
 
-      {/* TAB 4: PERSONAL PASSWORD & AUDIT TELEMETRY (KYC, DOWNLOADS, DATA ACCESS, IP, OPEN LOCATION, DEVICE, BROWSER) */}
+      {/* TAB 5: PERSONAL PASSWORD & AUDIT TELEMETRY (KYC, DOWNLOADS, DATA ACCESS, IP, OPEN LOCATION, DEVICE, BROWSER) */}
       {subTab === 'security' && (() => {
         const fallbackAuditLogs = [
           {
