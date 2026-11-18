@@ -864,6 +864,46 @@ export function AppProvider({ children }) {
     }, 4500);
   };
 
+  // User-Facing Instant Portal Refresh & Cloud Sync
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const refreshPortalData = useCallback(async (notify = true) => {
+    setIsRefreshing(true);
+    try {
+      const res = await fetch(`./api.php?t=${Date.now()}`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          ...(authToken ? { 'X-MGR-Token': authToken } : {})
+        }
+      });
+      if (res.ok) {
+        const ct = res.headers.get('content-type') || '';
+        if (ct.includes('application/json')) {
+          const data = await res.json();
+          if (data && data.ok) {
+            if (data.authenticatedUser) {
+              setAuthenticatedUser(data.authenticatedUser);
+            }
+            if (data.state) {
+              applyRemoteState(data.state, data);
+            }
+            await refreshSecurityBootstrap();
+            if (notify) showToast('Portal synchronized with live server records.');
+            setIsRefreshing(false);
+            return true;
+          }
+        }
+      }
+    } catch {
+      // offline or local Vite dev server
+    }
+    await refreshSecurityBootstrap();
+    if (notify) showToast('Portal refreshed (local cache synced).');
+    setIsRefreshing(false);
+    return true;
+  }, [authToken, applyRemoteState, refreshSecurityBootstrap]);
+
   // Financial calculations derived from central reactive state
   const totalMemberShares = members.reduce((sum, m) => sum + Number(m.shares || 0), 0);
   const totalAssetsValue = 
@@ -3625,6 +3665,13 @@ export function AppProvider({ children }) {
     } catch {
       // Ignore if offline or running without PHP
     }
+
+    recordAuditEvent({
+      actionType: 'update',
+      actionSummary: `System Administrator (${currentUserRbac?.name || currentMember?.name || 'Admin'}) restored official 30/10/2026 statement baseline financial figures`,
+      targetResource: 'System Baseline Financial Figures'
+    });
+
     showToast('Accounts reset to official statement figures as of 30/10/2026');
   };
 
@@ -3687,6 +3734,8 @@ export function AppProvider({ children }) {
         castVote,
         sendEmailReminders,
         resetToFactoryDefaults,
+        refreshPortalData,
+        isRefreshing,
         isCurrentMemberExec,
         isExecutive,
         execSecurityModal,

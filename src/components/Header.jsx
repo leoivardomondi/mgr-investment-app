@@ -5,7 +5,7 @@ import MemberAvatarIcon from './MemberAvatarIcon';
 import MemberKycModal from './MemberKycModal';
 import {
   Bell,
-  RotateCcw,
+  RefreshCw,
   ChevronDown,
   ShieldCheck,
   Landmark,
@@ -61,7 +61,8 @@ export default function Header({ onOpenDataEditor, onOpenProfileModal }) {
     currentMember,
     setCurrentMemberId,
     notifications,
-    resetToFactoryDefaults,
+    refreshPortalData,
+    isRefreshing,
     isCurrentMemberExec,
     triggerExecRestriction,
     pendingFinancialActions,
@@ -556,20 +557,17 @@ export default function Header({ onOpenDataEditor, onOpenProfileModal }) {
               )}
             </button>
 
-            {/* Reset Baseline Figures Button */}
-            {isCurrentMemberExec && (
-              <button
-                onClick={() => {
-                  if (window.confirm("Restore official October 30, 2026 statement baseline figures?")) {
-                    resetToFactoryDefaults();
-                  }
-                }}
-                className="h-8 w-8 sm:h-8.5 sm:w-8.5 flex items-center justify-center bg-white/10 hover:bg-white/15 border border-white/15 rounded-lg text-white/80 hover:text-white transition shrink-0 cursor-pointer"
-                title="Reset to 30/10/2026 Baseline Figures"
-              >
-                <RotateCcw className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
-              </button>
-            )}
+            {/* Refresh Portal & Sync Button (Available to all users) */}
+            <button
+              onClick={() => refreshPortalData(true)}
+              className={`h-8 w-8 sm:h-8.5 sm:w-8.5 flex items-center justify-center bg-white/10 hover:bg-white/15 border border-white/15 rounded-lg text-white/90 hover:text-white transition shrink-0 cursor-pointer ${
+                isRefreshing ? 'opacity-70 pointer-events-none' : ''
+              }`}
+              title="Refresh portal and sync latest records with server"
+              aria-label="Refresh Portal"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 text-[var(--accent-gold-light)] ${isRefreshing ? 'animate-spin' : ''}`} />
+            </button>
 
             {/* Sign Out Button */}
             <button

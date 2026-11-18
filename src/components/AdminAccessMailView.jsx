@@ -13,6 +13,7 @@ import {
   FileText,
   Server,
   RefreshCw,
+  RotateCcw,
   Eye,
   Download,
   Trash2,
@@ -114,6 +115,7 @@ export default function AdminAccessMailView() {
     mailLogs,
     securityAuditLogs,
     refreshSecurityBootstrap,
+    resetToFactoryDefaults,
     setCurrentMemberId
   } = useApp();
 
@@ -367,6 +369,19 @@ export default function AdminAccessMailView() {
             >
               <RefreshCw className="w-3.5 h-3.5" />
               <span>Sync SQLite</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                if (window.confirm("⚠️ RESTORE BASELINE FIGURES:\n\nAre you sure you want to restore the official October 30, 2026 statement baseline figures? This will restore all verified member share balances, asset accounts, and ledger schedules to factory baseline.")) {
+                  resetToFactoryDefaults();
+                }
+              }}
+              className="px-3 py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/40 text-xs font-bold text-amber-200 flex items-center gap-1.5 transition cursor-pointer"
+              title="Restore official 30/10/2026 statement baseline figures (Restricted to System Administrator)"
+            >
+              <RotateCcw className="w-3.5 h-3.5 text-amber-300" />
+              <span>Set to 30/10/2026 Baseline</span>
             </button>
           </div>
         </div>
@@ -1285,6 +1300,47 @@ export default function AdminAccessMailView() {
               {savingSmtp ? 'Saving Settings...' : 'Save Mail Server Configuration'}
             </button>
           </form>
+
+          {/* System Financial Baseline Reset Tool Card */}
+          <div className="p-4 sm:p-5 rounded-2xl bg-[#FAF8F5] border border-[#E2DDD3] space-y-2.5 shadow-xs">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#E2DDD3] pb-2.5">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-amber-100 border border-amber-300 text-amber-900 flex items-center justify-center shrink-0">
+                  <RotateCcw className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-xs text-slate-900">
+                    System Financial Baseline Restoration (October 30, 2026)
+                  </h3>
+                  <p className="text-[11px] text-slate-500">
+                    Restores verified initial ledger statements, member equity deposits, and asset valuations
+                  </p>
+                </div>
+              </div>
+              <span className="text-[10px] font-mono-num font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-300 shrink-0 self-start sm:self-auto">
+                System Admin Tool
+              </span>
+            </div>
+
+            <p className="text-[11px] text-slate-600 leading-relaxed">
+              If experimental entries, testing records, or mock transactions have altered the ledger, clicking below restores the official audited figures: <strong>KES 710,675.00</strong> net member shares, <strong>KES 541,587.00</strong> Mansa X, <strong>KES 250,209.74</strong> Etica MMF, and <strong>KES 2,512.00</strong> Equity Bank.
+            </p>
+
+            <div className="pt-1">
+              <button
+                type="button"
+                onClick={() => {
+                  if (window.confirm("⚠️ RESTORE BASELINE FIGURES:\n\nAre you sure you want to restore the official October 30, 2026 statement baseline figures? This will reset all modified balances, ledgers, and loan records to the verified baseline figures.")) {
+                    resetToFactoryDefaults();
+                  }
+                }}
+                className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-xs transition cursor-pointer flex items-center gap-2"
+              >
+                <RotateCcw className="w-3.5 h-3.5 text-amber-300" />
+                <span>Reset Portal to Official 30/10/2026 Baseline Figures</span>
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
