@@ -3905,6 +3905,7 @@ export function AppProvider({ children }) {
         exitImpersonation,
         canSwitchMemberPersona,
         buildDefaultPermissionsForRole,
+        setRbacUsers,
         loginWithCredentials,
         signupUser,
         requestEmailOtp,

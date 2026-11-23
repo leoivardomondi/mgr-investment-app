@@ -68,7 +68,9 @@ export default function MembersView({ onOpenDepositModal, onOpenDataEditor }) {
     convertProspectToMember,
     currentMember,
     isCurrentMemberExec,
-    triggerExecRestriction
+    triggerExecRestriction,
+    setRbacUsers,
+    buildDefaultPermissionsForRole
   } = useApp();
 
   const [subTab, setSubTab] = useState('registry'); // 'registry', 'audits', or 'recruitment'
@@ -288,9 +290,32 @@ export default function MembersView({ onOpenDepositModal, onOpenDataEditor }) {
     }
 
     const sharesAmount = parseFloat(newMemberForm.initialShares) || 0;
-    const nextNum = (members.length + 1).toString().padStart(3, '0');
-    const newId = `MGR-${nextNum}`;
+    const numericIds = members.map(m => {
+      const match = m.id && m.id.match(/(\d+)/);
+      return match ? parseInt(match[1], 10) : 0;
+    }).filter(n => !isNaN(n));
+    const maxNum = numericIds.length > 0 ? Math.max(...numericIds, 11) : 11;
+    const newId = `MGR-${String(maxNum + 1).padStart(3, '0')}`;
     const cleanDate = newMemberForm.depositDate || new Date().toISOString().split('T')[0];
+
+    const accessLevel = newMemberForm.committeeRole === 'Executive Committee' ? 'executive_officer' : 'general_member';
+    const newRbacUser = {
+      memberId: newId,
+      name: newMemberForm.name.trim(),
+      email: newMemberForm.email ? newMemberForm.email.trim().toLowerCase() : '',
+      phone: newMemberForm.phone ? newMemberForm.phone.trim() : '',
+      positionTitle: newMemberForm.role || 'Member',
+      membershipTier: newMemberForm.committeeRole || 'General Member',
+      accessLevel,
+      permissions: buildDefaultPermissionsForRole(accessLevel, newMemberForm.role || 'Member'),
+      accountStatus: newMemberForm.deposit1000Now ? 'Active' : 'Active',
+      mustChangePassword: false,
+      lastLogin: null,
+      accountPin: '1234',
+      kycDocuments: [],
+      createdAt: new Date().toISOString()
+    };
+    setRbacUsers(prev => [...prev.filter(u => u.memberId !== newId), newRbacUser]);
 
     if (newMemberForm.deposit1000Now) {
       const newMember = {
@@ -783,47 +808,6 @@ export default function MembersView({ onOpenDepositModal, onOpenDataEditor }) {
                       <span>Verify KES 1k & Approve ({pm.name.split(' ')[0]})</span>
                     </button>
                   ))}
-                </div>
-              </div>
-
-
-              {/* Official Member Phone Number (M-Pesa / Safaricom) */}
-              <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-1.5 font-semibold text-slate-800">
-                    <Phone className="w-3.5 h-3.5 text-[var(--brand-primary)]" />
-                    <span>Official Mobile Phone Number:</span>
-                  </div>
-                  <span className="font-mono font-bold text-slate-900 bg-white px-2 py-0.5 rounded border border-slate-200">
-                    {liveM?.phone || selectedMemberModal.phone || 'Not added yet'}
-                  </span>
-                </div>
-
-                <div className="pt-1 border-t border-slate-200/60 flex items-center justify-between gap-2 flex-wrap">
-                  <span className="text-[11px] text-slate-500">Update verified phone:</span>
-                  <div className="flex items-center space-x-1.5">
-                    <input
-                      type="tel"
-                      value={editingPhoneVal}
-                      onChange={(e) => setEditingPhoneVal(e.target.value)}
-                      placeholder="e.g. 0712 345 678"
-                      className="w-36 px-2 py-1 bg-white border border-slate-300 rounded text-xs font-mono font-bold text-slate-900"
-                    />
-                    <button
-                      type="button"
-                      onClick={async () => {
-                        if (!editingPhoneVal) return;
-                        await updateUserProfile({
-                          memberId: selectedMemberModal.id,
-                          phone: editingPhoneVal
-                        });
-                        setSelectedMemberModal(prev => ({ ...prev, phone: editingPhoneVal }));
-                      }}
-                      className="px-2.5 py-1 bg-[var(--brand-primary)] hover:opacity-95 text-white font-semibold text-xs rounded transition cursor-pointer"
-                    >
-                      Save Phone
-                    </button>
-                  </div>
                 </div>
               </div>
             </div>
@@ -1694,46 +1678,6 @@ export default function MembersView({ onOpenDepositModal, onOpenDataEditor }) {
                 </div>
               </div>
 
-              {/* Official Member Phone Number (M-Pesa / Safaricom) */}
-              <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-1.5 font-semibold text-slate-800">
-                    <Phone className="w-3.5 h-3.5 text-[var(--brand-primary)]" />
-                    <span>Official Mobile Phone Number:</span>
-                  </div>
-                  <span className="font-mono font-bold text-slate-900 bg-white px-2 py-0.5 rounded border border-slate-200">
-                    {liveM?.phone || selectedMemberModal.phone || 'Not added yet'}
-                  </span>
-                </div>
-
-                <div className="pt-1 border-t border-slate-200/60 flex items-center justify-between gap-2 flex-wrap">
-                  <span className="text-[11px] text-slate-500">Update verified phone:</span>
-                  <div className="flex items-center space-x-1.5">
-                    <input
-                      type="tel"
-                      value={editingPhoneVal}
-                      onChange={(e) => setEditingPhoneVal(e.target.value)}
-                      placeholder="e.g. 0712 345 678"
-                      className="w-36 px-2 py-1 bg-white border border-slate-300 rounded text-xs font-mono font-bold text-slate-900"
-                    />
-                    <button
-                      type="button"
-                      onClick={async () => {
-                        if (!editingPhoneVal) return;
-                        await updateUserProfile({
-                          memberId: selectedMemberModal.id,
-                          phone: editingPhoneVal
-                        });
-                        setSelectedMemberModal(prev => ({ ...prev, phone: editingPhoneVal }));
-                      }}
-                      className="px-2.5 py-1 bg-[var(--brand-primary)] hover:opacity-95 text-white font-semibold text-xs rounded transition cursor-pointer"
-                    >
-                      Save Phone
-                    </button>
-                  </div>
-                </div>
-              </div>
-
               {/* Official Joining Date & Registry Update */}
               <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-2">
                 <div className="flex items-center justify-between">
@@ -2165,47 +2109,6 @@ export default function MembersView({ onOpenDepositModal, onOpenDataEditor }) {
                 </div>
               </div>
 
-
-              {/* Official Member Phone Number (M-Pesa / Safaricom) */}
-              <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-1.5 font-semibold text-slate-800">
-                    <Phone className="w-3.5 h-3.5 text-[var(--brand-primary)]" />
-                    <span>Official Mobile Phone Number:</span>
-                  </div>
-                  <span className="font-mono font-bold text-slate-900 bg-white px-2 py-0.5 rounded border border-slate-200">
-                    {liveM?.phone || selectedMemberModal.phone || 'Not added yet'}
-                  </span>
-                </div>
-
-                <div className="pt-1 border-t border-slate-200/60 flex items-center justify-between gap-2 flex-wrap">
-                  <span className="text-[11px] text-slate-500">Update verified phone:</span>
-                  <div className="flex items-center space-x-1.5">
-                    <input
-                      type="tel"
-                      value={editingPhoneVal}
-                      onChange={(e) => setEditingPhoneVal(e.target.value)}
-                      placeholder="e.g. 0712 345 678"
-                      className="w-36 px-2 py-1 bg-white border border-slate-300 rounded text-xs font-mono font-bold text-slate-900"
-                    />
-                    <button
-                      type="button"
-                      onClick={async () => {
-                        if (!editingPhoneVal) return;
-                        await updateUserProfile({
-                          memberId: selectedMemberModal.id,
-                          phone: editingPhoneVal
-                        });
-                        setSelectedMemberModal(prev => ({ ...prev, phone: editingPhoneVal }));
-                      }}
-                      className="px-2.5 py-1 bg-[var(--brand-primary)] hover:opacity-95 text-white font-semibold text-xs rounded transition cursor-pointer"
-                    >
-                      Save Phone
-                    </button>
-                  </div>
-                </div>
-              </div>
-
               <div>
                 <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1">
                   Official Date of Demise <span className="text-rose-500">*</span>
@@ -2352,43 +2255,30 @@ export default function MembersView({ onOpenDepositModal, onOpenDataEditor }) {
               </div>
 
 
-              {/* Official Member Phone Number (M-Pesa / Safaricom) */}
-              <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-1.5 font-semibold text-slate-800">
-                    <Phone className="w-3.5 h-3.5 text-[var(--brand-primary)]" />
-                    <span>Official Mobile Phone Number:</span>
-                  </div>
-                  <span className="font-mono font-bold text-slate-900 bg-white px-2 py-0.5 rounded border border-slate-200">
-                    {liveM?.phone || selectedMemberModal.phone || 'Not added yet'}
-                  </span>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    Mobile Phone (M-Pesa)
+                  </label>
+                  <input
+                    type="tel"
+                    placeholder="e.g. 0712 345 678"
+                    value={newMemberForm.phone}
+                    onChange={(e) => setNewMemberForm({ ...newMemberForm, phone: e.target.value })}
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-900 focus:outline-none focus:border-[var(--brand-primary)]"
+                  />
                 </div>
-
-                <div className="pt-1 border-t border-slate-200/60 flex items-center justify-between gap-2 flex-wrap">
-                  <span className="text-[11px] text-slate-500">Update verified phone:</span>
-                  <div className="flex items-center space-x-1.5">
-                    <input
-                      type="tel"
-                      value={editingPhoneVal}
-                      onChange={(e) => setEditingPhoneVal(e.target.value)}
-                      placeholder="e.g. 0712 345 678"
-                      className="w-36 px-2 py-1 bg-white border border-slate-300 rounded text-xs font-mono font-bold text-slate-900"
-                    />
-                    <button
-                      type="button"
-                      onClick={async () => {
-                        if (!editingPhoneVal) return;
-                        await updateUserProfile({
-                          memberId: selectedMemberModal.id,
-                          phone: editingPhoneVal
-                        });
-                        setSelectedMemberModal(prev => ({ ...prev, phone: editingPhoneVal }));
-                      }}
-                      className="px-2.5 py-1 bg-[var(--brand-primary)] hover:opacity-95 text-white font-semibold text-xs rounded transition cursor-pointer"
-                    >
-                      Save Phone
-                    </button>
-                  </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    Email Address
+                  </label>
+                  <input
+                    type="email"
+                    placeholder="e.g. member@gmail.com"
+                    value={newMemberForm.email}
+                    onChange={(e) => setNewMemberForm({ ...newMemberForm, email: e.target.value })}
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-900 focus:outline-none focus:border-[var(--brand-primary)]"
+                  />
                 </div>
               </div>
 
@@ -2414,47 +2304,6 @@ export default function MembersView({ onOpenDepositModal, onOpenDataEditor }) {
                       <option key={m.id} value={m.name}>{m.name}</option>
                     ))}
                   </select>
-                </div>
-              </div>
-
-
-              {/* Official Member Phone Number (M-Pesa / Safaricom) */}
-              <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-1.5 font-semibold text-slate-800">
-                    <Phone className="w-3.5 h-3.5 text-[var(--brand-primary)]" />
-                    <span>Official Mobile Phone Number:</span>
-                  </div>
-                  <span className="font-mono font-bold text-slate-900 bg-white px-2 py-0.5 rounded border border-slate-200">
-                    {liveM?.phone || selectedMemberModal.phone || 'Not added yet'}
-                  </span>
-                </div>
-
-                <div className="pt-1 border-t border-slate-200/60 flex items-center justify-between gap-2 flex-wrap">
-                  <span className="text-[11px] text-slate-500">Update verified phone:</span>
-                  <div className="flex items-center space-x-1.5">
-                    <input
-                      type="tel"
-                      value={editingPhoneVal}
-                      onChange={(e) => setEditingPhoneVal(e.target.value)}
-                      placeholder="e.g. 0712 345 678"
-                      className="w-36 px-2 py-1 bg-white border border-slate-300 rounded text-xs font-mono font-bold text-slate-900"
-                    />
-                    <button
-                      type="button"
-                      onClick={async () => {
-                        if (!editingPhoneVal) return;
-                        await updateUserProfile({
-                          memberId: selectedMemberModal.id,
-                          phone: editingPhoneVal
-                        });
-                        setSelectedMemberModal(prev => ({ ...prev, phone: editingPhoneVal }));
-                      }}
-                      className="px-2.5 py-1 bg-[var(--brand-primary)] hover:opacity-95 text-white font-semibold text-xs rounded transition cursor-pointer"
-                    >
-                      Save Phone
-                    </button>
-                  </div>
                 </div>
               </div>
 
