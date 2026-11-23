@@ -19,6 +19,7 @@ import {
 
 export default function AuthGateModal() {
   const {
+    members,
     loginWithCredentials,
     signupUser,
     requestEmailOtp,
@@ -49,6 +50,7 @@ export default function AuthGateModal() {
   const [errorMsg, setErrorMsg] = useState('');
   const [infoMsg, setInfoMsg] = useState('');
   const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [referrer, setReferrer] = useState(null);
 
   useEffect(() => {
     const handler = (e) => {
@@ -58,6 +60,49 @@ export default function AuthGateModal() {
     window.addEventListener('beforeinstallprompt', handler);
     return () => window.removeEventListener('beforeinstallprompt', handler);
   }, []);
+
+  // Detect referral link (?ref=MGR-001 or ?invite=...) and auto-open Sign-Up mode
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    const urlRef = (params.get('ref') || params.get('invite') || params.get('code') || '').trim();
+    const savedRef = (localStorage.getItem('mgr_referral_code') || '').trim();
+    const activeCode = urlRef || savedRef;
+
+    if (!activeCode) return;
+
+    if (urlRef) {
+      localStorage.setItem('mgr_referral_code', urlRef);
+      setAuthMode('signup');
+    }
+
+    const normalized = activeCode.toLowerCase();
+    const matchedMember = (members || []).find((m) => {
+      const mId = (m.id || '').toLowerCase();
+      const mName = (m.name || '').toLowerCase();
+      const numericSuffix = mId.replace(/^mgr-/, '');
+      return (
+        mId === normalized ||
+        numericSuffix === normalized ||
+        `mgr-${normalized}` === mId ||
+        mName === normalized
+      );
+    });
+
+    if (matchedMember) {
+      setReferrer({
+        id: matchedMember.id,
+        name: matchedMember.name,
+        role: matchedMember.committeeRole || matchedMember.role || 'Member'
+      });
+    } else {
+      setReferrer({
+        id: activeCode.toUpperCase(),
+        name: activeCode.toUpperCase(),
+        role: 'MGR Member'
+      });
+    }
+  }, [members]);
 
   const handleInstallClick = async () => {
     if (deferredPrompt) {
@@ -152,7 +197,8 @@ export default function AuthGateModal() {
       phone: signupPhone.trim(),
       password: signupPassword,
       accountPin: signupPin.trim(),
-      privacyAgreed: true
+      privacyAgreed: true,
+      recruitedBy: referrer?.name || referrer?.id || ''
     });
     setLoading(false);
 
@@ -450,6 +496,35 @@ export default function AuthGateModal() {
             {/* TAB 2: NEW MEMBER SIGN UP / REGISTRATION */}
             {authMode === 'signup' && (
               <form onSubmit={handleSignup} className="space-y-3.5">
+                {referrer && (
+                  <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center justify-between gap-2.5 text-xs text-emerald-950">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className="w-8 h-8 rounded-lg bg-[#1D3B2A] text-[var(--accent-gold-light)] flex items-center justify-center shrink-0">
+                        <UserPlus className="w-4 h-4" />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="font-bold text-slate-900 leading-tight truncate">
+                          Invited by {referrer.name} {referrer.id && referrer.id !== referrer.name ? `(${referrer.id})` : ''}
+                        </p>
+                        <p className="text-[11px] text-emerald-800 mt-0.5 leading-snug">
+                          You are registering under {referrer.name}&apos;s member referral sponsorship.
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setReferrer(null);
+                        localStorage.removeItem('mgr_referral_code');
+                      }}
+                      className="text-[10px] font-semibold text-emerald-700 hover:text-emerald-950 underline shrink-0 cursor-pointer"
+                      title="Remove referral attribution"
+                    >
+                      Clear
+                    </button>
+                  </div>
+                )}
+
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1">
                     Official Full Name

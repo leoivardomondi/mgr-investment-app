@@ -38,7 +38,10 @@ import {
   Download,
   FileSpreadsheet,
   Hash,
-  Lock
+  Lock,
+  Share2,
+  MessageCircle,
+  Check
 } from 'lucide-react';
 
 export default function MembersView({ onOpenDepositModal, onOpenDataEditor }) {
@@ -81,6 +84,23 @@ export default function MembersView({ onOpenDepositModal, onOpenDataEditor }) {
   const [showAddMemberModal, setShowAddMemberModal] = useState(false);
   const [approvingMember, setApprovingMember] = useState(null);
   const [convertingProspect, setConvertingProspect] = useState(null);
+  const [copiedMyReferral, setCopiedMyReferral] = useState(false);
+
+  const myReferralCode = currentMember?.id || 'MGR-001';
+  const myReferralUrl = typeof window !== 'undefined'
+    ? `${window.location.origin}${window.location.pathname}?ref=${encodeURIComponent(myReferralCode)}`
+    : `https://mgrinvest.co.ke/?ref=${encodeURIComponent(myReferralCode)}`;
+
+  const myRecruitedMembers = (members || []).filter(m =>
+    m.recruitedBy &&
+    currentMember?.name &&
+    (m.recruitedBy.toLowerCase() === currentMember.name.toLowerCase() ||
+      m.recruitedBy.toUpperCase() === myReferralCode.toUpperCase())
+  );
+
+  const myWhatsappShareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(
+    `Hello! I am inviting you to join MGR Investment Group, our private investment club. Register directly using my official member referral link:\n${myReferralUrl}`
+  )}`;
 
   // Mark Member as Deceased State
   const [deceasedModal, setDeceasedModal] = useState({
@@ -670,6 +690,74 @@ export default function MembersView({ onOpenDepositModal, onOpenDataEditor }) {
                 <span className="text-[10px] text-[var(--accent-gold-light)] font-semibold">1 Promised Next Week</span>
               </div>
             </div>
+          </div>
+
+          {/* Personal Member Referral Link & Recruits Card */}
+          <div className="bank-card p-4 space-y-3 border-l-4 border-l-[#1D3B2A]">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+              <div>
+                <h3 className="font-bold text-sm text-slate-900 flex items-center gap-2">
+                  <Share2 className="w-4 h-4 text-[#1D3B2A]" />
+                  <span>Your Personal Referral Link ({myReferralCode})</span>
+                </h3>
+                <p className="text-xs text-slate-600 mt-0.5">
+                  Send this invite link directly to prospects. New registrations through this URL are automatically credited to <strong>{currentMember?.name}</strong>.
+                </p>
+              </div>
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 shrink-0">
+                <div className="px-3 py-2 rounded-lg bg-[#FAF8F5] border border-[#D8D2C4] font-mono text-[11px] text-slate-700 truncate max-w-full sm:max-w-[260px] select-all" title={myReferralUrl}>
+                  {myReferralUrl}
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (navigator.clipboard) navigator.clipboard.writeText(myReferralUrl);
+                      setCopiedMyReferral(true);
+                      setTimeout(() => setCopiedMyReferral(false), 2500);
+                      showToast('Your personal referral link has been copied!');
+                    }}
+                    className="flex-1 sm:flex-initial px-3 py-2 bg-[#1D3B2A] hover:opacity-95 text-white font-bold text-xs rounded-lg transition flex items-center justify-center gap-1.5 cursor-pointer"
+                  >
+                    {copiedMyReferral ? <Check className="w-3.5 h-3.5 text-[var(--accent-gold-light)]" /> : <Copy className="w-3.5 h-3.5 text-[var(--accent-gold-light)]" />}
+                    <span>{copiedMyReferral ? 'Copied!' : 'Copy Link'}</span>
+                  </button>
+                  <a
+                    href={myWhatsappShareUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 sm:flex-initial px-3 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs rounded-lg transition flex items-center justify-center gap-1.5"
+                  >
+                    <MessageCircle className="w-3.5 h-3.5" />
+                    <span>WhatsApp</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            {myRecruitedMembers.length > 0 ? (
+              <div className="pt-2 border-t border-slate-100">
+                <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-2">
+                  Members Joined via Your Referral ({myRecruitedMembers.length})
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {myRecruitedMembers.map((rec) => (
+                    <span
+                      key={rec.id}
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-xs font-semibold text-emerald-950"
+                    >
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700" />
+                      <span>{rec.name}</span>
+                      <span className="text-[10px] font-mono text-emerald-700">({rec.id})</span>
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <p className="text-[11px] text-slate-500 pt-2 border-t border-slate-100">
+                You have not yet registered any new members via your referral link. Share your link above to track your recruits here.
+              </p>
+            )}
           </div>
 
           {/* Prospects Pipeline List */}

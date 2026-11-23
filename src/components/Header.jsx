@@ -24,7 +24,8 @@ import {
   KeyRound,
   Eye,
   EyeOff,
-  Copy
+  Copy,
+  Share2
 } from 'lucide-react';
 import { recordAuditEvent } from '../utils/telemetry';
 
@@ -75,7 +76,8 @@ export default function Header({ onOpenDataEditor, onOpenProfileModal }) {
     isRealSuperAdmin,
     impersonatedAdmin,
     logoutSession,
-    setActiveTab
+    setActiveTab,
+    showToast
   } = useApp();
 
   const [showMemberDropdown, setShowMemberDropdown] = useState(false);
@@ -86,6 +88,7 @@ export default function Header({ onOpenDataEditor, onOpenProfileModal }) {
   const [showInstallModal, setShowInstallModal] = useState(false);
   const [showUserPin, setShowUserPin] = useState(false);
   const [copiedPin, setCopiedPin] = useState(false);
+  const [copiedReferralLink, setCopiedReferralLink] = useState(false);
   const [isStandaloneApp, setIsStandaloneApp] = useState(() => {
     if (typeof window === 'undefined') return false;
     return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
@@ -396,6 +399,27 @@ export default function Header({ onOpenDataEditor, onOpenProfileModal }) {
                   >
                     <Lock className="w-3 h-3 text-amber-700" />
                     <span>My Legal Documents &amp; Secret PIN</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const code = currentMember?.id || 'MGR-001';
+                      const url = `${window.location.origin}${window.location.pathname}?ref=${encodeURIComponent(code)}`;
+                      if (navigator.clipboard) navigator.clipboard.writeText(url);
+                      setCopiedReferralLink(true);
+                      setTimeout(() => setCopiedReferralLink(false), 2000);
+                      if (showToast) showToast('Personal referral invite link copied to clipboard!');
+                      recordAuditEvent({
+                        actionType: 'access',
+                        actionSummary: `Copied personal referral link (${code}) from header menu`,
+                        targetResource: 'Member Referral Link'
+                      });
+                    }}
+                    className="w-full mt-1.5 py-1.5 px-2 rounded-lg bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-900 text-[10px] font-bold flex items-center justify-center gap-1.5 transition cursor-pointer"
+                  >
+                    {copiedReferralLink ? <Check className="w-3 h-3 text-emerald-700" /> : <Share2 className="w-3 h-3 text-emerald-700" />}
+                    <span>{copiedReferralLink ? 'Referral Link Copied!' : 'Copy My Referral Invite Link'}</span>
                   </button>
                   <div className="flex items-center gap-1.5 mt-1.5">
                     {(isRealSuperAdmin || isSuperAdmin || impersonatedAdmin) && (

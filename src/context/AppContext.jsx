@@ -2890,11 +2890,12 @@ export function AppProvider({ children }) {
     });
   };
 
-  const signupUser = async ({ name, email, phone, password, accountPin = '1234', privacyAgreed = true }) => {
+  const signupUser = async ({ name, email, phone, password, accountPin = '1234', privacyAgreed = true, recruitedBy = '' }) => {
     const cleanName = (name || '').trim();
     const cleanEmail = (email || '').trim().toLowerCase();
     const cleanPhone = (phone || '').trim();
     const cleanPin = (accountPin || '1234').trim();
+    const activeRecruiter = (recruitedBy || (typeof localStorage !== 'undefined' ? localStorage.getItem('mgr_referral_code') : '') || 'Executive Committee').trim();
 
     if (!cleanName || !cleanEmail || !password) {
       showToast('Please provide your Full Name, Email, and Password.', 'error');
@@ -2917,6 +2918,7 @@ export function AppProvider({ children }) {
           phone: cleanPhone,
           password,
           accountPin: cleanPin,
+          recruitedBy: activeRecruiter,
           privacyAgreed: true
         })
       });
@@ -2924,6 +2926,7 @@ export function AppProvider({ children }) {
       if (ct.includes('application/json')) {
         const data = await res.json();
         if (res.ok && data.ok && data.user) {
+          try { localStorage.removeItem('mgr_referral_code'); } catch {}
           setAuthToken(data.token || '');
           setAuthenticatedUser(data.user);
           setCurrentMemberId(data.user.memberId);
@@ -2993,6 +2996,7 @@ export function AppProvider({ children }) {
         email: cleanEmail,
         avatar: initials,
         joinedDate: new Date().toISOString().split('T')[0],
+        recruitedBy: activeRecruiter,
         depositHistory: [],
         accountPin: cleanPin,
         kycDocuments: [],
@@ -3006,6 +3010,7 @@ export function AppProvider({ children }) {
           email: cleanEmail,
           phone: cleanPhone || m.phone,
           accountPin: cleanPin,
+          recruitedBy: m.recruitedBy || activeRecruiter,
           privacyAgreedAt: new Date().toISOString()
         } : m)
       );
@@ -3019,10 +3024,11 @@ export function AppProvider({ children }) {
     setAuthenticatedUser(localUser);
     setCurrentMemberId(newId);
     setAuthToken(`local-token-${Date.now()}`);
+    try { localStorage.removeItem('mgr_referral_code'); } catch {}
 
     recordAuditEvent({
       actionType: 'auth',
-      actionSummary: `New Member Registered: ${cleanName} (${newId}) — Alert emailed to Administrator`,
+      actionSummary: `New Member Registered: ${cleanName} (${newId}) — Referred by ${activeRecruiter} (Alert emailed to Administrator)`,
       targetResource: `User Account: ${newId}`
     });
 
@@ -3032,7 +3038,7 @@ export function AppProvider({ children }) {
         recipient_email: mailSettings.fromEmail || 'treasury@mgrinvest.co.ke',
         recipient_name: 'System Administrator',
         subject: `[MGR Portal Alert] New Member Registered: ${cleanName} (${newId})`,
-        body_preview: `New member registration alert for ${cleanName} (${newId}). Email: ${cleanEmail}, Phone: ${cleanPhone || 'Pending'}.`,
+        body_preview: `New member registration alert for ${cleanName} (${newId}). Email: ${cleanEmail}, Phone: ${cleanPhone || 'Pending'}, Recruited by: ${activeRecruiter}.`,
         transport_used: mailSettings.transport || 'php_mail',
         status: 'Sent (Admin Notification)',
         sent_by: 'MGR Portal Security',

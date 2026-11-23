@@ -1153,6 +1153,10 @@ if ($method === 'POST') {
         $password = isset($body['password']) ? (string)$body['password'] : '';
         $accountPin = isset($body['accountPin']) ? trim((string)$body['accountPin']) : '1234';
         $privacyAgreed = !empty($body['privacyAgreed']);
+        $recruitedBy = isset($body['recruitedBy']) ? trim((string)$body['recruitedBy']) : (isset($body['referredBy']) ? trim((string)$body['referredBy']) : '');
+        if ($recruitedBy === '') {
+            $recruitedBy = 'Executive Committee';
+        }
 
         if ($name === '' || $email === '' || $password === '') {
             http_response_code(400);
@@ -1280,7 +1284,47 @@ if ($method === 'POST') {
             ':exp' => $expires
         ]);
 
-        logAuditEvent($pdo, "New Member Self-Registration: $name ($assignedMemberId) registered with Kenya Privacy & Data Protection Consent", "$name ($assignedMemberId)");
+        logAuditEvent($pdo, "New Member Self-Registration: $name ($assignedMemberId) registered with Kenya Privacy & Data Protection Consent (Referred by: $recruitedBy)", "$name ($assignedMemberId)");
+
+        // Keep app state JSON in sync if present
+        $stateRes = getStoredState($pdo, $driverUsed);
+        if ($stateRes['initialized'] && !empty($stateRes['state'])) {
+            $parsed = $stateRes['state'];
+            if (isset($parsed['members']) && is_array($parsed['members'])) {
+                $foundMemberInState = false;
+                foreach ($parsed['members'] as &$m) {
+                    if ($m['id'] === $assignedMemberId) {
+                        $foundMemberInState = true;
+                        $m['email'] = $email;
+                        if (!empty($phone)) $m['phone'] = $phone;
+                        $m['recruitedBy'] = $recruitedBy;
+                        break;
+                    }
+                }
+                unset($m);
+                if (!$foundMemberInState) {
+                    $parsed['members'][] = [
+                        'id' => $assignedMemberId,
+                        'name' => $name,
+                        'gender' => 'male',
+                        'role' => $positionTitle,
+                        'committeeRole' => $membershipTier,
+                        'shares' => 0,
+                        'regFeePaid' => false,
+                        'status' => 'Active',
+                        'phone' => $phone,
+                        'email' => $email,
+                        'avatar' => strtoupper(substr($name, 0, 2)),
+                        'joinedDate' => gmdate('Y-m-d'),
+                        'recruitedBy' => $recruitedBy,
+                        'depositHistory' => [],
+                        'notes' => "Registered via portal referral ($recruitedBy)."
+                    ];
+                }
+                $upState = $pdo->prepare("UPDATE mgr_app_state SET state_json = :json, updated_at = :now WHERE id = 1");
+                $upState->execute([':json' => json_encode($parsed, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), ':now' => $now]);
+            }
+        }
 
         // Dispatch instant alert email to System Administrator(s)
         try {
@@ -1291,6 +1335,7 @@ if ($method === 'POST') {
                 . "<table style=\"width:100%; border-collapse:collapse; margin:16px 0; font-size:13px;\">"
                 . "<tr><td style=\"padding:8px 10px; border:1px solid #E2DDD2; background:#F8F7F4; font-weight:bold; width:35%;\">Member Name:</td><td style=\"padding:8px 10px; border:1px solid #E2DDD2;\"><strong>" . htmlspecialchars($name, ENT_QUOTES, 'UTF-8') . "</strong></td></tr>"
                 . "<tr><td style=\"padding:8px 10px; border:1px solid #E2DDD2; background:#F8F7F4; font-weight:bold;\">Assigned Member ID:</td><td style=\"padding:8px 10px; border:1px solid #E2DDD2; font-family:monospace; color:#1D3B2A; font-weight:bold;\">" . htmlspecialchars($assignedMemberId, ENT_QUOTES, 'UTF-8') . "</td></tr>"
+                . "<tr><td style=\"padding:8px 10px; border:1px solid #E2DDD2; background:#F8F7F4; font-weight:bold;\">Referred / Recruited By:</td><td style=\"padding:8px 10px; border:1px solid #E2DDD2;\"><strong style=\"color:#1D3B2A;\">" . htmlspecialchars($recruitedBy, ENT_QUOTES, 'UTF-8') . "</strong></td></tr>"
                 . "<tr><td style=\"padding:8px 10px; border:1px solid #E2DDD2; background:#F8F7F4; font-weight:bold;\">Email Address:</td><td style=\"padding:8px 10px; border:1px solid #E2DDD2;\">" . htmlspecialchars($email, ENT_QUOTES, 'UTF-8') . "</td></tr>"
                 . "<tr><td style=\"padding:8px 10px; border:1px solid #E2DDD2; background:#F8F7F4; font-weight:bold;\">Mobile Phone:</td><td style=\"padding:8px 10px; border:1px solid #E2DDD2;\">" . (!empty($phone) ? htmlspecialchars($phone, ENT_QUOTES, 'UTF-8') : '<em>Pending profile completion</em>') . "</td></tr>"
                 . "<tr><td style=\"padding:8px 10px; border:1px solid #E2DDD2; background:#F8F7F4; font-weight:bold;\">Account Status:</td><td style=\"padding:8px 10px; border:1px solid #E2DDD2; color:#047857; font-weight:bold;\">Active (General Member)</td></tr>"

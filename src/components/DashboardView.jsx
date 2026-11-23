@@ -37,7 +37,10 @@ import {
   Eye,
   EyeOff,
   Copy,
-  Check
+  Check,
+  Share2,
+  MessageCircle,
+  UserPlus
 } from 'lucide-react';
 import { recordAuditEvent } from '../utils/telemetry';
 
@@ -77,6 +80,38 @@ export default function DashboardView({ onOpenDepositModal }) {
   const [annFilter, setAnnFilter] = useState('ALL'); // 'ALL', 'BEREAVEMENT', 'INVESTMENT', 'GOVERNANCE'
   const [showDashboardPin, setShowDashboardPin] = useState(false);
   const [copiedDashboardPin, setCopiedDashboardPin] = useState(false);
+  const [copiedReferral, setCopiedReferral] = useState(false);
+
+  // Personal Member Referral Link & Recruitment Tracking
+  const memberReferralCode = currentMember?.id || 'MGR-001';
+  const referralUrl = typeof window !== 'undefined'
+    ? `${window.location.origin}${window.location.pathname}?ref=${encodeURIComponent(memberReferralCode)}`
+    : `https://mgrinvest.co.ke/?ref=${encodeURIComponent(memberReferralCode)}`;
+
+  const myRecruits = (members || []).filter(m =>
+    m.recruitedBy &&
+    currentMember?.name &&
+    (m.recruitedBy.toLowerCase() === currentMember.name.toLowerCase() ||
+      m.recruitedBy.toUpperCase() === memberReferralCode.toUpperCase())
+  );
+
+  const whatsappShareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(
+    `Hello! I am inviting you to join MGR Investment Group, our private investment club. Register directly using my official member referral link:\n${referralUrl}`
+  )}`;
+
+  const handleCopyReferralLink = () => {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(referralUrl);
+    }
+    setCopiedReferral(true);
+    setTimeout(() => setCopiedReferral(false), 2500);
+    if (showToast) showToast('Your personal MGR referral link has been copied!');
+    recordAuditEvent({
+      actionType: 'access',
+      actionSummary: `Copied personal referral link (${memberReferralCode})`,
+      targetResource: 'Member Referral Link'
+    });
+  };
   const [isAnnModalOpen, setIsAnnModalOpen] = useState(false);
   const [editingAnnId, setEditingAnnId] = useState(null);
   const [annFormData, setAnnFormData] = useState({
@@ -410,6 +445,55 @@ export default function DashboardView({ onOpenDepositModal }) {
             <p className="text-[10px] text-slate-500">Audited P&L statements</p>
           </div>
         </button>
+      </div>
+
+      {/* Invite & Grow MGR: Personal Member Referral Link Card */}
+      <div className="bank-card p-4 border-l-4 border-l-[#1D3B2A] bg-gradient-to-r from-[#FAF8F5] to-white">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3.5">
+          <div className="space-y-1 min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-[#1D3B2A] text-[var(--accent-gold-light)]">
+                <UserPlus className="w-3 h-3" />
+                <span>Member Referral Link</span>
+              </span>
+              <span className="text-[11px] font-bold text-[#1D3B2A] bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+                {myRecruits.length} Member{myRecruits.length === 1 ? '' : 's'} Recruited
+              </span>
+            </div>
+            <h3 className="font-bold text-sm text-slate-900">
+              Invite New Members to Join MGR Investment Group
+            </h3>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Share your unique link with prospective members. When they sign up using this link, their application is automatically attributed to <strong>{currentMember?.name}</strong> ({memberReferralCode}).
+            </p>
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 shrink-0">
+            <div className="px-3 py-2 rounded-lg bg-white border border-[#D8D2C4] font-mono text-[11px] text-slate-700 truncate max-w-full sm:max-w-[260px] select-all" title={referralUrl}>
+              {referralUrl}
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={handleCopyReferralLink}
+                className="flex-1 sm:flex-initial px-3 py-2 rounded-lg bg-[#1D3B2A] hover:opacity-95 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition cursor-pointer shadow-xs"
+              >
+                {copiedReferral ? <Check className="w-3.5 h-3.5 text-[var(--accent-gold-light)]" /> : <Copy className="w-3.5 h-3.5 text-[var(--accent-gold-light)]" />}
+                <span>{copiedReferral ? 'Copied!' : 'Copy Link'}</span>
+              </button>
+              <a
+                href={whatsappShareUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 sm:flex-initial px-3 py-2 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition shadow-xs"
+                title="Share invite link on WhatsApp"
+              >
+                <MessageCircle className="w-3.5 h-3.5" />
+                <span>WhatsApp</span>
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Unanimous Ratification Urgent Notice (If active) */}
