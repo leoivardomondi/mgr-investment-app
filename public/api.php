@@ -876,6 +876,38 @@ function dispatchSystemEmail($pdo, $toEmail, $toName, $subject, $htmlContent, $s
     ];
 }
 
+function getAdminNotificationRecipients($pdo) {
+    $recipients = [];
+    try {
+        $stmt = $pdo->query("SELECT name, email FROM mgr_users WHERE access_level = 'super_admin' AND email != '' AND email IS NOT NULL");
+        if ($stmt) {
+            $rows = $stmt->fetchAll();
+            foreach ($rows as $r) {
+                if (!empty($r['email']) && filter_var($r['email'], FILTER_VALIDATE_EMAIL)) {
+                    $recipients[] = ['name' => $r['name'], 'email' => $r['email']];
+                }
+            }
+        }
+    } catch (Exception $e) {}
+
+    // Fallback/additional check: check mail settings replyTo and fromEmail
+    $settings = getMailSettings($pdo);
+    $adminMail = !empty($settings['replyTo']) ? $settings['replyTo'] : (!empty($settings['fromEmail']) ? $settings['fromEmail'] : '');
+    if (!empty($adminMail) && filter_var($adminMail, FILTER_VALIDATE_EMAIL)) {
+        $alreadyInList = false;
+        foreach ($recipients as $r) {
+            if (strcasecmp($r['email'], $adminMail) === 0) {
+                $alreadyInList = true;
+                break;
+            }
+        }
+        if (!$alreadyInList) {
+            $recipients[] = ['name' => 'System Administrator', 'email' => $adminMail];
+        }
+    }
+    return $recipients;
+}
+
 function formatUserRow($u) {
     if (!$u) return null;
     $perms = json_decode($u['permissions_json'], true);
@@ -1249,6 +1281,29 @@ if ($method === 'POST') {
         ]);
 
         logAuditEvent($pdo, "New Member Self-Registration: $name ($assignedMemberId) registered with Kenya Privacy & Data Protection Consent", "$name ($assignedMemberId)");
+
+        // Dispatch instant alert email to System Administrator(s)
+        try {
+            $adminRecipients = getAdminNotificationRecipients($pdo);
+            $adminSubject = "[MGR Portal Alert] New Member Registered: {$name} ({$assignedMemberId})";
+            $adminHtml = "<p>Dear Administrator,</p>"
+                . "<p>A new member has completed account registration on the <strong>MGR Investment Group Portal</strong>:</p>"
+                . "<table style=\"width:100%; border-collapse:collapse; margin:16px 0; font-size:13px;\">"
+                . "<tr><td style=\"padding:8px 10px; border:1px solid #E2DDD2; background:#F8F7F4; font-weight:bold; width:35%;\">Member Name:</td><td style=\"padding:8px 10px; border:1px solid #E2DDD2;\"><strong>" . htmlspecialchars($name, ENT_QUOTES, 'UTF-8') . "</strong></td></tr>"
+                . "<tr><td style=\"padding:8px 10px; border:1px solid #E2DDD2; background:#F8F7F4; font-weight:bold;\">Assigned Member ID:</td><td style=\"padding:8px 10px; border:1px solid #E2DDD2; font-family:monospace; color:#1D3B2A; font-weight:bold;\">" . htmlspecialchars($assignedMemberId, ENT_QUOTES, 'UTF-8') . "</td></tr>"
+                . "<tr><td style=\"padding:8px 10px; border:1px solid #E2DDD2; background:#F8F7F4; font-weight:bold;\">Email Address:</td><td style=\"padding:8px 10px; border:1px solid #E2DDD2;\">" . htmlspecialchars($email, ENT_QUOTES, 'UTF-8') . "</td></tr>"
+                . "<tr><td style=\"padding:8px 10px; border:1px solid #E2DDD2; background:#F8F7F4; font-weight:bold;\">Mobile Phone:</td><td style=\"padding:8px 10px; border:1px solid #E2DDD2;\">" . (!empty($phone) ? htmlspecialchars($phone, ENT_QUOTES, 'UTF-8') : '<em>Pending profile completion</em>') . "</td></tr>"
+                . "<tr><td style=\"padding:8px 10px; border:1px solid #E2DDD2; background:#F8F7F4; font-weight:bold;\">Account Status:</td><td style=\"padding:8px 10px; border:1px solid #E2DDD2; color:#047857; font-weight:bold;\">Active (General Member)</td></tr>"
+                . "<tr><td style=\"padding:8px 10px; border:1px solid #E2DDD2; background:#F8F7F4; font-weight:bold;\">Privacy Consent:</td><td style=\"padding:8px 10px; border:1px solid #E2DDD2; color:#047857;\">Accepted (Art. 31 Constitution &amp; Data Protection Act 2019)</td></tr>"
+                . "<tr><td style=\"padding:8px 10px; border:1px solid #E2DDD2; background:#F8F7F4; font-weight:bold;\">Registration Time:</td><td style=\"padding:8px 10px; border:1px solid #E2DDD2;\">" . gmdate('d/m/Y H:i:s') . " UTC</td></tr>"
+                . "<tr><td style=\"padding:8px 10px; border:1px solid #E2DDD2; background:#F8F7F4; font-weight:bold;\">Client IP Address:</td><td style=\"padding:8px 10px; border:1px solid #E2DDD2; font-family:monospace;\">" . htmlspecialchars(getClientIp(), ENT_QUOTES, 'UTF-8') . "</td></tr>"
+                . "</table>"
+                . "<p style=\"font-size:12px; color:#64748B;\">You can manage this member's access level, roles, or account status from the <strong>Admin Dashboard &gt; Roles &amp; Permissions (RBAC)</strong> console.</p>";
+
+            foreach ($adminRecipients as $adm) {
+                dispatchSystemEmail($pdo, $adm['email'], $adm['name'], $adminSubject, $adminHtml, 'MGR Portal Security');
+            }
+        } catch (Exception $e) {}
 
         // Fetch created user
         $stmt = $pdo->prepare("SELECT * FROM mgr_users WHERE member_id = :id LIMIT 1");
@@ -2199,6 +2254,30 @@ if ($method === 'POST') {
             'target_resource' => "Member Profile: $currentMemberId",
             'location_open' => $locationCity !== '' ? "$locationCity, Kenya" : 'Nairobi, Kenya'
         ]);
+
+        // Dispatch instant alert email to System Administrator(s) when mandatory profile is completed
+        try {
+            $adminRecipients = getAdminNotificationRecipients($pdo);
+            $adminSubject = "[MGR Portal Alert] Mandatory Profile Completed: {$authUser['name']} ({$currentMemberId})";
+            $adminHtml = "<p>Dear Administrator,</p>"
+                . "<p>Member <strong>" . htmlspecialchars($authUser['name'], ENT_QUOTES, 'UTF-8') . "</strong> ({$currentMemberId}) has completed and submitted their mandatory onboarding profile on the <strong>MGR Investment Group Portal</strong>:</p>"
+                . "<table style=\"width:100%; border-collapse:collapse; margin:16px 0; font-size:13px;\">"
+                . "<tr><td style=\"padding:8px 10px; border:1px solid #E2DDD2; background:#F8F7F4; font-weight:bold; width:35%;\">Member Name:</td><td style=\"padding:8px 10px; border:1px solid #E2DDD2;\"><strong>" . htmlspecialchars($authUser['name'], ENT_QUOTES, 'UTF-8') . "</strong></td></tr>"
+                . "<tr><td style=\"padding:8px 10px; border:1px solid #E2DDD2; background:#F8F7F4; font-weight:bold;\">Member ID:</td><td style=\"padding:8px 10px; border:1px solid #E2DDD2; font-family:monospace; color:#1D3B2A; font-weight:bold;\">" . htmlspecialchars($currentMemberId, ENT_QUOTES, 'UTF-8') . "</td></tr>"
+                . "<tr><td style=\"padding:8px 10px; border:1px solid #E2DDD2; background:#F8F7F4; font-weight:bold;\">National ID / Passport:</td><td style=\"padding:8px 10px; border:1px solid #E2DDD2; font-family:monospace;\">" . (!empty($nationalId) ? htmlspecialchars($nationalId, ENT_QUOTES, 'UTF-8') : '<em>Not specified</em>') . "</td></tr>"
+                . "<tr><td style=\"padding:8px 10px; border:1px solid #E2DDD2; background:#F8F7F4; font-weight:bold;\">County / City:</td><td style=\"padding:8px 10px; border:1px solid #E2DDD2;\">" . (!empty($locationCity) ? htmlspecialchars($locationCity, ENT_QUOTES, 'UTF-8') : '<em>Not specified</em>') . "</td></tr>"
+                . "<tr><td style=\"padding:8px 10px; border:1px solid #E2DDD2; background:#F8F7F4; font-weight:bold;\">Mobile Phone:</td><td style=\"padding:8px 10px; border:1px solid #E2DDD2;\">" . (!empty($newPhone) ? htmlspecialchars($newPhone, ENT_QUOTES, 'UTF-8') : '<em>Not specified</em>') . "</td></tr>"
+                . "<tr><td style=\"padding:8px 10px; border:1px solid #E2DDD2; background:#F8F7F4; font-weight:bold;\">Email Address:</td><td style=\"padding:8px 10px; border:1px solid #E2DDD2;\">" . (!empty($newEmail) ? htmlspecialchars($newEmail, ENT_QUOTES, 'UTF-8') : '<em>Not specified</em>') . "</td></tr>"
+                . "<tr><td style=\"padding:8px 10px; border:1px solid #E2DDD2; background:#F8F7F4; font-weight:bold;\">Onboarding Status:</td><td style=\"padding:8px 10px; border:1px solid #E2DDD2; color:#047857; font-weight:bold;\">Mandatory Profile Complete &amp; Verified</td></tr>"
+                . "<tr><td style=\"padding:8px 10px; border:1px solid #E2DDD2; background:#F8F7F4; font-weight:bold;\">Submission Time:</td><td style=\"padding:8px 10px; border:1px solid #E2DDD2;\">" . gmdate('d/m/Y H:i:s') . " UTC</td></tr>"
+                . "<tr><td style=\"padding:8px 10px; border:1px solid #E2DDD2; background:#F8F7F4; font-weight:bold;\">Client IP Address:</td><td style=\"padding:8px 10px; border:1px solid #E2DDD2; font-family:monospace;\">" . htmlspecialchars(getClientIp(), ENT_QUOTES, 'UTF-8') . "</td></tr>"
+                . "</table>"
+                . "<p style=\"font-size:12px; color:#64748B;\">The member profile record has been synchronized in the database and logged to the security audit trail. Member security PINs are strictly excluded from transmission for data protection compliance.</p>";
+
+            foreach ($adminRecipients as $adm) {
+                dispatchSystemEmail($pdo, $adm['email'], $adm['name'], $adminSubject, $adminHtml, 'MGR Portal Security');
+            }
+        } catch (Exception $e) {}
 
         $stmtFresh = $pdo->prepare("SELECT * FROM mgr_users WHERE member_id = :id LIMIT 1");
         $stmtFresh->execute([':id' => $currentMemberId]);
