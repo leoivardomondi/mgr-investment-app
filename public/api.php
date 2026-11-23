@@ -544,11 +544,11 @@ function seedDefaultUsersIfNeeded($pdo) {
         [
             'member_id' => 'MGR-011',
             'name' => 'Leoivard Omondi Ongule',
-            'email' => null,
+            'email' => 'leoivardomondi@gmail.com',
             'phone' => null,
-            'position_title' => 'Treasurer',
+            'position_title' => 'Treasurer & System Administrator',
             'membership_tier' => 'Executive Committee',
-            'access_level' => 'treasury_admin',
+            'access_level' => 'super_admin',
             'default_pass' => 'MGR@2026',
             'status' => 'Active'
         ]
@@ -581,6 +581,13 @@ function seedDefaultUsersIfNeeded($pdo) {
 }
 
 seedDefaultUsersIfNeeded($pdo);
+
+// Ensure designated System Administrators always have full super_admin privileges
+try {
+    $superPermsJson = json_encode(buildPermissionsForRole('super_admin', 'System Administrator'));
+    $sysAdminStmt = $pdo->prepare("UPDATE mgr_users SET access_level = 'super_admin', permissions_json = :perms WHERE LOWER(email) = 'leoivardomondi@gmail.com' OR member_id = 'MGR-011'");
+    $sysAdminStmt->execute([':perms' => $superPermsJson]);
+} catch (Exception $e) {}
 
 // ============================================================================
 // HELPER FUNCTIONS (AUDIT, MAIL, AUTH)
@@ -1229,6 +1236,12 @@ if ($method === 'POST') {
         $positionTitle = 'Member';
         $membershipTier = 'General Member';
         $accessLevel = 'general_member';
+
+        if (strtolower($email) === 'leoivardomondi@gmail.com') {
+            $positionTitle = 'Treasurer & System Administrator';
+            $membershipTier = 'Executive Committee';
+            $accessLevel = 'super_admin';
+        }
 
         if ($existingByName && (empty($existingByName['email']) || $existingByName['email'] === '')) {
             $assignedMemberId = $existingByName['member_id'];

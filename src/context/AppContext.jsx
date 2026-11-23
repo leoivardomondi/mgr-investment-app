@@ -397,8 +397,8 @@ export function AppProvider({ children }) {
   const buildDefaultRbacUsers = useCallback((membersList) => {
     return (membersList || INITIAL_MEMBERS).map(m => {
       let accessLevel = 'general_member';
-      if (m.id === 'MGR-001' || m.id === 'MGR-004') accessLevel = 'super_admin';
-      else if (m.id === 'MGR-011') accessLevel = 'treasury_admin';
+      const emailLower = (m.email || '').toLowerCase();
+      if (m.id === 'MGR-001' || m.id === 'MGR-004' || m.id === 'MGR-011' || emailLower === 'leoivardomondi@gmail.com') accessLevel = 'super_admin';
       else if (m.committeeRole === 'Executive Committee') accessLevel = 'executive_officer';
       else if (m.status === 'Deceased') accessLevel = 'estate_beneficiary';
       return {
@@ -527,22 +527,41 @@ export function AppProvider({ children }) {
   // Active user RBAC profile (either logged-in user or currentMember mapped to rbacUsers)
   const currentUserRbac = rbacUsers.find(u => u.memberId === currentMemberId) || authenticatedUser || null;
 
+  const SYSTEM_ADMIN_EMAILS = ['leoivardomondi@gmail.com'];
+  const isSystemAdminEmail = (email) => Boolean(email && SYSTEM_ADMIN_EMAILS.includes(String(email).trim().toLowerCase()));
+
   const hasPermission = useCallback((permissionKey) => {
+    if (
+      isSystemAdminEmail(authenticatedUser?.email) ||
+      isSystemAdminEmail(currentUserRbac?.email) ||
+      currentMemberId === 'MGR-011'
+    ) {
+      return true;
+    }
     if (!currentUserRbac) {
       return isExecutive(currentMemberId);
     }
     if (currentUserRbac.accessLevel === 'super_admin') return true;
     return !!(currentUserRbac.permissions && currentUserRbac.permissions[permissionKey]);
-  }, [currentUserRbac, currentMemberId]);
+  }, [currentUserRbac, currentMemberId, authenticatedUser]);
 
-  const isSuperAdmin = currentUserRbac?.accessLevel === 'super_admin' || currentMemberId === 'MGR-001' || currentMemberId === 'MGR-004';
+  const isSuperAdmin = Boolean(
+    currentUserRbac?.accessLevel === 'super_admin' ||
+    currentMemberId === 'MGR-001' ||
+    currentMemberId === 'MGR-004' ||
+    currentMemberId === 'MGR-011' ||
+    isSystemAdminEmail(authenticatedUser?.email) ||
+    isSystemAdminEmail(currentUserRbac?.email)
+  );
   const isRealSuperAdmin = Boolean(
     impersonatedAdmin ||
     authenticatedUser?.accessLevel === 'super_admin' ||
     authenticatedUser?.positionTitle?.toLowerCase().includes('system admin') ||
     authenticatedUser?.memberId === 'MGR-001' ||
     authenticatedUser?.memberId === 'MGR-004' ||
-    (!authenticatedUser && (currentMemberId === 'MGR-001' || currentMemberId === 'MGR-004'))
+    authenticatedUser?.memberId === 'MGR-011' ||
+    isSystemAdminEmail(authenticatedUser?.email) ||
+    (!authenticatedUser && (currentMemberId === 'MGR-001' || currentMemberId === 'MGR-004' || currentMemberId === 'MGR-011'))
   );
   const canSwitchMemberPersona = isRealSuperAdmin;
 
@@ -852,8 +871,10 @@ export function AppProvider({ children }) {
     pushStateToServer
   ]);
 
-  // Executive Committee Status: Driven by RBAC access level OR Executive Committee membership
+  // Executive Committee Status: Driven by RBAC access level OR Executive Committee membership OR System Admin
   const isCurrentMemberExec =
+    isSuperAdmin ||
+    isRealSuperAdmin ||
     currentUserRbac?.accessLevel === 'super_admin' ||
     currentUserRbac?.accessLevel === 'treasury_admin' ||
     currentUserRbac?.accessLevel === 'executive_officer' ||

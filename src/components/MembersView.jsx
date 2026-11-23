@@ -71,6 +71,8 @@ export default function MembersView({ onOpenDepositModal, onOpenDataEditor }) {
     convertProspectToMember,
     currentMember,
     isCurrentMemberExec,
+    isSuperAdmin,
+    isRealSuperAdmin,
     triggerExecRestriction,
     setRbacUsers,
     buildDefaultPermissionsForRole
@@ -1495,7 +1497,7 @@ export default function MembersView({ onOpenDepositModal, onOpenDataEditor }) {
       {/* Member Details Modal */}
       {selectedMemberModal && (() => {
         const liveMember = activeModalMember || selectedMemberModal;
-        const isSelfOrExec = isCurrentMemberExec || liveMember.id === currentMember?.id;
+        const isSelfOrExec = isCurrentMemberExec || isSuperAdmin || isRealSuperAdmin || liveMember.id === currentMember?.id;
         return (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 animate-in fade-in">
           <div className="bg-white max-w-lg w-full rounded-2xl p-5 sm:p-6 shadow-2xl border border-slate-200 relative max-h-[90vh] overflow-y-auto">
@@ -1611,7 +1613,7 @@ export default function MembersView({ onOpenDepositModal, onOpenDataEditor }) {
                     <span>Official Mobile Phone Number:</span>
                   </div>
                   <span className="font-mono font-bold text-slate-900 bg-white px-2 py-0.5 rounded border border-slate-200">
-                    {liveM?.phone || selectedMemberModal.phone || 'Not added yet'}
+                    {liveMember?.phone || selectedMemberModal.phone || 'Not added yet'}
                   </span>
                 </div>
 
