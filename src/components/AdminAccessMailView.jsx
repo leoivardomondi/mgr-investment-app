@@ -144,7 +144,6 @@ export default function AdminAccessMailView() {
   const [editName, setEditName] = useState(selectedUserObj?.name || selectedMemberRecord?.name || '');
   const [editNationalId, setEditNationalId] = useState(selectedUserObj?.nationalId || selectedMemberRecord?.nationalId || '');
   const [editLocation, setEditLocation] = useState(selectedUserObj?.locationCity || selectedMemberRecord?.location || '');
-  const [editAccountPin, setEditAccountPin] = useState(selectedUserObj?.accountPin || selectedMemberRecord?.accountPin || '1234');
   const [editPosition, setEditPosition] = useState(selectedUserObj?.positionTitle || 'Member');
   const [editTier, setEditTier] = useState(selectedUserObj?.membershipTier || 'General Member');
   const [editAccessLevel, setEditAccessLevel] = useState(selectedUserObj?.accessLevel || 'general_member');
@@ -196,7 +195,6 @@ export default function AdminAccessMailView() {
     setEditName(u.name || mRecord.name || '');
     setEditNationalId(u.nationalId || mRecord.nationalId || '');
     setEditLocation(u.locationCity || mRecord.location || '');
-    setEditAccountPin(u.accountPin || mRecord.accountPin || '1234');
     setEditPosition(u.positionTitle);
     setEditTier(u.membershipTier);
     setEditAccessLevel(u.accessLevel);
@@ -272,7 +270,6 @@ export default function AdminAccessMailView() {
       name: editName,
       nationalId: editNationalId,
       locationCity: editLocation,
-      accountPin: editAccountPin,
       positionTitle: editPosition,
       membershipTier: editTier,
       accessLevel: editAccessLevel,
@@ -707,18 +704,21 @@ export default function AdminAccessMailView() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
-                    4-Digit Security PIN (KYC Vault &amp; Approvals)
-                  </label>
-                  <input
-                    disabled={!canManageAccess}
-                    type="text"
-                    maxLength={4}
-                    value={editAccountPin}
-                    onChange={(e) => setEditAccountPin(e.target.value.replace(/\D/g, '').slice(0, 4))}
-                    placeholder="4 digits"
-                    className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-mono font-bold tracking-widest text-[var(--brand-primary)] bg-white disabled:bg-slate-100"
-                  />
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block text-xs font-bold text-slate-700">
+                      4-Digit Security PIN
+                    </label>
+                    <span className="text-[9px] text-amber-800 font-bold bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">
+                      Confidential to Member
+                    </span>
+                  </div>
+                  <div
+                    className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs text-slate-500 flex items-center justify-between select-none"
+                    title="Under Kenyan Data Protection and club privacy policies, administrators cannot view or modify a member's 4-digit security PIN. Only the member can update it on their personal dashboard."
+                  >
+                    <span className="font-mono font-bold tracking-widest text-slate-700">••••</span>
+                    <span className="text-[10px] text-slate-400 italic">Self-Service Only (Protected)</span>
+                  </div>
                 </div>
 
                 <div>
