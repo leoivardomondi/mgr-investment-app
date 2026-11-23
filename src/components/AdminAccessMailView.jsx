@@ -8,6 +8,8 @@ import {
   Send,
   KeyRound,
   UserCheck,
+  UserX,
+  Power,
   Settings,
   CheckCircle2,
   FileText,
@@ -108,6 +110,7 @@ export default function AdminAccessMailView() {
     exitImpersonation,
     buildDefaultPermissionsForRole,
     adminUpdateUserAccess,
+    adminToggleUserStatus,
     changeOwnPassword,
     mailSettings,
     saveServerMailSettings,
@@ -138,6 +141,10 @@ export default function AdminAccessMailView() {
   const selectedUserObj = rbacUsers.find(u => u.memberId === selectedMemberId) || rbacUsers[0];
   const selectedMemberRecord = members.find(m => m.id === selectedMemberId) || members[0];
 
+  const [editName, setEditName] = useState(selectedUserObj?.name || selectedMemberRecord?.name || '');
+  const [editNationalId, setEditNationalId] = useState(selectedUserObj?.nationalId || selectedMemberRecord?.nationalId || '');
+  const [editLocation, setEditLocation] = useState(selectedUserObj?.locationCity || selectedMemberRecord?.location || '');
+  const [editAccountPin, setEditAccountPin] = useState(selectedUserObj?.accountPin || selectedMemberRecord?.accountPin || '1234');
   const [editPosition, setEditPosition] = useState(selectedUserObj?.positionTitle || 'Member');
   const [editTier, setEditTier] = useState(selectedUserObj?.membershipTier || 'General Member');
   const [editAccessLevel, setEditAccessLevel] = useState(selectedUserObj?.accessLevel || 'general_member');
@@ -185,6 +192,11 @@ export default function AdminAccessMailView() {
   const handleSelectMemberForRbac = (u) => {
     setSelectedMemberId(u.memberId);
     setEditMemberId(u.memberId);
+    const mRecord = members.find(m => m.id === u.memberId) || {};
+    setEditName(u.name || mRecord.name || '');
+    setEditNationalId(u.nationalId || mRecord.nationalId || '');
+    setEditLocation(u.locationCity || mRecord.location || '');
+    setEditAccountPin(u.accountPin || mRecord.accountPin || '1234');
     setEditPosition(u.positionTitle);
     setEditTier(u.membershipTier);
     setEditAccessLevel(u.accessLevel);
@@ -193,6 +205,14 @@ export default function AdminAccessMailView() {
     setEditPhone(u.phone || '');
     setEditPermissions(u.permissions || buildDefaultPermissionsForRole(u.accessLevel, u.positionTitle));
     setTempPassword('');
+  };
+
+  const handleQuickToggleStatus = async (targetId, currentStatus) => {
+    const nextStatus = currentStatus === 'Active' ? 'Deactivated' : 'Active';
+    await adminToggleUserStatus(targetId, nextStatus);
+    if (targetId === selectedMemberId) {
+      setEditAccountStatus(nextStatus);
+    }
   };
 
   const handleAccessLevelPresetChange = (newLevel) => {
@@ -249,6 +269,10 @@ export default function AdminAccessMailView() {
     const res = await adminUpdateUserAccess({
       memberId: selectedMemberId,
       newMemberId: editMemberId,
+      name: editName,
+      nationalId: editNationalId,
+      locationCity: editLocation,
+      accountPin: editAccountPin,
       positionTitle: editPosition,
       membershipTier: editTier,
       accessLevel: editAccessLevel,
@@ -501,11 +525,44 @@ export default function AdminAccessMailView() {
                     </div>
 
                     <div className="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-500">
-                      <span>{u.email}</span>
-                      <div className="flex items-center gap-2">
-                        <span className="font-mono-num font-bold text-slate-700">
-                          {enabledCount}/15 privileges
+                      <div className="flex items-center gap-1.5">
+                        <span className="truncate max-w-[120px] sm:max-w-none">{u.email}</span>
+                        {u.accountStatus === 'Deactivated' || u.accountStatus === 'Suspended' ? (
+                          <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-rose-50 text-rose-700 border border-rose-200">
+                            {u.accountStatus.toUpperCase()}
+                          </span>
+                        ) : u.accountStatus === 'Estate Read-Only' ? (
+                          <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-purple-50 text-purple-700 border border-purple-200">
+                            ESTATE
+                          </span>
+                        ) : (
+                          <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">
+                            ACTIVE
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-mono-num font-bold text-slate-700 hidden sm:inline">
+                          {enabledCount}/15
                         </span>
+                        {canManageAccess && (
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleQuickToggleStatus(u.memberId, u.accountStatus || 'Active');
+                            }}
+                            title={u.accountStatus === 'Deactivated' || u.accountStatus === 'Suspended' ? 'Activate this user account' : 'Deactivate this user account'}
+                            className={`px-1.5 py-0.5 rounded font-bold flex items-center gap-0.5 cursor-pointer text-[10px] border ${
+                              u.accountStatus === 'Deactivated' || u.accountStatus === 'Suspended'
+                                ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
+                                : 'bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100'
+                            }`}
+                          >
+                            <Power className="w-2.5 h-2.5" />
+                            <span>{u.accountStatus === 'Deactivated' || u.accountStatus === 'Suspended' ? 'Activate' : 'Deactivate'}</span>
+                          </button>
+                        )}
                         {isRealSuperAdmin && (
                           <button
                             type="button"
@@ -517,7 +574,7 @@ export default function AdminAccessMailView() {
                             className="px-2 py-0.5 rounded bg-[#1D3B2A] hover:bg-[#13281C] text-white font-bold flex items-center gap-1 cursor-pointer text-[10px]"
                           >
                             <KeyRound className="w-2.5 h-2.5 text-[var(--accent-gold-light)]" />
-                            <span>Log In As</span>
+                            <span>Log In</span>
                           </button>
                         )}
                       </div>
@@ -543,21 +600,69 @@ export default function AdminAccessMailView() {
                     </span>
                   </div>
                   <p className="text-xs text-slate-500">
-                    Share Standing: <strong className="font-mono-num text-slate-800">KES {Number(selectedMemberRecord?.shares || 0).toLocaleString()}</strong> • Status: <strong>{editAccountStatus}</strong>
+                    Share Standing: <strong className="font-mono-num text-slate-800">KES {Number(selectedMemberRecord?.shares || 0).toLocaleString()}</strong> • Status:{' '}
+                    <span className={`inline-block font-bold px-1.5 py-0.5 rounded text-[10px] ${
+                      editAccountStatus === 'Deactivated' || editAccountStatus === 'Suspended'
+                        ? 'bg-rose-100 text-rose-800 border border-rose-300'
+                        : editAccountStatus === 'Estate Read-Only'
+                          ? 'bg-purple-100 text-purple-800 border border-purple-300'
+                          : 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                    }`}>
+                      {editAccountStatus.toUpperCase()}
+                    </span>
                   </p>
                 </div>
               </div>
 
-              {!canManageAccess && (
-                <span className="px-2.5 py-1 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 text-[11px] font-semibold flex items-center gap-1.5">
-                  <Lock className="w-3.5 h-3.5" />
-                  <span>Read-Only (Super Admin Required to Edit)</span>
-                </span>
-              )}
+              <div className="flex items-center gap-2">
+                {canManageAccess && (
+                  <button
+                    type="button"
+                    onClick={() => handleQuickToggleStatus(selectedMemberId, editAccountStatus)}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition cursor-pointer border shadow-xs ${
+                      editAccountStatus === 'Deactivated' || editAccountStatus === 'Suspended'
+                        ? 'bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-700'
+                        : 'bg-rose-50 hover:bg-rose-100 text-rose-700 border-rose-300'
+                    }`}
+                  >
+                    {editAccountStatus === 'Deactivated' || editAccountStatus === 'Suspended' ? (
+                      <>
+                        <UserCheck className="w-3.5 h-3.5" />
+                        <span>Activate Account</span>
+                      </>
+                    ) : (
+                      <>
+                        <UserX className="w-3.5 h-3.5" />
+                        <span>Deactivate Account</span>
+                      </>
+                    )}
+                  </button>
+                )}
+                {!canManageAccess && (
+                  <span className="px-2.5 py-1 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 text-[11px] font-semibold flex items-center gap-1.5">
+                    <Lock className="w-3.5 h-3.5" />
+                    <span>Read-Only (Super Admin Required to Edit)</span>
+                  </span>
+                )}
+              </div>
             </div>
 
             <form onSubmit={handleSaveUserAccess} className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Official Full Name
+                  </label>
+                  <input
+                    disabled={!canManageAccess}
+                    type="text"
+                    value={editName}
+                    onChange={(e) => setEditName(e.target.value)}
+                    placeholder="e.g. John Doe"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-bold text-slate-900 bg-white disabled:bg-slate-100"
+                  />
+                </div>
+
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1">
                     Official Member Number / ID
@@ -571,6 +676,66 @@ export default function AdminAccessMailView() {
                     className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-mono font-bold text-[var(--brand-primary)] bg-white disabled:bg-slate-100"
                     title="Change official member identifier (cascades across database, loans & votes)"
                   />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    National ID / Passport No.
+                  </label>
+                  <input
+                    disabled={!canManageAccess}
+                    type="text"
+                    value={editNationalId}
+                    onChange={(e) => setEditNationalId(e.target.value.trim())}
+                    placeholder="e.g. 12345678"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-mono font-semibold text-slate-900 bg-white disabled:bg-slate-100"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    County / City of Residence
+                  </label>
+                  <input
+                    disabled={!canManageAccess}
+                    type="text"
+                    value={editLocation}
+                    onChange={(e) => setEditLocation(e.target.value)}
+                    placeholder="e.g. Nairobi, Kenya"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-semibold text-slate-900 bg-white disabled:bg-slate-100"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    4-Digit Security PIN (KYC Vault &amp; Approvals)
+                  </label>
+                  <input
+                    disabled={!canManageAccess}
+                    type="text"
+                    maxLength={4}
+                    value={editAccountPin}
+                    onChange={(e) => setEditAccountPin(e.target.value.replace(/\D/g, '').slice(0, 4))}
+                    placeholder="4 digits"
+                    className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-mono font-bold tracking-widest text-[var(--brand-primary)] bg-white disabled:bg-slate-100"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Account Security Status
+                  </label>
+                  <select
+                    disabled={!canManageAccess}
+                    value={editAccountStatus}
+                    onChange={(e) => setEditAccountStatus(e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-bold text-slate-900 bg-white disabled:bg-slate-100"
+                  >
+                    <option value="Active">Active (Full Sign-In &amp; Access Enabled)</option>
+                    <option value="Deactivated">Deactivated (Sign-In Blocked by Admin)</option>
+                    <option value="Suspended">Suspended (Sign-In Blocked)</option>
+                    <option value="Estate Read-Only">Estate Read-Only (Beneficiary View)</option>
+                  </select>
                 </div>
 
                 <div>
@@ -618,22 +783,6 @@ export default function AdminAccessMailView() {
                     {ACCESS_TIER_OPTIONS.map(opt => (
                       <option key={opt.id} value={opt.id}>{opt.label}</option>
                     ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
-                    Account Security Status
-                  </label>
-                  <select
-                    disabled={!canManageAccess}
-                    value={editAccountStatus}
-                    onChange={(e) => setEditAccountStatus(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-bold text-slate-900 bg-white disabled:bg-slate-100"
-                  >
-                    <option value="Active">Active (Full Sign-In Enabled)</option>
-                    <option value="Estate Read-Only">Estate Read-Only (Beneficiary View)</option>
-                    <option value="Suspended">Suspended (Sign-In Blocked)</option>
                   </select>
                 </div>
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import MemberAvatarIcon from './MemberAvatarIcon';
 import {
@@ -50,6 +50,25 @@ export default function FirstLoginProfileModal({ isOpen, onClose, isEnforced = f
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [successPinNotice, setSuccessPinNotice] = useState(null);
+
+  // Automatically pre-fill fields with existing authenticated user data when opened
+  useEffect(() => {
+    if (isOpen) {
+      const activeId = authenticatedUser?.memberId || currentMember?.id || 'MGR-001';
+      const mObj = members.find(m => m.id === activeId) || currentMember || {};
+      setMemberId(activeId);
+      setName(authenticatedUser?.name || mObj.name || '');
+      setPhone(authenticatedUser?.phone || mObj.phone || '');
+      setNationalId(authenticatedUser?.nationalId || mObj.nationalId || '');
+      setLocationCity(authenticatedUser?.locationCity || mObj.location || 'Nairobi');
+      setEmail(authenticatedUser?.email || mObj.email || '');
+      setAccountPin(authenticatedUser?.accountPin || mObj.accountPin || '1234');
+      setPassword('');
+      setConfirmPassword('');
+      setErrorMsg('');
+      setSuccessPinNotice(null);
+    }
+  }, [isOpen, authenticatedUser, currentMember, members]);
 
   if (!isOpen) return null;
 
@@ -258,23 +277,21 @@ export default function FirstLoginProfileModal({ isOpen, onClose, isEnforced = f
                 <span>Member Number</span>
                 <span className="text-rose-600">*</span>
               </label>
-              <select
-                value={memberId}
-                onChange={(e) => setMemberId(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-bold text-slate-900 bg-white focus:outline-none focus:border-[#1D3B2A] font-mono-num"
-              >
-                {members.map(m => (
-                  <option key={m.id} value={m.id}>
-                    {m.id} — {m.name}
-                  </option>
-                ))}
-              </select>
+              <div className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-100 text-xs font-bold text-slate-900 font-mono-num flex items-center justify-between shadow-xs">
+                <span className="font-mono text-sm text-[#1D3B2A]">{memberId}</span>
+                <span className="text-[10px] text-slate-600 font-sans font-semibold bg-white px-2 py-0.5 rounded border border-slate-200">
+                  Assigned Identity
+                </span>
+              </div>
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center gap-1">
-                <span>Official Full Name</span>
-                <span className="text-rose-600">*</span>
+              <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center justify-between">
+                <span className="flex items-center gap-1">
+                  <span>Official Full Name</span>
+                  <span className="text-rose-600">*</span>
+                </span>
+                {name && <span className="text-[10px] text-emerald-700 font-medium">Pre-filled</span>}
               </label>
               <input
                 type="text"
@@ -290,10 +307,13 @@ export default function FirstLoginProfileModal({ isOpen, onClose, isEnforced = f
           {/* Mobile Phone Number & National ID */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center gap-1">
-                <Smartphone className="w-3.5 h-3.5 text-[#1D3B2A]" />
-                <span>Mobile Phone (M-Pesa)</span>
-                <span className="text-rose-600">*</span>
+              <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center justify-between">
+                <span className="flex items-center gap-1">
+                  <Smartphone className="w-3.5 h-3.5 text-[#1D3B2A]" />
+                  <span>Mobile Phone (M-Pesa)</span>
+                  <span className="text-rose-600">*</span>
+                </span>
+                {phone && <span className="text-[10px] text-emerald-700 font-medium">Pre-filled</span>}
               </label>
               <input
                 type="tel"
@@ -309,10 +329,13 @@ export default function FirstLoginProfileModal({ isOpen, onClose, isEnforced = f
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center gap-1">
-                <CreditCard className="w-3.5 h-3.5 text-[#1D3B2A]" />
-                <span>National ID / Passport No.</span>
-                <span className="text-rose-600">*</span>
+              <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center justify-between">
+                <span className="flex items-center gap-1">
+                  <CreditCard className="w-3.5 h-3.5 text-[#1D3B2A]" />
+                  <span>National ID / Passport No.</span>
+                  <span className="text-rose-600">*</span>
+                </span>
+                {nationalId && <span className="text-[10px] text-emerald-700 font-medium">Pre-filled</span>}
               </label>
               <input
                 type="text"
@@ -328,10 +351,13 @@ export default function FirstLoginProfileModal({ isOpen, onClose, isEnforced = f
           {/* Email Address & Location */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center gap-1">
-                <Mail className="w-3.5 h-3.5 text-[#1D3B2A]" />
-                <span>Email Address</span>
-                <span className="text-rose-600">*</span>
+              <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center justify-between">
+                <span className="flex items-center gap-1">
+                  <Mail className="w-3.5 h-3.5 text-[#1D3B2A]" />
+                  <span>Email Address</span>
+                  <span className="text-rose-600">*</span>
+                </span>
+                {email && <span className="text-[10px] text-emerald-700 font-medium">Pre-filled</span>}
               </label>
               <input
                 type="email"
@@ -344,10 +370,13 @@ export default function FirstLoginProfileModal({ isOpen, onClose, isEnforced = f
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center gap-1">
-                <MapPin className="w-3.5 h-3.5 text-[#1D3B2A]" />
-                <span>County / City of Residence</span>
-                <span className="text-rose-600">*</span>
+              <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center justify-between">
+                <span className="flex items-center gap-1">
+                  <MapPin className="w-3.5 h-3.5 text-[#1D3B2A]" />
+                  <span>County / City of Residence</span>
+                  <span className="text-rose-600">*</span>
+                </span>
+                {locationCity && <span className="text-[10px] text-emerald-700 font-medium">Pre-filled</span>}
               </label>
               <input
                 type="text"

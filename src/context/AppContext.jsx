@@ -2691,8 +2691,8 @@ export function AppProvider({ children }) {
     if (!matchedUser) {
       return { ok: false, error: 'Member ID or Email not found. Use MGR-001 through MGR-011.' };
     }
-    if (matchedUser.accountStatus === 'Suspended') {
-      return { ok: false, error: 'This member account is suspended by the Administrator.' };
+    if (matchedUser.accountStatus === 'Suspended' || matchedUser.accountStatus === 'Deactivated') {
+      return { ok: false, error: 'This member account has been deactivated by the System Administrator. Please contact management.' };
     }
     const storedPass = matchedUser.localPassword || 'MGR@2026';
     if (password !== storedPass && password !== 'MGR@2026') {
@@ -2761,6 +2761,9 @@ export function AppProvider({ children }) {
     const matched = rbacUsers.find(u => u.memberId.toLowerCase() === cleanId || u.email.toLowerCase() === cleanId);
     if (!matched || otpCode !== '202611') {
       return { ok: false, error: 'Invalid verification code.' };
+    }
+    if (matched.accountStatus === 'Suspended' || matched.accountStatus === 'Deactivated') {
+      return { ok: false, error: 'This member account has been deactivated by the System Administrator. Please contact management.' };
     }
     const updatedUser = {
       ...matched,
@@ -3392,6 +3395,10 @@ export function AppProvider({ children }) {
   const adminUpdateUserAccess = async ({
     memberId,
     newMemberId,
+    name,
+    nationalId,
+    locationCity,
+    accountPin,
     positionTitle,
     membershipTier,
     accessLevel,
@@ -3424,22 +3431,48 @@ export function AppProvider({ children }) {
 
     const resolvedPermissions = permissions || buildDefaultPermissionsForRole(accessLevel, positionTitle);
 
-    // Also keep the member registry in sync with positionTitle, committeeRole, email, phone
+    // Keep the member registry in sync with name, positionTitle, committeeRole, email, phone, nationalId, location, accountPin, accountStatus
     setMembers(prev =>
       prev.map(m => {
         if (m.id === effectiveMemberId || m.id === memberId) {
           return {
             ...m,
             id: effectiveMemberId,
-            role: positionTitle,
+            name: (name !== undefined && name.trim()) ? name.trim() : m.name,
+            nationalId: (nationalId !== undefined && nationalId.trim()) ? nationalId.trim() : m.nationalId,
+            location: (locationCity !== undefined && locationCity.trim()) ? locationCity.trim() : m.location,
+            accountPin: (accountPin !== undefined && accountPin.trim()) ? accountPin.trim() : m.accountPin,
+            role: positionTitle || m.role,
             committeeRole: membershipTier === 'Executive Committee' ? 'Executive Committee' : 'General Member',
             email: email || m.email,
-            phone: phone || m.phone
+            phone: phone || m.phone,
+            status: (accountStatus === 'Deactivated' || accountStatus === 'Suspended')
+              ? 'Suspended'
+              : (m.status === 'Deceased' ? 'Deceased' : 'Active')
           };
         }
         return m;
       })
     );
+
+    // Keep authenticatedUser in sync if the edited account is the currently logged-in account
+    setAuthenticatedUser(prev => {
+      if (!prev || (prev.memberId !== effectiveMemberId && prev.memberId !== memberId)) return prev;
+      return {
+        ...prev,
+        memberId: effectiveMemberId,
+        name: (name !== undefined && name.trim()) ? name.trim() : prev.name,
+        nationalId: (nationalId !== undefined && nationalId.trim()) ? nationalId.trim() : prev.nationalId,
+        locationCity: (locationCity !== undefined && locationCity.trim()) ? locationCity.trim() : prev.locationCity,
+        accountPin: (accountPin !== undefined && accountPin.trim()) ? accountPin.trim() : prev.accountPin,
+        positionTitle: positionTitle || prev.positionTitle,
+        membershipTier: membershipTier || prev.membershipTier,
+        accessLevel: accessLevel || prev.accessLevel,
+        accountStatus: accountStatus || prev.accountStatus || 'Active',
+        email: email || prev.email,
+        phone: phone || prev.phone
+      };
+    });
 
     try {
       const res = await fetch('./api.php', {
@@ -3452,6 +3485,10 @@ export function AppProvider({ children }) {
           action: 'admin_update_user_access',
           memberId: effectiveMemberId,
           newMemberId: effectiveMemberId,
+          name: name !== undefined ? name.trim() : undefined,
+          nationalId: nationalId !== undefined ? nationalId.trim() : undefined,
+          locationCity: locationCity !== undefined ? locationCity.trim() : undefined,
+          accountPin: accountPin !== undefined ? accountPin.trim() : undefined,
           positionTitle,
           membershipTier,
           accessLevel,
@@ -3469,7 +3506,12 @@ export function AppProvider({ children }) {
         if (res.ok && data.ok && Array.isArray(data.users)) {
           setRbacUsers(data.users);
           await refreshSecurityBootstrap();
-          showToast(`Updated access & position for ${effectiveMemberId} (${positionTitle})`);
+          recordAuditEvent({
+            actionType: 'update',
+            actionSummary: `System Administrator updated profile & access for ${effectiveMemberId} (${name || positionTitle}) — Status: ${accountStatus || 'Active'}`,
+            targetResource: `User Profile: ${effectiveMemberId}`
+          });
+          showToast(`Updated user details & access for ${effectiveMemberId} (${accountStatus || 'Active'})`);
           return { ok: true, memberId: effectiveMemberId };
         }
       }
@@ -3483,10 +3525,14 @@ export function AppProvider({ children }) {
           return {
             ...u,
             memberId: effectiveMemberId,
+            name: (name !== undefined && name.trim()) ? name.trim() : u.name,
+            nationalId: (nationalId !== undefined && nationalId.trim()) ? nationalId.trim() : u.nationalId,
+            locationCity: (locationCity !== undefined && locationCity.trim()) ? locationCity.trim() : u.locationCity,
+            accountPin: (accountPin !== undefined && accountPin.trim()) ? accountPin.trim() : u.accountPin,
             positionTitle,
             membershipTier,
             accessLevel,
-            accountStatus,
+            accountStatus: accountStatus || u.accountStatus || 'Active',
             email: email || u.email,
             phone: phone || u.phone,
             permissions: resolvedPermissions,
@@ -3497,8 +3543,53 @@ export function AppProvider({ children }) {
         return u;
       })
     );
-    showToast(`Updated access & position for ${effectiveMemberId} (${positionTitle})`);
+
+    recordAuditEvent({
+      actionType: 'update',
+      actionSummary: `System Administrator updated profile & access for ${effectiveMemberId} (${name || positionTitle}) — Status: ${accountStatus || 'Active'}`,
+      targetResource: `User Profile: ${effectiveMemberId}`
+    });
+
+    showToast(`Updated user details & access for ${effectiveMemberId} (${accountStatus || 'Active'})`);
     return { ok: true, memberId: effectiveMemberId };
+  };
+
+  // Quick Activate / Deactivate Toggle for Admin
+  const adminToggleUserStatus = async (targetMemberId, explicitStatus = null) => {
+    if (!hasPermission('manage_access_control') && !isSuperAdmin) {
+      triggerExecRestriction(
+        'Activate / Deactivate User Account',
+        'Activating or deactivating member accounts is strictly restricted to System Administrators and Executive Leadership.'
+      );
+      return { ok: false, error: 'Administrator permission required' };
+    }
+    const targetUser = rbacUsers.find(u => u.memberId === targetMemberId);
+    const targetMember = members.find(m => m.id === targetMemberId);
+    if (!targetUser && !targetMember) return { ok: false, error: 'User not found' };
+
+    const currentStatus = targetUser?.accountStatus || 'Active';
+    const nextStatus = explicitStatus || (currentStatus === 'Active' ? 'Deactivated' : 'Active');
+
+    const res = await adminUpdateUserAccess({
+      memberId: targetMemberId,
+      name: targetUser?.name || targetMember?.name,
+      nationalId: targetUser?.nationalId || targetMember?.nationalId,
+      locationCity: targetUser?.locationCity || targetMember?.location,
+      accountPin: targetUser?.accountPin || targetMember?.accountPin,
+      positionTitle: targetUser?.positionTitle || targetMember?.role || 'Member',
+      membershipTier: targetUser?.membershipTier || targetMember?.committeeRole || 'General Member',
+      accessLevel: targetUser?.accessLevel || 'general_member',
+      accountStatus: nextStatus,
+      email: targetUser?.email || targetMember?.email || '',
+      phone: targetUser?.phone || targetMember?.phone || '',
+      permissions: targetUser?.permissions,
+      notifyUserByEmail: false
+    });
+
+    if (res && res.ok) {
+      showToast(`Account for ${targetUser?.name || targetMemberId} is now ${nextStatus.toUpperCase()}.`);
+    }
+    return res;
   };
 
   const saveServerMailSettings = async (newSettings) => {
@@ -3782,6 +3873,7 @@ export function AppProvider({ children }) {
         changeOwnPassword,
         updateUserProfile,
         adminUpdateUserAccess,
+        adminToggleUserStatus,
         mailSettings,
         saveServerMailSettings,
         sendOfficialClubEmail,

@@ -1598,10 +1598,10 @@ if ($method === 'POST') {
             exit;
         }
 
-        if ($userRow['account_status'] === 'Suspended') {
-            logAuditEvent($pdo, "Blocked login attempt on suspended account {$userRow['member_id']}", $userRow['name']);
+        if ($userRow['account_status'] === 'Suspended' || $userRow['account_status'] === 'Deactivated') {
+            logAuditEvent($pdo, "Blocked login attempt on deactivated/suspended account {$userRow['member_id']}", $userRow['name']);
             http_response_code(403);
-            echo json_encode(['ok' => false, 'error' => 'This member account is currently suspended by the Administrator.']);
+            echo json_encode(['ok' => false, 'error' => 'This member account has been deactivated by the System Administrator. Please contact management.']);
             exit;
         }
 
@@ -1741,6 +1741,13 @@ if ($method === 'POST') {
         if (!$userRow) {
             http_response_code(404);
             echo json_encode(['ok' => false, 'error' => 'Member account not found.']);
+            exit;
+        }
+
+        if ($userRow['account_status'] === 'Suspended' || $userRow['account_status'] === 'Deactivated') {
+            logAuditEvent($pdo, "Blocked OTP verification on deactivated/suspended account {$userRow['member_id']}", $userRow['name']);
+            http_response_code(403);
+            echo json_encode(['ok' => false, 'error' => 'This member account has been deactivated by the System Administrator. Please contact management.']);
             exit;
         }
 
@@ -1899,12 +1906,15 @@ if ($method === 'POST') {
             $targetMemberId = $newMemberId;
         }
 
+        $name = isset($body['name']) ? trim((string)$body['name']) : '';
+        $newName = $name !== '' ? $name : $existing['name'];
         $newEmail = $email !== '' ? $email : $existing['email'];
         $newPhone = $phone !== '' ? $phone : $existing['phone'];
 
         if ($resetPassword !== '' && strlen($resetPassword) >= 6) {
             $hash = password_hash($resetPassword, PASSWORD_DEFAULT);
             $up = $pdo->prepare("UPDATE mgr_users SET
+                name = :name,
                 email = :email,
                 phone = :phone,
                 position_title = :pos,
@@ -1918,6 +1928,7 @@ if ($method === 'POST') {
                 updated_at = :now
                 WHERE member_id = :id");
             $up->execute([
+                ':name' => $newName,
                 ':email' => $newEmail,
                 ':phone' => $newPhone,
                 ':pos' => $positionTitle,
@@ -1931,6 +1942,7 @@ if ($method === 'POST') {
             ]);
         } else {
             $up = $pdo->prepare("UPDATE mgr_users SET
+                name = :name,
                 email = :email,
                 phone = :phone,
                 position_title = :pos,
@@ -1941,6 +1953,7 @@ if ($method === 'POST') {
                 updated_at = :now
                 WHERE member_id = :id");
             $up->execute([
+                ':name' => $newName,
                 ':email' => $newEmail,
                 ':phone' => $newPhone,
                 ':pos' => $positionTitle,
@@ -1948,6 +1961,10 @@ if ($method === 'POST') {
                 ':level' => $accessLevel,
                 ':perms' => json_encode($permissions),
                 ':status' => $accountStatus,
+                ':now' => $now,
+                ':id' => $targetMemberId
+            ]);
+        }
                 ':now' => $now,
                 ':id' => $targetMemberId
             ]);
