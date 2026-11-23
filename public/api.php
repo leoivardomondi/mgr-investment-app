@@ -16,6 +16,18 @@ header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With, X-MGR-Token');
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 
+set_exception_handler(function ($e) {
+    if (!headers_sent()) {
+        http_response_code(500);
+        header('Content-Type: application/json; charset=utf-8');
+    }
+    echo json_encode([
+        'ok' => false,
+        'error' => 'Server API exception: ' . $e->getMessage()
+    ]);
+    exit;
+});
+
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
@@ -97,6 +109,9 @@ if ($driverUsed === 'mysql') {
         locked_until VARCHAR(40) DEFAULT NULL,
         last_login VARCHAR(40) DEFAULT NULL,
         account_pin VARCHAR(32) DEFAULT '1234',
+        national_id VARCHAR(60) DEFAULT '',
+        location_city VARCHAR(120) DEFAULT '',
+        profile_completed TINYINT(1) DEFAULT 0,
         kyc_docs_json LONGTEXT,
         privacy_agreed_at VARCHAR(40) DEFAULT NULL,
         updated_at VARCHAR(40) NOT NULL
@@ -309,30 +324,35 @@ if ($driverUsed === 'sqlite') {
         }
     } catch (Exception $e) {}
 } else if ($driverUsed === 'mysql') {
-    try {
-        $pdo->exec("ALTER TABLE mgr_users ADD COLUMN account_pin VARCHAR(32) DEFAULT '1234'");
-    } catch (Exception $e) {}
-    try {
-        $pdo->exec("ALTER TABLE mgr_users ADD COLUMN kyc_docs_json LONGTEXT DEFAULT NULL");
-    } catch (Exception $e) {}
-    try {
-        $pdo->exec("ALTER TABLE mgr_users ADD COLUMN privacy_agreed_at VARCHAR(40) DEFAULT NULL");
-    } catch (Exception $e) {}
-    try {
-        $pdo->exec("ALTER TABLE mgr_users ADD COLUMN pin_expires_at VARCHAR(40) DEFAULT NULL");
-    } catch (Exception $e) {}
-    try {
-        $pdo->exec("ALTER TABLE mgr_users ADD COLUMN pin_generated_at VARCHAR(40) DEFAULT NULL");
-    } catch (Exception $e) {}
-    try {
-        $pdo->exec("ALTER TABLE mgr_users ADD COLUMN pin_used_by_id VARCHAR(32) DEFAULT NULL");
-    } catch (Exception $e) {}
-    try {
-        $pdo->exec("ALTER TABLE mgr_users ADD COLUMN pin_used_by_name VARCHAR(150) DEFAULT NULL");
-    } catch (Exception $e) {}
-    try {
-        $pdo->exec("ALTER TABLE mgr_users ADD COLUMN pin_used_at VARCHAR(40) DEFAULT NULL");
-    } catch (Exception $e) {}
+    $mysqlUserMigrations = [
+        "ALTER TABLE mgr_users ADD COLUMN account_pin VARCHAR(32) DEFAULT '1234'",
+        "ALTER TABLE mgr_users ADD COLUMN national_id VARCHAR(60) DEFAULT ''",
+        "ALTER TABLE mgr_users ADD COLUMN location_city VARCHAR(120) DEFAULT ''",
+        "ALTER TABLE mgr_users ADD COLUMN profile_completed TINYINT(1) DEFAULT 0",
+        "ALTER TABLE mgr_users ADD COLUMN kyc_docs_json LONGTEXT DEFAULT NULL",
+        "ALTER TABLE mgr_users ADD COLUMN privacy_agreed_at VARCHAR(40) DEFAULT NULL",
+        "ALTER TABLE mgr_users ADD COLUMN pin_expires_at VARCHAR(40) DEFAULT NULL",
+        "ALTER TABLE mgr_users ADD COLUMN pin_generated_at VARCHAR(40) DEFAULT NULL",
+        "ALTER TABLE mgr_users ADD COLUMN pin_used_by_id VARCHAR(32) DEFAULT NULL",
+        "ALTER TABLE mgr_users ADD COLUMN pin_used_by_name VARCHAR(150) DEFAULT NULL",
+        "ALTER TABLE mgr_users ADD COLUMN pin_used_at VARCHAR(40) DEFAULT NULL",
+        "ALTER TABLE mgr_audit_trail ADD COLUMN action_type VARCHAR(40) DEFAULT 'general'",
+        "ALTER TABLE mgr_audit_trail ADD COLUMN actor_id VARCHAR(50) DEFAULT ''",
+        "ALTER TABLE mgr_audit_trail ADD COLUMN actor_role VARCHAR(100) DEFAULT 'Member'",
+        "ALTER TABLE mgr_audit_trail ADD COLUMN target_resource VARCHAR(150) DEFAULT ''",
+        "ALTER TABLE mgr_audit_trail ADD COLUMN ip_address VARCHAR(64) DEFAULT ''",
+        "ALTER TABLE mgr_audit_trail ADD COLUMN location_open VARCHAR(255) DEFAULT ''",
+        "ALTER TABLE mgr_audit_trail ADD COLUMN latitude VARCHAR(30) DEFAULT ''",
+        "ALTER TABLE mgr_audit_trail ADD COLUMN longitude VARCHAR(30) DEFAULT ''",
+        "ALTER TABLE mgr_audit_trail ADD COLUMN device_info VARCHAR(150) DEFAULT ''",
+        "ALTER TABLE mgr_audit_trail ADD COLUMN browser_info VARCHAR(150) DEFAULT ''",
+        "ALTER TABLE mgr_audit_trail ADD COLUMN user_agent TEXT"
+    ];
+    foreach ($mysqlUserMigrations as $sql) {
+        try {
+            $pdo->exec($sql);
+        } catch (Exception $e) {}
+    }
 }
 
 // ============================================================================

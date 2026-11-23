@@ -171,7 +171,9 @@ export default function Header({ onOpenDataEditor, onOpenProfileModal }) {
                 title={
                   dbSyncStatus?.mode === 'connected' || dbSyncStatus?.mode === 'saving'
                     ? `Shared cPanel Database Connected (${dbSyncStatus.driver?.toUpperCase()}) • Last updated by ${dbSyncStatus.updatedBy || 'System'}`
-                    : 'Local Storage Mode (Automatically switches to shared SQLite/MySQL DB when uploaded to cPanel)'
+                    : dbSyncStatus?.errorDetail
+                      ? `Local Cache Mode (${dbSyncStatus.errorDetail})`
+                      : 'Local Storage Mode (Automatically switches to shared SQLite/MySQL DB when uploaded to cPanel)'
                 }
               >
                 <span

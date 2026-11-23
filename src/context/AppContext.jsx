@@ -730,11 +730,39 @@ export function AppProvider({ children }) {
             ...(authToken ? { 'X-MGR-Token': authToken } : {})
           }
         });
-        if (!res.ok) return;
         const contentType = res.headers.get('content-type') || '';
-        if (!contentType.includes('application/json')) return;
+        if (!res.ok) {
+          let errMsg = `HTTP ${res.status}`;
+          if (contentType.includes('application/json')) {
+            try {
+              const errData = await res.json();
+              if (errData?.error) errMsg = errData.error;
+            } catch {}
+          }
+          if (isMounted) {
+            setDbSyncStatus(prev => ({ ...prev, mode: 'local', errorDetail: errMsg }));
+          }
+          if (isInitial) hasCompletedInitialCheckRef.current = true;
+          return;
+        }
+        if (!contentType.includes('application/json')) {
+          if (isMounted) {
+            setDbSyncStatus(prev => ({
+              ...prev,
+              mode: 'local',
+              errorDetail: 'api.php did not return JSON (PHP may not be active on this host)'
+            }));
+          }
+          if (isInitial) hasCompletedInitialCheckRef.current = true;
+          return;
+        }
         const data = await res.json();
-        if (!isMounted || !data || !data.ok) return;
+        if (!isMounted || !data || !data.ok) {
+          if (isMounted && data?.error) {
+            setDbSyncStatus(prev => ({ ...prev, mode: 'local', errorDetail: data.error }));
+          }
+          return;
+        }
 
         if (data.authenticatedUser) {
           setAuthenticatedUser(data.authenticatedUser);
@@ -743,6 +771,15 @@ export function AppProvider({ children }) {
         if (data.initialized && data.state) {
           if (isInitial || (data.updatedAt && data.updatedAt !== lastRemoteUpdatedAtRef.current)) {
             applyRemoteState(data.state, data);
+          } else {
+            setDbSyncStatus(prev => ({
+              ...prev,
+              mode: 'connected',
+              driver: data.driver || prev.driver || 'sqlite',
+              lastSyncedAt: data.updatedAt || prev.lastSyncedAt || new Date().toISOString(),
+              updatedBy: data.updatedBy || prev.updatedBy || 'System',
+              errorDetail: null
+            }));
           }
           hasCompletedInitialCheckRef.current = true;
         } else if (isInitial && !data.initialized) {
