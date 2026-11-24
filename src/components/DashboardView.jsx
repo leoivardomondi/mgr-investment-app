@@ -49,6 +49,7 @@ export default function DashboardView({ onOpenDepositModal }) {
     members, 
     assets, 
     currentMember, 
+    authenticatedUser,
     totalMemberShares, 
     totalAssetsValue, 
     retainedSurplus,

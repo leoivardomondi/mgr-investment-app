@@ -3534,8 +3534,8 @@ export function AppProvider({ children }) {
 
     recordAuditEvent({
       actionType: 'update',
-      actionSummary: `Mandatory Profile Completed: ${effectiveMemberId} (${cleanPhone}, ${cleanNationalId || 'KYC'}) — Alert emailed to Administrator`,
-      targetResource: `Member Profile: ${effectiveMemberId}`
+      actionSummary: `Mandatory Profile Completed: ${cleanMemberId} (${cleanPhone}, ${cleanNationalId || 'KYC'}) — Alert emailed to Administrator`,
+      targetResource: `Member Profile: ${cleanMemberId}`
     });
 
     setMailLogs(prev => [
@@ -3543,8 +3543,8 @@ export function AppProvider({ children }) {
         id: `local-mail-${Date.now()}`,
         recipient_email: mailSettings.fromEmail || 'treasury@mgrinvest.co.ke',
         recipient_name: 'System Administrator',
-        subject: `[MGR Portal Alert] Mandatory Profile Completed: ${authenticatedUser?.name || 'Member'} (${effectiveMemberId})`,
-        body_preview: `Mandatory profile completed for ${effectiveMemberId}. Phone: ${cleanPhone}, ID: ${cleanNationalId || 'N/A'}, Location: ${cleanLocation || 'N/A'}.`,
+        subject: `[MGR Portal Alert] Mandatory Profile Completed: ${authenticatedUser?.name || 'Member'} (${cleanMemberId})`,
+        body_preview: `Mandatory profile completed for ${cleanMemberId}. Phone: ${cleanPhone}, ID: ${cleanNationalId || 'N/A'}, Location: ${cleanLocation || 'N/A'}.`,
         transport_used: mailSettings.transport || 'php_mail',
         status: 'Sent (Admin Notification)',
         sent_by: 'MGR Portal Security',

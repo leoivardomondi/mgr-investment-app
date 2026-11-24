@@ -42,6 +42,7 @@ import {
 export default function MMFStatementView() {
   const { 
     members, 
+    currentMember,
     assets, 
     distributeInterest, 
     totalMemberShares, 

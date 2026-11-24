@@ -6,9 +6,11 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "build:cpanel": "vite build && node scripts/build-documents.js && powershell -NoProfile -Command \"if (Test-Path mgr-investment-cpanel-deploy.zip) { Remove-Item mgr-investment-cpanel-deploy.zip -Force }; if (Test-Path mgr-investment-cpanel-update-only.zip) { Remove-Item mgr-investment-cpanel-update-only.zip -Force }; Compress-Archive -Path dist\\*, dist\\.htaccess -DestinationPath mgr-investment-cpanel-deploy.zip -Force; Compress-Archive -Path dist\\assets, dist\\images, dist\\documents, dist\\index.html, dist\\api.php, dist\\sw.js, dist\\manifest.webmanifest -DestinationPath mgr-investment-cpanel-update-only.zip -Force\"",
-    "build:update": "vite build && node scripts/build-documents.js && powershell -NoProfile -Command \"if (Test-Path mgr-investment-cpanel-update-only.zip) { Remove-Item mgr-investment-cpanel-update-only.zip -Force }; Compress-Archive -Path dist\\assets, dist\\images, dist\\documents, dist\\index.html, dist\\api.php, dist\\sw.js, dist\\manifest.webmanifest -DestinationPath mgr-investment-cpanel-update-only.zip -Force\"",
-    "lint": "oxlint",
+    "test": "node --test tests/quality-gates.test.mjs",
+    "verify": "npm run build && npm test",
+    "build:cpanel": "vite build && npm test && node scripts/build-documents.js && powershell -NoProfile -Command \"if (Test-Path mgr-investment-cpanel-deploy.zip) { Remove-Item mgr-investment-cpanel-deploy.zip -Force }; if (Test-Path mgr-investment-cpanel-update-only.zip) { Remove-Item mgr-investment-cpanel-update-only.zip -Force }; Compress-Archive -Path dist\\*, dist\\.htaccess -DestinationPath mgr-investment-cpanel-deploy.zip -Force; Compress-Archive -Path dist\\assets, dist\\images, dist\\documents, dist\\index.html, dist\\api.php, dist\\sw.js, dist\\manifest.webmanifest -DestinationPath mgr-investment-cpanel-update-only.zip -Force\"",
+    "build:update": "vite build && npm test && node scripts/build-documents.js && powershell -NoProfile -Command \"if (Test-Path mgr-investment-cpanel-update-only.zip) { Remove-Item mgr-investment-cpanel-update-only.zip -Force }; Compress-Archive -Path dist\\assets, dist\\images, dist\\documents, dist\\index.html, dist\\api.php, dist\\sw.js, dist\\manifest.webmanifest -DestinationPath mgr-investment-cpanel-update-only.zip -Force\"",
+    "lint": "oxlint -c .oxlintrc.json",
     "preview": "vite preview"
   },
   "dependencies": {
