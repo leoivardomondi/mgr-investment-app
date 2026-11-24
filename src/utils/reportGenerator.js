@@ -19,6 +19,63 @@ const fmt = (num, decimals = 2) =>
 
 const fmtParen = (num, decimals = 2) => `(${fmt(Math.abs(num || 0), decimals)})`;
 
+const formatReportDate = (dateObj = new Date()) => {
+  const day = dateObj.getDate();
+  const suffix =
+    day % 10 === 1 && day !== 11
+      ? 'st'
+      : day % 10 === 2 && day !== 12
+        ? 'nd'
+        : day % 10 === 3 && day !== 13
+          ? 'rd'
+          : 'th';
+  const month = dateObj.toLocaleString('en-GB', { month: 'long' });
+  const year = dateObj.getFullYear();
+  return `${day}${suffix} ${month} ${year}`;
+};
+
+// Official MGR Investment Club White-on-Forest-Green Crest (Inline SVG for reliable offline HTML & Print-to-PDF rendering)
+const MGR_CREST_SVG_INLINE = `
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="145 100 510 510" width="64" height="64" style="display:block;flex-shrink:0;">
+  <defs>
+    <linearGradient id="mgrForestGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#224632"/>
+      <stop offset="60%" stop-color="#1D3B2A"/>
+      <stop offset="100%" stop-color="#13291D"/>
+    </linearGradient>
+    <linearGradient id="mgrWhiteGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#E4EBE6"/>
+    </linearGradient>
+  </defs>
+  <circle cx="400" cy="355" r="248" fill="url(#mgrForestGrad)"/>
+  <circle cx="400" cy="355" r="235" fill="none" stroke="url(#mgrWhiteGrad)" stroke-width="5.5"/>
+  <circle cx="400" cy="355" r="222" fill="none" stroke="#FFFFFF" stroke-width="1.6" stroke-opacity="0.65" stroke-dasharray="4 4"/>
+  <path d="M 400 175 L 515 215 L 515 335 C 515 415, 462 475, 400 505 C 338 475, 285 415, 285 335 L 285 215 Z"
+        fill="#152E20" stroke="url(#mgrWhiteGrad)" stroke-width="4" stroke-linejoin="round"/>
+  <g fill="#FFFFFF">
+    <rect x="352" y="268" width="22" height="44" rx="2"/>
+    <rect x="389" y="242" width="22" height="70" rx="2"/>
+    <rect x="426" y="256" width="22" height="56" rx="2"/>
+    <rect x="338" y="317" width="124" height="5" rx="2.5"/>
+    <polygon points="400,213 409,225 400,237 391,225"/>
+  </g>
+  <text x="400" y="396" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="64" font-weight="700" letter-spacing="5" fill="#FFFFFF">MGR</text>
+  <line x1="354" y1="416" x2="446" y2="416" stroke="#FFFFFF" stroke-width="1.8" stroke-opacity="0.8"/>
+  <text x="400" y="442" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="4" fill="#FFFFFF" opacity="0.92">EST. 2026</text>
+</svg>`;
+
+const buildOfficialLetterheadHtml = () => `
+  <div class="mgr-letterhead" style="display:flex; align-items:center; justify-content:center; gap:16px; padding-bottom:18px; margin-bottom:24px; border-bottom:3px solid #1D3B2A;">
+    ${MGR_CREST_SVG_INLINE}
+    <div style="text-align:left;">
+      <div style="font-family:'Newsreader', Georgia, serif; font-size:24px; font-weight:700; letter-spacing:0.08em; color:#1D3B2A; line-height:1.15;">
+        MGR INVESTMENT CLUB
+      </div>
+    </div>
+  </div>
+`;
+
 const triggerDownload = (content, filename, mimeType) => {
   const blob = new Blob([content], { type: mimeType });
   const url = URL.createObjectURL(blob);
@@ -315,6 +372,7 @@ const wrapHtmlDocument = (title, bodyHtml) => `<!DOCTYPE html>
     <button onclick="window.print()">Print / Save as PDF</button>
   </div>
   <div class="document-container">
+    ${buildOfficialLetterheadHtml()}
     ${bodyHtml}
   </div>
 </body>
@@ -322,7 +380,7 @@ const wrapHtmlDocument = (title, bodyHtml) => `<!DOCTYPE html>
 
 const buildSignatoriesBlock = () => `
   <div style="margin-top: 18px; font-size: 11px; color: #4A4D48;">
-    The financial statements and accompanying notes were approved by the MGR Executive Committee on <strong>30th October 2026</strong> and signed on its behalf by:
+    The financial statements and accompanying notes were generated and verified for the MGR Executive Committee on <strong>${formatReportDate()}</strong> and signed on its behalf by:
   </div>
   <div class="signature-grid">
     <div>
@@ -451,7 +509,7 @@ const buildBalanceSheetHtml = (m) => `
   <div class="statement-header">
     <div class="reg-line">MGR Investment Club Constitution &amp; Financial Reporting Standards</div>
     <h2>MGR INVESTMENT GROUP</h2>
-    <div class="sub-title">Statement of Financial Position As At 30th October 2026</div>
+    <div class="sub-title">Statement of Financial Position As At ${formatReportDate()}</div>
   </div>
   <table class="acct-table">
     <thead>
@@ -571,7 +629,7 @@ const buildStatementOfAccountHtml = (m) => `
   <div class="statement-header">
     <div class="reg-line">MGR Investment Club Constitution &amp; Accountancy Guidelines</div>
     <h2>MGR INVESTMENT GROUP</h2>
-    <div class="sub-title">Monthly Statement of Account (Per Month End As At 30th October 2026)</div>
+    <div class="sub-title">Monthly Statement of Account (As At ${formatReportDate()})</div>
   </div>
 
   <table class="acct-table">
@@ -698,7 +756,7 @@ const buildIncomeStatementHtml = (m) => `
   <div class="statement-header">
     <div class="reg-line">MGR Investment Club Constitution &amp; Accountancy Guidelines</div>
     <h2>MGR INVESTMENT GROUP</h2>
-    <div class="sub-title">Statement of Comprehensive Income For The Period Ended 30th October 2026</div>
+    <div class="sub-title">Statement of Comprehensive Income For The Period Ended ${formatReportDate()}</div>
   </div>
   <table class="acct-table">
     <thead>
@@ -791,7 +849,7 @@ const buildCashFlowAndChangesInEquityHtml = (m) => `
   <div class="statement-header">
     <div class="reg-line">MGR Investment Club • Statement of Cash Flows &amp; Equity</div>
     <h2>MGR INVESTMENT GROUP</h2>
-    <div class="sub-title">Statement of Cash Flows &amp; Statement of Changes in Equity (As At 30th October 2026)</div>
+    <div class="sub-title">Statement of Cash Flows &amp; Statement of Changes in Equity (As At ${formatReportDate()})</div>
   </div>
   <table class="acct-table">
     <thead>
@@ -906,7 +964,7 @@ const buildRatiosAndNotesHtml = (m) => `
   <div class="statement-header">
     <div class="reg-line">MGR Investment Club Key Financial Metrics &amp; Notes [1]–[15]</div>
     <h2>KEY PORTFOLIO METRICS &amp; NOTES TO THE FINANCIAL STATEMENTS</h2>
-    <div class="sub-title">For The Period Ended 30th October 2026</div>
+    <div class="sub-title">For The Period Ended ${formatReportDate()}</div>
   </div>
   <table class="acct-table">
     <thead>
@@ -1011,7 +1069,7 @@ const buildMemberSharesScheduleHtml = (m) => {
     <div class="statement-header">
       <div class="reg-line">Note [12] Supporting Schedule • Reconciled Member Passbooks &amp; Yield Deposits</div>
       <h2>MGR INVESTMENT GROUP</h2>
-      <div class="sub-title">Schedule of Each Member's Principal Deposits &amp; Yield Deposits Carried Forward (C/F) As At 30th October 2026</div>
+      <div class="sub-title">Schedule of Each Member's Principal Deposits &amp; Yield Deposits Carried Forward (C/F) As At ${formatReportDate()}</div>
     </div>
     <table class="acct-table">
       <thead>
@@ -1246,7 +1304,7 @@ export const generateReportHtml = (reportType, appContextData, options = {}) => 
           </div>
           <h1 style="font-size:26px; margin-top:8px;">MGR INVESTMENT GROUP</h1>
           <div style="font-size:13px; font-weight:700; color:#9A5B25; text-transform:uppercase; letter-spacing:0.1em; margin-top:6px;">
-            Annual Report and Audited Financial Statements For The Period Ended 30th October 2026
+            Annual Report and Audited Financial Statements For The Period Ended ${formatReportDate()}
           </div>
           <div style="margin-top:16px; font-size:11.5px; color:#4A4D48;">
             <strong>Principal Bankers &amp; Fund Managers:</strong> Stanbic Bank Kenya • Standard Investment Bank (Mansa-X) • Etica Capital MMF
@@ -1344,7 +1402,7 @@ export const downloadReportCSV = (reportType, appContextData, options = {}) => {
       filename = `MGR_Monthly_Statement_of_Account_${dateStamp}.csv`;
       csv = [
         'MGR INVESTMENT GROUP - MONTHLY STATEMENT OF ACCOUNT (PER END OF MONTH)',
-        `Statement Period: As At 30th October 2026,Exported: ${dateStamp}`,
+        `Statement Period: As At ${formatReportDate()},Exported: ${dateStamp}`,
         '',
         'PART 1: CHAMA PORTFOLIO CUSTODIAL ASSETS',
         'Asset Description,Note,Amount (KES)',
@@ -1376,7 +1434,7 @@ export const downloadReportCSV = (reportType, appContextData, options = {}) => {
     case 'balanceSheet':
       filename = `MGR_Statement_of_Financial_Position_${dateStamp}.csv`;
       csv = [
-        'MGR INVESTMENT GROUP - STATEMENT OF FINANCIAL POSITION AS AT 30TH OCTOBER 2026',
+        `MGR INVESTMENT CLUB - STATEMENT OF FINANCIAL POSITION AS AT ${formatReportDate().toUpperCase()}`,
         'Line Item,Note,Oct 2026 (KES)',
         `"Cash & Cash Equivalents (Stanbic Bank Kenya)","[6]",${m.cashInBank.toFixed(2)}`,
         `"Money Market Fund Deposits (Etica Capital MMF)","[8]",${m.eticaBalance.toFixed(2)}`,

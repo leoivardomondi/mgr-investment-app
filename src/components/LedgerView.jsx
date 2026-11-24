@@ -107,7 +107,17 @@ export default function LedgerView() {
   const mansaXTotal = assets.mansaX.totalBalance;
   const totalComprehensiveAssets = cashInBank + eticaBalance + mansaXTotal + loanReceivables;
 
-  // Equity & Statutory Reserves (Exact 30/10/2026 Accounts Update - Net of KES 1k Reg Fee)
+  const todayFormatted = (() => {
+    const d = new Date();
+    const day = d.getDate();
+    const suffix =
+      day % 10 === 1 && day !== 11 ? 'st' :
+      day % 10 === 2 && day !== 12 ? 'nd' :
+      day % 10 === 3 && day !== 13 ? 'rd' : 'th';
+    return `${day}${suffix} ${d.toLocaleString('en-GB', { month: 'long' })} ${d.getFullYear()}`;
+  })();
+
+  // Equity & Statutory Reserves (Live balances opened from 30/10/2026 Baseline)
   const totalShares = totalMemberShares; // KES 710,675.00
   const groupReserves = assets.groupReserveAccount.balance; // KES 11,000.00 (11 members * 1,000 non-refundable reg fee)
 
@@ -413,7 +423,7 @@ export default function LedgerView() {
               MGR INVESTMENT GROUP
             </h3>
             <p className="text-xs font-bold text-[var(--accent-gold)] uppercase tracking-widest mt-0.5">
-              Statement of Financial Position (As At 30th October 2026)
+              Statement of Financial Position (As At {todayFormatted})
             </p>
           </div>
 
@@ -793,7 +803,7 @@ export default function LedgerView() {
               Statement of Comprehensive Income (Investment Club Format)
             </p>
             <p className="text-[11px] text-slate-500">
-              For the Period Ended 30th October 2026 • Investment Returns &amp; Operating Surplus
+              For the Period Ended {todayFormatted} • Investment Returns &amp; Operating Surplus
             </p>
           </div>
 
@@ -1004,7 +1014,7 @@ export default function LedgerView() {
                   MGR Investment Club — Capital Adequacy, Liquidity &amp; Performance Metrics
                 </h3>
                 <p className="text-xs text-slate-500">
-                  MGR Investment Club Financial Standing As At 30th October 2026 vs Club Target Benchmarks
+                  MGR Investment Club Financial Standing As At {todayFormatted} vs Club Target Benchmarks
                 </p>
               </div>
               <span className="text-[10px] font-mono-num font-bold uppercase px-2.5 py-1 rounded-xs bg-[var(--brand-tint)] text-[var(--brand-primary)] border border-[var(--brand-tint-border)]">
