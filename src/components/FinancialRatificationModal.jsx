@@ -69,7 +69,7 @@ export default function FinancialRatificationModal() {
                   ? 'bg-[#1D3B2A] text-white border border-white/20 cursor-default'
                   : 'bg-[var(--accent-gold-light)] hover:brightness-105 text-[var(--brand-primary)] active:scale-95'
               }`}
-              title={isFullyRatified ? 'All 10 members ratified' : 'Click to sign for all 10 members and execute'}
+              title={isFullyRatified ? `All ${totalRequired} members ratified` : `Click to sign for all ${totalRequired} members and execute`}
             >
               <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
               <span className="hidden sm:inline">{isFullyRatified ? 'Fully Ratified' : 'Unanimous Approval Required'}</span>

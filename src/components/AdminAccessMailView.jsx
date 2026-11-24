@@ -158,25 +158,26 @@ export default function AdminAccessMailView() {
   const [savingUser, setSavingUser] = useState(false);
 
   // Mail Composer State
+  const todayMailDate = new Date().toLocaleDateString('en-GB');
   const [mailAudience, setMailAudience] = useState('all_active');
-  const [mailTargetMemberId, setMailTargetMemberId] = useState('MGR-011');
+  const [mailTargetMemberId, setMailTargetMemberId] = useState(currentMember?.id || 'MGR-001');
   const [mailCustomEmail, setMailCustomEmail] = useState('');
   const [mailSubject, setMailSubject] = useState(
-    'MGR Investment Group — Official Share Register & Accounts Verification (30/10/2026)'
+    `MGR Investment Club — Official Share Register & Accounts Verification (${todayMailDate})`
   );
   const [mailBody, setMailBody] = useState(
     `<p>Dear Member,</p>
-<p>Following the direct deposits of <strong>Kshs 1,000/=</strong> (Ref: UJDGFAA8WB on 13/10/26) and <strong>Kshs 17,000/=</strong> (Ref: UJSGF05XHV on 28/10/26) to <strong>Etica Capital MMF (Paybill 4096483, Acc 34236M)</strong> by Member No. 011 Leoivard Omondi Ongule, the official accounts stand at:</p>
+<p>Please find below the latest live standing of the <strong>MGR Investment Club</strong> portfolio as at <strong>${todayMailDate}</strong> (${members.length} registered members):</p>
 <ul>
-  <li><strong>Total Member Deposits C/F:</strong> KES ${Number(totalMemberShares || 710675).toLocaleString(undefined, { minimumFractionDigits: 2 })} (Excludes non-refundable KES 1,000/= Registration Fee deducted to 2026 Incorporation Pool)</li>
-  <li><strong>Registration / Group Reserve Pool:</strong> KES ${Number(assets?.groupReserveAccount?.balance || 11000).toLocaleString(undefined, { minimumFractionDigits: 2 })} (${members.length} &times; KES 1,000/= 2026 Legal Incorporation Fund)</li>
-  <li><strong>Mansa X Special Funds:</strong> KES ${Number(assets?.mansaX?.principal || 500000).toLocaleString(undefined, { minimumFractionDigits: 2 })} Principal + KES ${Number(assets?.mansaX?.interestAccrued || 41587).toLocaleString(undefined, { minimumFractionDigits: 2 })} Q3 Interest = KES ${Number(assets?.mansaX?.totalBalance || 541587).toLocaleString(undefined, { minimumFractionDigits: 2 })} (~20% annualised)</li>
-  <li><strong>Etica Capital MMF:</strong> KES ${Number(assets?.eticaMmf?.statementBalance || 250209.74).toLocaleString(undefined, { minimumFractionDigits: 2 })} (Official Statement as at ${assets?.eticaMmf?.asOfDate || '31/10/2026'}, includes Leoivard's 18k and October interest)</li>
-  <li><strong>Cash in Bank:</strong> KES ${Number(assets?.bankAccount?.balance || 2512).toLocaleString(undefined, { minimumFractionDigits: 2 })} (Equity Bank Kenya - Chama Joint Account)</li>
-  <li><strong>Total Chama Portfolio Value:</strong> KES ${(Number(assets?.mansaX?.totalBalance || 541587) + Number(assets?.eticaMmf?.statementBalance || 250209.74) + Number(assets?.bankAccount?.balance || 2512)).toLocaleString(undefined, { minimumFractionDigits: 2 })} (Balanced Sheet)</li>
+  <li><strong>Total Member Deposits C/F:</strong> KES ${Number(totalMemberShares || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })} (Net of non-refundable KES 1,000/= Registration Fee)</li>
+  <li><strong>Registration / Group Reserve Pool:</strong> KES ${Number(assets?.groupReserveAccount?.balance || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })} (${members.length} &times; KES 1,000/= Legal Incorporation Fund)</li>
+  <li><strong>Mansa X Special Funds:</strong> KES ${Number(assets?.mansaX?.principal || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })} Principal + KES ${Number(assets?.mansaX?.interestAccrued || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })} Interest = KES ${Number(assets?.mansaX?.totalBalance || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</li>
+  <li><strong>Etica Capital MMF:</strong> KES ${Number(assets?.eticaMmf?.statementBalance || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</li>
+  <li><strong>Cash in Bank:</strong> KES ${Number(assets?.bankAccount?.balance || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</li>
+  <li><strong>Total Club Portfolio Value:</strong> KES ${(Number(assets?.mansaX?.totalBalance || 0) + Number(assets?.eticaMmf?.statementBalance || 0) + Number(assets?.bankAccount?.balance || 0)).toLocaleString(undefined, { minimumFractionDigits: 2 })}</li>
 </ul>
-<p>Please sign in to the MGR Investment Group Portal to verify your shares and ratify pending committee actions.</p>
-<p>Yours sincerely,<br/><strong>John Kennedy Obalah</strong><br/>CEO</p>`
+<p>Please sign in to the MGR Investment Club Portal to verify your shares and ratify pending committee actions.</p>
+<p>Yours sincerely,<br/><strong>${currentMember?.name || 'Executive Committee'}</strong><br/>${currentMember?.role || 'MGR Administration'}</p>`
   );
   const [sendingMail, setSendingMail] = useState(false);
 

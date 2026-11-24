@@ -116,6 +116,9 @@ export default function LedgerView() {
       day % 10 === 3 && day !== 13 ? 'rd' : 'th';
     return `${day}${suffix} ${d.toLocaleString('en-GB', { month: 'long' })} ${d.getFullYear()}`;
   })();
+  const shortMonthYear = new Date().toLocaleString('en-GB', { month: 'short', year: 'numeric' });
+  const currentMonthKey = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`;
+  const currentMonthLabel = new Date().toLocaleString('en-GB', { month: 'long', year: 'numeric' });
 
   // Equity & Statutory Reserves (Live balances opened from 30/10/2026 Baseline)
   const totalShares = totalMemberShares; // KES 710,675.00
@@ -420,7 +423,7 @@ export default function LedgerView() {
               MGR Investment Club • Statement of Financial Position
             </p>
             <h3 className="font-editorial font-bold text-lg sm:text-xl text-slate-900 mt-0.5">
-              MGR INVESTMENT GROUP
+              MGR INVESTMENT CLUB
             </h3>
             <p className="text-xs font-bold text-[var(--accent-gold)] uppercase tracking-widest mt-0.5">
               Statement of Financial Position (As At {todayFormatted})
@@ -635,11 +638,12 @@ export default function LedgerView() {
                 MGR INVESTMENT GROUP
               </h3>
               <p className="text-xs font-bold text-[var(--accent-gold)] uppercase tracking-widest mt-0.5">
-                Statement of Account — Month Ended {
-                  statementMonth === '2026-10' ? '31st October 2026' :
-                  statementMonth === '2026-09' ? '30th September 2026' :
-                  statementMonth === '2026-07' ? '31st July 2026' :
-                  statementMonth === '2026-05' ? '31st May 2026' : '31st October 2026 (YTD)'
+                Statement of Account — {
+                  statementMonth === currentMonthKey ? `As At ${todayFormatted}` :
+                  statementMonth === '2026-10' ? 'Month Ended 31st October 2026' :
+                  statementMonth === '2026-09' ? 'Month Ended 30th September 2026' :
+                  statementMonth === '2026-07' ? 'Month Ended 31st July 2026' :
+                  statementMonth === '2026-05' ? 'Month Ended 31st May 2026' : `As At ${todayFormatted} (YTD)`
                 }
               </p>
             </div>
@@ -651,11 +655,14 @@ export default function LedgerView() {
                 onChange={(e) => setStatementMonth(e.target.value)}
                 className="px-2.5 py-1.5 bg-slate-100 border border-slate-300 rounded text-xs font-bold text-slate-900 focus:outline-none focus:border-[var(--brand-primary)]"
               >
-                <option value="2026-10">October 2026 (Month Ended 31/10/2026 — Statement Balance KES 794,194.00)</option>
+                <option value={currentMonthKey}>{currentMonthLabel} (Live As At {todayFormatted} — KES {totalComprehensiveAssets.toLocaleString(undefined, { minimumFractionDigits: 2 })})</option>
+                {currentMonthKey !== '2026-10' && (
+                  <option value="2026-10">October 2026 (Baseline Ended 31/10/2026 — KES 794,194.00)</option>
+                )}
                 <option value="2026-09">September 2026 (Month Ended 30/09/2026) — KES 755,571.00</option>
                 <option value="2026-07">July 2026 (Month Ended 31/07/2026) — KES 712,587.00</option>
                 <option value="2026-05">May 2026 (Month Ended 31/05/2026) — KES 550,714.00</option>
-                <option value="ALL">All 2026 Inception to Date (Full Period)</option>
+                <option value="ALL">All {new Date().getFullYear()} Inception to Date (Full Period)</option>
               </select>
             </div>
           </div>
@@ -676,12 +683,12 @@ export default function LedgerView() {
             <div className="bg-slate-50 p-3 rounded border border-slate-200 space-y-1">
               <span className="text-[10px] uppercase font-bold text-slate-500">Net Member Deposits C/F</span>
               <p className="font-mono-num font-bold text-lg text-slate-900">KES {totalShares.toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
-              <p className="text-[10px] text-slate-500">11 Members • Net of KES 1,000 Reg Fee</p>
+              <p className="text-[10px] text-slate-500">{members.length} Members • Net of KES 1,000 Reg Fee</p>
             </div>
             <div className="bg-slate-50 p-3 rounded border border-slate-200 space-y-1">
               <span className="text-[10px] uppercase font-bold text-slate-500">Registration Fee Reserve</span>
               <p className="font-mono-num font-bold text-lg text-[var(--accent-gold)]">KES {groupReserves.toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
-              <p className="text-[10px] text-slate-500">11 &times; KES 1,000/= Non-Refundable</p>
+              <p className="text-[10px] text-slate-500">{members.length} &times; KES 1,000/= Non-Refundable</p>
             </div>
             <div className="bg-slate-50 p-3 rounded border border-slate-200 space-y-1">
               <span className="text-[10px] uppercase font-bold text-slate-500">Accrued Retained Surplus (Undistributed)</span>
@@ -697,7 +704,7 @@ export default function LedgerView() {
                 Individual Member Statement of Account As At Month End
               </h4>
               <span className="text-[11px] font-mono-num text-slate-500">
-                All 11 Registered Accounts
+                All {members.length} Registered Accounts
               </span>
             </div>
 
@@ -1028,7 +1035,7 @@ export default function LedgerView() {
                   <tr>
                     <th className="py-2.5 px-3">Portfolio Ratio / Metric</th>
                     <th className="py-2.5 px-3 text-right">Club Target</th>
-                    <th className="py-2.5 px-3 text-right bg-[var(--brand-tint)] text-[var(--brand-primary)]">MGR Club (Oct 2026)</th>
+                    <th className="py-2.5 px-3 text-right bg-[var(--brand-tint)] text-[var(--brand-primary)]">MGR Club ({shortMonthYear})</th>
                     <th className="py-2.5 px-3 text-right">Status</th>
                   </tr>
                 </thead>

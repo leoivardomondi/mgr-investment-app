@@ -116,7 +116,7 @@ export default function GovernanceView() {
       <PageContextBanner
         eyebrow="Section VI • Democratic Ballots, Club Governance & Bylaws"
         title="Unanimous Financial Ratifications & Member Resolutions"
-        description="Under MGR Investment Club Constitution and bylaws, the Executive Committee prepares resolutions and treasury actions while all 10 active members exercise oversight through binding ratifications, policy votes, and annual audit approvals."
+        description={`Under MGR Investment Club Constitution and bylaws, the Executive Committee prepares resolutions and treasury actions while all ${(members || []).filter(m => m.status === 'Active').length} active members exercise oversight through binding ratifications, policy votes, and annual audit approvals.`}
         imageUrl="/images/african_women_leaders_group.jpg"
         imageAlt="African executive committee leaders and investment club officers"
         imageCaption="MGR Investment Club Executive Leadership • Democratic Governance"

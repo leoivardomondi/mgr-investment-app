@@ -161,10 +161,10 @@ export default function Header({ onOpenDataEditor, onOpenProfileModal }) {
                 MGR
               </span>
               <span className="hidden md:inline font-bold text-sm md:text-base tracking-tight text-white whitespace-nowrap">
-                MGR INVESTMENT GROUP
+                MGR INVESTMENT CLUB
               </span>
               <span className="hidden lg:inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-mono-num font-semibold uppercase tracking-widest bg-white/10 text-[var(--accent-gold-light)] border border-white/10">
-                FY 2026
+                FY {new Date().getFullYear()}
               </span>
               <span
                 className={`hidden xl:inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-mono-num font-semibold uppercase tracking-wider border ${

@@ -67,6 +67,8 @@ export default function DashboardView({ onOpenDepositModal }) {
   } = useApp();
 
   const pendingRatifications = (pendingFinancialActions || []).filter(a => a.status === 'Pending Member Ratification');
+  const activeMemberCount = (members || []).filter(m => m.status === 'Active').length;
+  const todayShortDate = new Date().toLocaleDateString('en-GB');
 
   const myEquityPercent = totalMemberShares > 0 
     ? ((currentMember.shares / totalMemberShares) * 100).toFixed(2) 
@@ -211,7 +213,7 @@ export default function DashboardView({ onOpenDepositModal }) {
       <PageContextBanner
         eyebrow="Section I • Member Passbook & Treasury Overview"
         title="Investment Club Capital Stewardship & Yield Summary"
-        description="This page shows your personal share passbook, your club equity stake, and how the 11 members' pooled deposits are deployed across CMA-licensed Money Market Funds, Mansa-X Special Funds, and Government Securities."
+        description={`This page shows your personal share passbook, your club equity stake, and how the ${members.length} members' pooled deposits are deployed across CMA-licensed Money Market Funds, Mansa-X Special Funds, and Government Securities.`}
         imageUrl="/images/kenya_chama_self_help_group.jpg?v=sib"
         imageAlt="Standard Investment Bank (SIB) advisory desk in Kenya"
         imageCaption="Kenyan Chama & Self-Help Group • Pooled Share Capital & Audited Returns"
@@ -279,7 +281,7 @@ export default function DashboardView({ onOpenDepositModal }) {
             const qualifyingPool = members
               .filter(m => m.id !== 'MGR-011' && (!m.joinedDate || m.joinedDate < '2026-10-01') && m.joinedDate !== 'Q4-2026')
               .reduce((s, m) => s + Number(m.shares || 0), 0);
-            const totalYieldPool = Number(assets.mansaX?.interestAccrued || 41587) + 30931.74;
+            const totalYieldPool = Number(retainedSurplus || 0);
             const myAccruedYield = isQ4PostStatementMember
               ? 0
               : (qualifyingPool > 0 ? (Number(currentMember.shares || 0) / qualifyingPool) * totalYieldPool : 0);
@@ -514,7 +516,7 @@ export default function DashboardView({ onOpenDepositModal }) {
                 {pendingRatifications[0]?.title}
               </h3>
               <p className="text-xs text-slate-600 leading-relaxed max-w-2xl">
-                Initiated by {pendingRatifications[0]?.initiatedBy}. Per club governance rules, all financial actions initiated by Executive Committee members must receive 100% unanimous approval from all 10 active members before execution.
+                Initiated by {pendingRatifications[0]?.initiatedBy}. Per club governance rules, all financial actions initiated by Executive Committee members must receive 100% unanimous approval from all {activeMemberCount} active members before execution.
               </p>
             </div>
 
@@ -909,7 +911,7 @@ export default function DashboardView({ onOpenDepositModal }) {
         <div className="flex items-center justify-between">
           <div>
             <h3 className="font-bold text-sm text-slate-900">
-              Each Member Deposits & Yield Deposits Standings (C/F 30/10/2026)
+              Each Member Deposits &amp; Yield Deposits Standings (C/F {todayShortDate})
             </h3>
             <p className="text-[11px] text-slate-500 font-mono-num">
               11 Official Member Accounts • Principal Deposits C/F: KES {totalMemberShares.toLocaleString()} • Total Assets: KES {(Number(assets.mansaX.totalBalance) + Number(assets.eticaMmf.statementBalance) + Number(assets.bankAccount.balance)).toLocaleString()} (Yield Surplus: +KES {Number(retainedSurplus || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })})
@@ -929,7 +931,7 @@ export default function DashboardView({ onOpenDepositModal }) {
             const qualifyingPool = members
               .filter(m => m.id !== 'MGR-011' && (!m.joinedDate || m.joinedDate < '2026-10-01') && m.joinedDate !== 'Q4-2026')
               .reduce((s, m) => s + Number(m.shares || 0), 0);
-            const totalYieldPool = Number(assets.mansaX?.interestAccrued || 41587) + 30931.74;
+            const totalYieldPool = Number(retainedSurplus || 0);
 
             return members
               .slice()

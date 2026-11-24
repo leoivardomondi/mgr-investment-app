@@ -34,6 +34,9 @@ const formatReportDate = (dateObj = new Date()) => {
   return `${day}${suffix} ${month} ${year}`;
 };
 
+const formatShortMonthYear = (dateObj = new Date()) =>
+  dateObj.toLocaleString('en-GB', { month: 'short', year: 'numeric' });
+
 // Official MGR Investment Club White-on-Forest-Green Crest (Inline SVG for reliable offline HTML & Print-to-PDF rendering)
 const MGR_CREST_SVG_INLINE = `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="145 100 510 510" width="64" height="64" style="display:block;flex-shrink:0;">
@@ -516,7 +519,7 @@ const buildBalanceSheetHtml = (m) => `
       <tr>
         <th>Assets, Equity &amp; Liabilities</th>
         <th class="center">Notes</th>
-        <th class="right">Oct 2026 (Kshs)</th>
+        <th class="right">${formatShortMonthYear()} (Kshs)</th>
       </tr>
     </thead>
     <tbody>
@@ -763,7 +766,7 @@ const buildIncomeStatementHtml = (m) => `
       <tr>
         <th>Revenue &amp; Expenditure Line Items</th>
         <th class="center">Notes</th>
-        <th class="right">Oct 2026 (Kshs)</th>
+        <th class="right">${formatShortMonthYear()} (Kshs)</th>
       </tr>
     </thead>
     <tbody>
@@ -856,7 +859,7 @@ const buildCashFlowAndChangesInEquityHtml = (m) => `
       <tr>
         <th>Cash Flow Activity (IAS 7)</th>
         <th class="center">Notes</th>
-        <th class="right">Oct 2026 (Kshs)</th>
+        <th class="right">${formatShortMonthYear()} (Kshs)</th>
       </tr>
     </thead>
     <tbody>
@@ -943,7 +946,7 @@ const buildCashFlowAndChangesInEquityHtml = (m) => `
         <td class="right num">${fmt(m.totalShares + m.groupReserves)}</td>
       </tr>
       <tr>
-        <td>Investment Surplus for the Period Ended 30th Oct 2026</td>
+        <td>Investment Surplus for the Period Ended ${formatReportDate()}</td>
         <td class="right num">—</td>
         <td class="right num">—</td>
         <td class="right num pos">${fmt(m.retainedSurplus)}</td>
@@ -971,7 +974,7 @@ const buildRatiosAndNotesHtml = (m) => `
       <tr>
         <th>Portfolio Metric / Capital Ratio</th>
         <th class="center">Club Benchmark Target</th>
-        <th class="right">MGR Live (Oct 2026)</th>
+        <th class="right">MGR Live (${formatShortMonthYear()})</th>
       </tr>
     </thead>
     <tbody>
@@ -1367,7 +1370,7 @@ export const generateReportHtml = (reportType, appContextData, options = {}) => 
     case 'mmfProposal':
       title = 'MGR Investment Group — Mansa-X & Etica MMF Reallocation Report';
       filename = `MGR_MansaX_and_Etica_MMF_Report_${dateStamp}.html`;
-      body = buildMmfAndCommitteeProposalHtml(options.reallocationCapital || 774571);
+      body = buildMmfAndCommitteeProposalHtml(options.reallocationCapital || m.totalComprehensiveAssets);
       break;
 
     default:
@@ -1435,7 +1438,7 @@ export const downloadReportCSV = (reportType, appContextData, options = {}) => {
       filename = `MGR_Statement_of_Financial_Position_${dateStamp}.csv`;
       csv = [
         `MGR INVESTMENT CLUB - STATEMENT OF FINANCIAL POSITION AS AT ${formatReportDate().toUpperCase()}`,
-        'Line Item,Note,Oct 2026 (KES)',
+        `Line Item,Note,${formatShortMonthYear()} (KES)`,
         `"Cash & Cash Equivalents (Stanbic Bank Kenya)","[6]",${m.cashInBank.toFixed(2)}`,
         `"Money Market Fund Deposits (Etica Capital MMF)","[8]",${m.eticaBalance.toFixed(2)}`,
         `"Member Loan Receivables (80% Collateralized)","[7]",${m.loanReceivables.toFixed(2)}`,
@@ -1457,7 +1460,7 @@ export const downloadReportCSV = (reportType, appContextData, options = {}) => {
       filename = `MGR_Statement_of_Comprehensive_Income_${dateStamp}.csv`;
       csv = [
         'MGR INVESTMENT GROUP - STATEMENT OF COMPREHENSIVE INCOME FOR PERIOD ENDED 30TH OCTOBER 2026',
-        'Line Item,Note,Oct 2026 (KES)',
+        `Line Item,Note,${formatShortMonthYear()} (KES)`,
         `"Mansa-X Special Fund Investment Return","[3a]",${m.mansaXInterest.toFixed(2)}`,
         `"Etica Capital MMF Statement Yield","[3b]",${m.eticaInterest.toFixed(2)}`,
         `"Interest on Member Advances (10% Facility Fee)","[3c]",${m.loanInterestIncome.toFixed(2)}`,
@@ -1479,7 +1482,7 @@ export const downloadReportCSV = (reportType, appContextData, options = {}) => {
       filename = `MGR_Statement_of_Cash_Flows_and_Equity_${dateStamp}.csv`;
       csv = [
         'MGR INVESTMENT GROUP - STATEMENT OF CASH FLOWS & CHANGES IN EQUITY',
-        'Activity,Note,Oct 2026 (KES)',
+        `Activity,Note,${formatShortMonthYear()} (KES)`,
         `"Operating Surplus Before Tax","[CF-1]",${m.operatingSurplusBeforeTax.toFixed(2)}`,
         `"Less: Investment Interest Income","[CF-2]",-${(m.mansaXInterest + m.eticaInterest).toFixed(2)}`,
         `"Movement in Member Loans & Receivables","[CF-3]",-${m.loanReceivables.toFixed(2)}`,
@@ -1495,7 +1498,7 @@ export const downloadReportCSV = (reportType, appContextData, options = {}) => {
       filename = `MGR_Investment_Ratios_${dateStamp}.csv`;
       csv = [
         'MGR INVESTMENT GROUP - KEY INVESTMENT METRICS & PORTFOLIO RATIOS',
-        'Metric,Club Benchmark Target,MGR Live (Oct 2026)',
+        `Metric,Club Benchmark Target,MGR Live (${formatShortMonthYear()})`,
         `"Registered Membership","Min 10 Members","${m.members.length} Members"`,
         `"Core Capital to Total Assets","Min 10.0%",${m.coreCapitalToAssets}%`,
         `"Core Capital to Total Deposits","Min 8.0%",${m.coreCapitalToDeposits}%`,

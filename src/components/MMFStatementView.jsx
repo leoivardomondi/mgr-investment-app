@@ -217,7 +217,7 @@ export default function MMFStatementView() {
     });
 
     if (success) {
-      showToast(`KES ${statementData.netInterest.toLocaleString()} distribution initiated! All 10 active members must ratify before execution.`);
+      showToast(`KES ${statementData.netInterest.toLocaleString()} distribution initiated! All ${members.filter(m => m.status === 'Active').length} active members must ratify before execution.`);
     }
   };
 

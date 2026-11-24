@@ -730,7 +730,7 @@ export default function LoansView({ onOpenDataEditor }) {
             <CheckCircle2 className="w-6 h-6 text-[var(--accent-emerald)] mx-auto" />
             <p className="font-bold text-xs text-slate-800">Zero Active Loans Across All Members</p>
             <p className="text-[11px] text-slate-500 max-w-sm mx-auto">
-              Richard Ruto and all 11 members have KES 0.00 in loan liabilities. All member capital accounts are 100% unencumbered.
+              All {members.length} registered members currently have KES 0.00 in loan liabilities. All member capital accounts are 100% unencumbered.
             </p>
           </div>
         ) : (

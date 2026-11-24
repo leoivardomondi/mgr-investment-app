@@ -1315,7 +1315,7 @@ export function AppProvider({ children }) {
     const notif = {
       id: `NOTIF-${Date.now()}`,
       title: `Financial Action Ratified: KSh ${interest.toLocaleString()}`,
-      message: `Pro-rata dividend approved unanimously by all 10 members! Credited directly to member shares in MMF compounding pool under ${policy === 'holding-period' ? 'Option A Holding-Period Prorated policy' : policy}.`,
+      message: `Pro-rata dividend approved unanimously by all ${members.filter(m => m.status === 'Active').length} active members! Credited directly to member shares in MMF compounding pool under ${policy === 'holding-period' ? 'Option A Holding-Period Prorated policy' : policy}.`,
       date: new Date().toISOString().split('T')[0],
       read: false,
       type: "dividend"
@@ -1483,7 +1483,7 @@ export function AppProvider({ children }) {
       commitInterestDistribution(action.actionPayload);
     }
 
-    showToast(`All 10 active member approvals collected! Financial transaction executed & reconciled.`);
+    showToast(`All ${members.filter(m => m.status === 'Active').length} active member approvals collected! Financial transaction executed & reconciled.`);
     return true;
   };
 
@@ -2806,7 +2806,7 @@ export function AppProvider({ children }) {
         u.phone.replace(/\s+/g, '') === cleanId.replace(/\s+/g, '')
     );
     if (!matchedUser) {
-      return { ok: false, error: 'Member ID or Email not found. Use MGR-001 through MGR-011.' };
+      return { ok: false, error: 'Member ID or Email not found. Use your permanent MGR Membership Number (e.g. MGR-001) or registered email.' };
     }
     if (matchedUser.accountStatus === 'Suspended' || matchedUser.accountStatus === 'Deactivated') {
       return { ok: false, error: 'This member account has been deactivated by the System Administrator. Please contact management.' };

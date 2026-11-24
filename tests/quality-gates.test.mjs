@@ -234,6 +234,15 @@ test('Financial baseline: founding roster (MGR-001..MGR-011), assets, and quarte
   assert.ok(readText('src/components/MembersView.jsx').includes('isPostQ3Member'), 'MembersView must use isPostQ3Member for Q3 yield cutoff');
   assert.ok(readText('src/components/MMFStatementView.jsx').includes('isPostQ3Member'), 'MMFStatementView must use isPostQ3Member for Q3 yield cutoff');
   assert.ok(readText('src/context/AppContext.jsx').includes('isPostQ3Member'), 'AppContext must use isPostQ3Member in distributeInterest');
+
+  // Ensure yield pools use live retainedSurplus instead of hardcoded magic numbers
+  assert.equal(readText('src/components/DashboardView.jsx').includes('30931.74'), false, 'DashboardView must use live retainedSurplus, not hardcoded 30931.74');
+  assert.equal(readText('src/components/MembersView.jsx').includes('21309'), false, 'MembersView must use live retainedSurplus, not hardcoded 21309');
+  assert.equal(readText('src/components/DataEditorModal.jsx').includes('72518.74'), false, 'DataEditorModal must use live retainedSurplus, not hardcoded 72518.74');
+
+  // Permanent Registration Number invariant: Deceased member MGR-007 retains their permanent ID
+  const deceasedFoundingMember = INITIAL_MEMBERS.find((m) => m.id === 'MGR-007');
+  assert.ok(deceasedFoundingMember, 'Deceased member MGR-007 must retain permanent registration number MGR-007');
 });
 
 // ============================================================================

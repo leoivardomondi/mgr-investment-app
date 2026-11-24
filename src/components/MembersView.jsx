@@ -53,6 +53,7 @@ export default function MembersView({ onOpenDepositModal, onOpenDataEditor }) {
     loans,
     ledger,
     totalMemberShares, 
+    retainedSurplus,
     setActiveTab, 
     showToast,
     recordDeposit,
@@ -656,7 +657,7 @@ export default function MembersView({ onOpenDepositModal, onOpenDataEditor }) {
                   "If Everyone Recruits 3 Members @, Our Population Will Grow!"
                 </h3>
                 <p className="text-xs text-white/80 leading-relaxed mt-0.5 max-w-xl">
-                  Call to action initiated by CEO John Kennedy Obalah. With 9 active members recruiting 3 prospects each, MGR will expand by <strong>27 new members</strong> and generate <strong>KES 27,000/= in non-refundable registration capital</strong>.
+                  Call to action initiated by CEO John Kennedy Obalah. With {members.filter(m => m.status === 'Active').length} active members recruiting 3 prospects each, MGR will expand by <strong>{members.filter(m => m.status === 'Active').length * 3} new members</strong> and generate <strong>KES {(members.filter(m => m.status === 'Active').length * 3000).toLocaleString()}/= in non-refundable registration capital</strong>.
                 </p>
               </div>
 
@@ -673,13 +674,13 @@ export default function MembersView({ onOpenDepositModal, onOpenDataEditor }) {
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 text-xs">
               <div className="bg-white/10 p-3 rounded-xl border border-white/10 backdrop-blur-xs">
                 <span className="text-[10px] text-white/70 block uppercase font-bold">Total Target Recruits</span>
-                <span className="text-lg font-bold text-white mt-0.5 block">27 Members</span>
+                <span className="text-lg font-bold text-white mt-0.5 block">{members.filter(m => m.status === 'Active').length * 3} Members</span>
                 <span className="text-[10px] text-[var(--accent-gold-light)]">3 per active member</span>
               </div>
 
               <div className="bg-white/10 p-3 rounded-xl border border-white/10 backdrop-blur-xs">
                 <span className="text-[10px] text-white/70 block uppercase font-bold">John Kennedy Recruits</span>
-                <span className="text-lg font-bold text-[var(--accent-gold-light)] mt-0.5 block">5 Verified</span>
+                <span className="text-lg font-bold text-[var(--accent-gold-light)] mt-0.5 block">{johnRecruits.length} Verified</span>
                 <span className="text-[10px] text-white/80">Moses, Ben, Ruto, Joash, Josephat</span>
               </div>
 
@@ -836,7 +837,7 @@ export default function MembersView({ onOpenDepositModal, onOpenDataEditor }) {
               <span>Executive Recruiter Hall of Fame: John Kennedy Obalah</span>
             </h3>
             <p className="text-xs text-slate-500">
-              John Kennedy single-handedly recruited 5 out of our 11 current members:
+              John Kennedy single-handedly recruited {johnRecruits.length} out of our {members.length} current members:
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5 pt-1">
@@ -958,7 +959,7 @@ export default function MembersView({ onOpenDepositModal, onOpenDataEditor }) {
               const q3BaseTotal = members
                 .filter(item => !isPostQ3Member(item) && (item.status === 'Active' || item.id === 'MGR-007'))
                 .reduce((s, item) => s + Number(item.shares || 0), 0);
-              const totalQ3Yield = Number(assets.mansaX?.interestAccrued || 41587) + 21309;
+              const totalQ3Yield = Number(retainedSurplus || 0);
               const accruedMemberYield = (!isPostQ3Joiner && !isPending && q3BaseTotal > 0)
                 ? (Number(member.shares || 0) / q3BaseTotal) * totalQ3Yield
                 : 0;
@@ -1675,7 +1676,7 @@ export default function MembersView({ onOpenDepositModal, onOpenDataEditor }) {
                 const q3Base = members
                   .filter(item => !isPostQ3Member(item) && (item.status === 'Active' || item.id === 'MGR-007'))
                   .reduce((s, item) => s + Number(item.shares || 0), 0);
-                const totalQ3Pool = Number(assets.mansaX?.interestAccrued || 41587) + 21309;
+                const totalQ3Pool = Number(retainedSurplus || 0);
                 const accruedYld = (!isPostQ3Member(liveM) && liveM.status !== 'Pending Approval' && q3Base > 0)
                   ? (Number(liveM.shares || 0) / q3Base) * totalQ3Pool
                   : 0;

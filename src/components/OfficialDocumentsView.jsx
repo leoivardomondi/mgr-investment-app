@@ -1260,7 +1260,7 @@ export default function OfficialDocumentsView() {
                   <div className="p-3 rounded-lg bg-[#FAF8F5] border border-[#E2DDD3] space-y-1">
                     <strong className="text-[#1D3B2A] block">Stage 1: Executive Committee Meeting</strong>
                     <p className="text-[11px] text-slate-600 leading-relaxed">
-                      Convene the Executive Committee (Chairman Dan Aloo, CEO John Oballa, Treasurer Sarah Njoki, Secretary Alice Owuor) to debate, harmonize, and pass an executive resolution recommending the documents for adoption.
+                      Convene the Executive Committee (Chairman Dan Aloo, Vice Chairman Josephat Lubanga, CEO John Kennedy Obalah, Treasurer Leoivard Omondi Ongule, Secretary Sarah Njoki, Compliance Officer Benjamin Madara, and Research Officer Dr Joash Migosi) to debate, harmonize, and pass an executive resolution recommending the documents for adoption.
                     </p>
                   </div>
                   <div className="p-3 rounded-lg bg-[#FAF8F5] border border-[#E2DDD3] space-y-1">

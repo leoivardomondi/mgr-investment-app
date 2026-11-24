@@ -25,6 +25,7 @@ export default function DataEditorModal({ isOpen, onClose }) {
     deleteMember, 
     assets, 
     updateAssets, 
+    retainedSurplus,
     ledger,
     addLedgerEntry, 
     updateLedgerEntry,
@@ -493,7 +494,7 @@ export default function DataEditorModal({ isOpen, onClose }) {
                 const yieldDeposits = depList.filter(d => d.type === 'Yield / Dividend Deposit').reduce((s, d) => s + Number(d.amount || 0), 0);
                 const isQ4Member = targetM.id === 'MGR-011' || (targetM.joinedDate && targetM.joinedDate >= '2026-10-01') || targetM.joinedDate === 'Q4-2026';
                 const qualifyingBase = members.filter(m => m.id !== 'MGR-011' && (!m.joinedDate || m.joinedDate < '2026-10-01') && m.joinedDate !== 'Q4-2026').reduce((s, m) => s + Number(m.shares || 0), 0);
-                const accruedYield = isQ4Member ? 0 : (qualifyingBase > 0 ? (Number(targetM.shares || 0) / qualifyingBase) * 72518.74 : 0);
+                const accruedYield = isQ4Member ? 0 : (qualifyingBase > 0 ? (Number(targetM.shares || 0) / qualifyingBase) * Number(retainedSurplus || 0) : 0);
                 const diff = Number(targetM.shares || 0) - sumShares;
                 const isMatched = Math.abs(diff) < 0.01;
 

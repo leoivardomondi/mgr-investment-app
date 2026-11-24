@@ -223,7 +223,7 @@ export default function AuthGateModal() {
             </div>
             <div>
               <h1 className="font-bold text-sm tracking-tight text-white leading-tight">
-                MGR INVESTMENT GROUP
+                MGR INVESTMENT CLUB
               </h1>
               <p className="text-[10px] text-white/75 font-mono">
                 Private Share Registry • Cap 30A
@@ -231,7 +231,7 @@ export default function AuthGateModal() {
             </div>
           </div>
           <span className="text-[10px] font-mono-num font-bold px-2 py-0.5 rounded bg-white/10 text-[var(--accent-gold-light)] border border-white/15">
-            FY 2026
+            FY {new Date().getFullYear()}
           </span>
         </div>
 
@@ -248,7 +248,7 @@ export default function AuthGateModal() {
               </div>
               <div>
                 <h1 className="font-bold text-base tracking-tight text-white">
-                  MGR INVESTMENT GROUP
+                  MGR INVESTMENT CLUB
                 </h1>
                 <p className="text-[11px] text-white/75">
                   Investment Club Share Registry &amp; Audited Accounts
@@ -265,7 +265,7 @@ export default function AuthGateModal() {
                 Authenticated Member &amp; Executive Portal
               </h2>
               <p className="text-xs text-white/80 leading-relaxed">
-                Sign in with your official Membership Number (<strong>MGR-001</strong> – <strong>MGR-011</strong>) or registered email address. New members may register directly for authenticated access.
+                Sign in with your permanent official Membership Number (e.g. <strong>MGR-001</strong>) or registered email address. New members may register directly for authenticated access.
               </p>
             </div>
           </div>
@@ -281,7 +281,7 @@ export default function AuthGateModal() {
             </button>
             <div className="text-[11px] text-white/70 flex items-center justify-between">
               <span>Etica Paybill: <strong>4096483</strong> • Acc: <strong>34236M</strong></span>
-              <span className="font-mono-num">FY 2026</span>
+              <span className="font-mono-num">FY {new Date().getFullYear()}</span>
             </div>
           </div>
         </div>
