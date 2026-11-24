@@ -369,7 +369,7 @@ const wrapHtmlDocument = (title, bodyHtml) => `<!DOCTYPE html>
 <body>
   <div class="toolbar-no-print">
     <div>
-      <strong>MGR INVESTMENT GROUP • OFFICIAL ARCHIVAL REPORT</strong>
+      <strong>MGR INVESTMENT CLUB • OFFICIAL ARCHIVAL REPORT</strong>
       <span style="margin-left:10px; opacity:0.85;">Investment Club &amp; IFRS Financial Format</span>
     </div>
     <button onclick="window.print()">Print / Save as PDF</button>
@@ -511,7 +511,6 @@ export const computeFinancialMetrics = ({ members, assets, loans, ledger, totalM
 const buildBalanceSheetHtml = (m) => `
   <div class="statement-header">
     <div class="reg-line">MGR Investment Club Constitution &amp; Financial Reporting Standards</div>
-    <h2>MGR INVESTMENT GROUP</h2>
     <div class="sub-title">Statement of Financial Position As At ${formatReportDate()}</div>
   </div>
   <table class="acct-table">
@@ -631,7 +630,6 @@ const buildBalanceSheetHtml = (m) => `
 const buildStatementOfAccountHtml = (m) => `
   <div class="statement-header">
     <div class="reg-line">MGR Investment Club Constitution &amp; Accountancy Guidelines</div>
-    <h2>MGR INVESTMENT GROUP</h2>
     <div class="sub-title">Monthly Statement of Account (As At ${formatReportDate()})</div>
   </div>
 
@@ -758,7 +756,6 @@ const buildStatementOfAccountHtml = (m) => `
 const buildIncomeStatementHtml = (m) => `
   <div class="statement-header">
     <div class="reg-line">MGR Investment Club Constitution &amp; Accountancy Guidelines</div>
-    <h2>MGR INVESTMENT GROUP</h2>
     <div class="sub-title">Statement of Comprehensive Income For The Period Ended ${formatReportDate()}</div>
   </div>
   <table class="acct-table">
@@ -851,7 +848,6 @@ const buildIncomeStatementHtml = (m) => `
 const buildCashFlowAndChangesInEquityHtml = (m) => `
   <div class="statement-header">
     <div class="reg-line">MGR Investment Club • Statement of Cash Flows &amp; Equity</div>
-    <h2>MGR INVESTMENT GROUP</h2>
     <div class="sub-title">Statement of Cash Flows &amp; Statement of Changes in Equity (As At ${formatReportDate()})</div>
   </div>
   <table class="acct-table">
@@ -1071,8 +1067,7 @@ const buildMemberSharesScheduleHtml = (m) => {
   return `
     <div class="statement-header">
       <div class="reg-line">Note [12] Supporting Schedule • Reconciled Member Passbooks &amp; Yield Deposits</div>
-      <h2>MGR INVESTMENT GROUP</h2>
-      <div class="sub-title">Schedule of Each Member's Principal Deposits &amp; Yield Deposits Carried Forward (C/F) As At ${formatReportDate()}</div>
+        <div class="sub-title">Schedule of Each Member's Principal Deposits &amp; Yield Deposits Carried Forward (C/F) As At ${formatReportDate()}</div>
     </div>
     <table class="acct-table">
       <thead>
@@ -1126,8 +1121,7 @@ const buildDoubleEntryJournalHtml = (m) => {
   return `
     <div class="statement-header">
       <div class="reg-line">Immutable Double-Entry Accounting Trail</div>
-      <h2>MGR INVESTMENT GROUP</h2>
-      <div class="sub-title">General Ledger Journal Transactions (${(m.ledger || []).length} Posted Entries)</div>
+        <div class="sub-title">General Ledger Journal Transactions (${(m.ledger || []).length} Posted Entries)</div>
     </div>
     <table class="acct-table">
       <thead>
@@ -1200,9 +1194,9 @@ const buildMmfAndCommitteeProposalHtml = (reallocationCapital = 774571) => {
   return `
     <div class="cover-box">
       <div class="num" style="font-size:11px; letter-spacing:0.15em; text-transform:uppercase; color:#4A4D48;">
-        Dated: ${COMMITTEE_TARGET_ALLOCATION.proposalDate} • MGR Investment Group Portfolio &amp; CMA Yield Report
+        Dated: ${formatReportDate()} • MGR Investment Club Portfolio &amp; CMA Yield Report
       </div>
-      <h1 style="font-size:22px; margin-top:8px;">MGR INVESTMENT GROUP — MANSA-X &amp; ETICA MMF REALLOCATION REPORT</h1>
+      <h1 style="font-size:22px; margin-top:8px;">MANSA-X &amp; ETICA MMF REALLOCATION REPORT</h1>
       <div style="font-size:12px; font-weight:700; color:#9A5B25; text-transform:uppercase; letter-spacing:0.08em; margin-top:6px;">
         Prepared by the MGR Executive Committee: Dan Aloo (Chair), John K. Obalah (CEO), Dr Joash Migosi PhD, Leoivard Omondi
       </div>
@@ -1292,21 +1286,20 @@ export const generateReportHtml = (reportType, appContextData, options = {}) => 
   const m = computeFinancialMetrics(appContextData);
   const dateStamp = new Date().toISOString().split('T')[0];
 
-  let title = 'MGR Investment Group Financial Report';
+  let title = 'MGR Investment Club Financial Report';
   let filename = `MGR_Financial_Report_${dateStamp}.html`;
   let body = '';
 
   switch (reportType) {
     case 'fullAnnualPack':
-      title = 'MGR Investment Group — Complete Annual Report & Financial Statements (Investment Club & IFRS Format)';
+      title = 'MGR Investment Club — Complete Annual Report & Financial Statements (IFRS Format)';
       filename = `MGR_Complete_Annual_Report_Pack_${dateStamp}.html`;
       body = `
         <div class="cover-box">
           <div class="num" style="font-size:11px; letter-spacing:0.15em; text-transform:uppercase; color:#4A4D48;">
-            Registration Ref: MGR-2026 • Kenyan Investment Club &amp; Chama Bylaws
+            Registration Ref: MGR-2026 • Kenyan Investment Club Bylaws
           </div>
-          <h1 style="font-size:26px; margin-top:8px;">MGR INVESTMENT GROUP</h1>
-          <div style="font-size:13px; font-weight:700; color:#9A5B25; text-transform:uppercase; letter-spacing:0.1em; margin-top:6px;">
+          <div style="font-size:14px; font-weight:700; color:#9A5B25; text-transform:uppercase; letter-spacing:0.1em; margin-top:10px;">
             Annual Report and Audited Financial Statements For The Period Ended ${formatReportDate()}
           </div>
           <div style="margin-top:16px; font-size:11.5px; color:#4A4D48;">
@@ -1326,49 +1319,49 @@ export const generateReportHtml = (reportType, appContextData, options = {}) => 
 
     
     case 'statementOfAccount':
-      title = 'MGR Investment Group — Monthly Statement of Account (Per Month End)';
+      title = 'MGR Investment Club — Monthly Statement of Account';
       filename = `MGR_Monthly_Statement_of_Account_${dateStamp}.html`;
       body = `${buildStatementOfAccountHtml(m)}${buildSignatoriesBlock()}`;
       break;
 
     case 'balanceSheet':
-      title = 'MGR Investment Group — Statement of Financial Position';
+      title = 'MGR Investment Club — Statement of Financial Position';
       filename = `MGR_Statement_of_Financial_Position_${dateStamp}.html`;
       body = `${buildBalanceSheetHtml(m)}${buildSignatoriesBlock()}`;
       break;
 
     case 'incomeStatement':
-      title = 'MGR Investment Group — Statement of Comprehensive Income';
+      title = 'MGR Investment Club — Statement of Comprehensive Income';
       filename = `MGR_Statement_of_Comprehensive_Income_${dateStamp}.html`;
       body = `${buildIncomeStatementHtml(m)}${buildSignatoriesBlock()}`;
       break;
 
     case 'cashFlows':
-      title = 'MGR Investment Group — Statement of Cash Flows & Changes in Equity';
+      title = 'MGR Investment Club — Statement of Cash Flows & Changes in Equity';
       filename = `MGR_Cash_Flows_and_Changes_in_Equity_${dateStamp}.html`;
       body = `${buildCashFlowAndChangesInEquityHtml(m)}${buildSignatoriesBlock()}`;
       break;
 
     case 'ratios':
-      title = 'MGR Investment Group — Key Investment Performance Ratios & Accounting Notes';
+      title = 'MGR Investment Club — Key Investment Performance Ratios & Accounting Notes';
       filename = `MGR_Investment_Ratios_and_Notes_${dateStamp}.html`;
       body = `${buildRatiosAndNotesHtml(m)}${buildSignatoriesBlock()}`;
       break;
 
     case 'equity':
-      title = 'MGR Investment Group — Schedule of Members Deposits & Yields C/F';
+      title = 'MGR Investment Club — Schedule of Members Deposits & Yields C/F';
       filename = `MGR_Members_Share_Register_CF_${dateStamp}.html`;
       body = `${buildMemberSharesScheduleHtml(m)}${buildSignatoriesBlock()}`;
       break;
 
     case 'ledger':
-      title = 'MGR Investment Group — Double-Entry General Ledger Journal';
+      title = 'MGR Investment Club — Double-Entry General Ledger Journal';
       filename = `MGR_Double_Entry_General_Ledger_${dateStamp}.html`;
       body = `${buildDoubleEntryJournalHtml(m)}${buildSignatoriesBlock()}`;
       break;
 
     case 'mmfProposal':
-      title = 'MGR Investment Group — Mansa-X & Etica MMF Reallocation Report';
+      title = 'MGR Investment Club — Mansa-X & Etica MMF Reallocation Report';
       filename = `MGR_MansaX_and_Etica_MMF_Report_${dateStamp}.html`;
       body = buildMmfAndCommitteeProposalHtml(options.reallocationCapital || m.totalComprehensiveAssets);
       break;
@@ -1404,7 +1397,7 @@ export const downloadReportCSV = (reportType, appContextData, options = {}) => {
     case 'statementOfAccount':
       filename = `MGR_Monthly_Statement_of_Account_${dateStamp}.csv`;
       csv = [
-        'MGR INVESTMENT GROUP - MONTHLY STATEMENT OF ACCOUNT (PER END OF MONTH)',
+        'MGR INVESTMENT CLUB - MONTHLY STATEMENT OF ACCOUNT',
         `Statement Period: As At ${formatReportDate()},Exported: ${dateStamp}`,
         '',
         'PART 1: CHAMA PORTFOLIO CUSTODIAL ASSETS',
@@ -1459,7 +1452,7 @@ export const downloadReportCSV = (reportType, appContextData, options = {}) => {
     case 'incomeStatement':
       filename = `MGR_Statement_of_Comprehensive_Income_${dateStamp}.csv`;
       csv = [
-        'MGR INVESTMENT GROUP - STATEMENT OF COMPREHENSIVE INCOME FOR PERIOD ENDED 30TH OCTOBER 2026',
+        `MGR INVESTMENT CLUB - STATEMENT OF COMPREHENSIVE INCOME FOR PERIOD ENDED ${formatReportDate().toUpperCase()}`,
         `Line Item,Note,${formatShortMonthYear()} (KES)`,
         `"Mansa-X Special Fund Investment Return","[3a]",${m.mansaXInterest.toFixed(2)}`,
         `"Etica Capital MMF Statement Yield","[3b]",${m.eticaInterest.toFixed(2)}`,
@@ -1481,7 +1474,7 @@ export const downloadReportCSV = (reportType, appContextData, options = {}) => {
     case 'cashFlows':
       filename = `MGR_Statement_of_Cash_Flows_and_Equity_${dateStamp}.csv`;
       csv = [
-        'MGR INVESTMENT GROUP - STATEMENT OF CASH FLOWS & CHANGES IN EQUITY',
+        'MGR INVESTMENT CLUB - STATEMENT OF CASH FLOWS & CHANGES IN EQUITY',
         `Activity,Note,${formatShortMonthYear()} (KES)`,
         `"Operating Surplus Before Tax","[CF-1]",${m.operatingSurplusBeforeTax.toFixed(2)}`,
         `"Less: Investment Interest Income","[CF-2]",-${(m.mansaXInterest + m.eticaInterest).toFixed(2)}`,
@@ -1497,7 +1490,7 @@ export const downloadReportCSV = (reportType, appContextData, options = {}) => {
     case 'ratios':
       filename = `MGR_Investment_Ratios_${dateStamp}.csv`;
       csv = [
-        'MGR INVESTMENT GROUP - KEY INVESTMENT METRICS & PORTFOLIO RATIOS',
+        'MGR INVESTMENT CLUB - KEY INVESTMENT METRICS & PORTFOLIO RATIOS',
         `Metric,Club Benchmark Target,MGR Live (${formatShortMonthYear()})`,
         `"Registered Membership","Min 10 Members","${m.members.length} Members"`,
         `"Core Capital to Total Assets","Min 10.0%",${m.coreCapitalToAssets}%`,
@@ -1541,7 +1534,7 @@ export const downloadReportCSV = (reportType, appContextData, options = {}) => {
       const capBase = options.reallocationCapital || 774571;
       filename = `MGR_MansaX_and_Etica_MMF_Reallocation_Report_${dateStamp}.csv`;
       csv = [
-        'PART 1: MGR INVESTMENT GROUP PORTFOLIO ALLOCATION',
+        'PART 1: MGR INVESTMENT CLUB PORTFOLIO ALLOCATION',
         'Asset Class,Allocation %,Allocated Capital (KES),MGR Holdings & Instruments,Projected Net Yield,Est Annual Net Income (KES)',
         ...COMMITTEE_TARGET_ALLOCATION.buckets.map((b) => {
           const cap = (capBase * b.targetPercent) / 100;
