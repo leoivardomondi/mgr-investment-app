@@ -2145,10 +2145,6 @@ if ($method === 'POST') {
                 ':id' => $targetMemberId
             ]);
         }
-                ':now' => $now,
-                ':id' => $targetMemberId
-            ]);
-        }
 
         logAuditEvent(
             $pdo,
