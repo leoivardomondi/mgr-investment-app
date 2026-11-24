@@ -361,6 +361,7 @@ export default function MembersView({ onOpenDepositModal, onOpenDataEditor }) {
 
       recordDeposit({
         memberId: newId,
+        memberName: newMember.name,
         amount: sharesAmount + 1000.00,
         destination: newMemberForm.destination,
         depositDate: cleanDate,

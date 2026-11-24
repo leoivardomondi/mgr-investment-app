@@ -1046,6 +1046,7 @@ export function AppProvider({ children }) {
   // Record a Member Deposit (Requires Deposit Date and Transaction Message)
   const recordDeposit = ({ 
     memberId, 
+    memberName = '',
     amount, 
     destination, 
     depositDate = new Date().toISOString().split('T')[0],
@@ -1058,6 +1059,7 @@ export function AppProvider({ children }) {
     if (!numAmount || numAmount <= 0) return false;
 
     const targetMember = members.find(m => m.id === memberId);
+    const resolvedMemberName = targetMember?.name || memberName || memberId;
     const shouldDeductRegFee = includeRegFee || (!targetMember?.regFeePaid && numAmount >= 1000);
     const regFee = shouldDeductRegFee ? 1000.00 : 0.00;
     const netShares = Math.max(0, numAmount - regFee);
@@ -1149,7 +1151,7 @@ export function AppProvider({ children }) {
       newLedgerEntries.push({
         id: `TX-${Date.now().toString().slice(-4)}-REG`,
         date: cleanDate,
-        description: `Non-Refundable Registration Fee: ${targetMember?.name || memberId} (${destinationDesc}) [Ref: ${cleanRef}] — Non-Refundable Group Reserve`,
+        description: `Non-Refundable Registration Fee: ${resolvedMemberName} (${destinationDesc}) [Ref: ${cleanRef}] — Non-Refundable Group Reserve`,
         debitAccount: destinationDesc,
         creditAccount: 'Group Reserve Account (Non-refundable Registration Pool)',
         amount: regFee,
@@ -1161,9 +1163,9 @@ export function AppProvider({ children }) {
       newLedgerEntries.push({
         id: `TX-${(Date.now() + 1).toString().slice(-4)}-SHR`,
         date: cleanDate,
-        description: `Member Share Deposit: ${targetMember?.name || memberId} (${destinationDesc}) [Ref: ${cleanRef}] - Attributed: ${attributedQuarter}`,
+        description: `Member Share Deposit: ${resolvedMemberName} (${destinationDesc}) [Ref: ${cleanRef}] - Attributed: ${attributedQuarter}`,
         debitAccount: destinationDesc,
-        creditAccount: `${targetMember?.name || 'Member'} - Shares`,
+        creditAccount: `${resolvedMemberName} - Shares`,
         amount: netShares,
         type: 'Deposit'
       });
@@ -1177,7 +1179,7 @@ export function AppProvider({ children }) {
         ? `Deposit: KSh ${numAmount.toLocaleString()} (KES 1k Reg Fee Deducted)`
         : `Deposit Recorded: KSh ${numAmount.toLocaleString()} (${attributedQuarter})`,
       message: regFee > 0
-        ? `${targetMember?.name} credited KSh ${netShares.toLocaleString()} to Member Shares (KES 1,000/= Registration Fee deducted to Group Reserve Pool). Attached ref: ${cleanRef}.`
+        ? `${resolvedMemberName} credited KSh ${netShares.toLocaleString()} to Member Shares (KES 1,000/= Registration Fee deducted to Group Reserve Pool). Attached ref: ${cleanRef}.`
         : `${targetMember?.name} credited KSh ${numAmount.toLocaleString()} in shares to ${destinationDesc}. Attached ref: ${cleanRef}. Attributed to ${attributedQuarter} MMF Principal.`,
       date: cleanDate,
       read: false,
