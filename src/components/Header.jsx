@@ -148,7 +148,7 @@ export default function Header({ onOpenDataEditor, onOpenProfileModal }) {
         
         {/* Brand / Crest */}
         <div className="flex items-center space-x-2 sm:space-x-2.5 shrink-0">
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden shadow-md shrink-0 ring-1 ring-[var(--accent-gold-light)]/40 bg-[#1D3B2A]">
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden shadow-md shrink-0 ring-1 ring-white/40 bg-[#1D3B2A]">
             <img
               src="./mgr-crest.svg"
               alt="MGR Investment Club Crest"

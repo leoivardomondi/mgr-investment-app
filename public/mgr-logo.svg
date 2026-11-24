@@ -9,14 +9,14 @@
       <stop offset="60%" stop-color="#1D3B2A"/>
       <stop offset="100%" stop-color="#13291D"/>
     </linearGradient>
-    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#E6C98B"/>
-      <stop offset="50%" stop-color="#C89B57"/>
-      <stop offset="100%" stop-color="#9A6F2E"/>
+    <linearGradient id="whiteGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="65%" stop-color="#F7F9F8"/>
+      <stop offset="100%" stop-color="#E4EBE6"/>
     </linearGradient>
-    <linearGradient id="goldSoft" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#F0DCA8"/>
-      <stop offset="100%" stop-color="#B88940"/>
+    <linearGradient id="whiteSoft" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#E6ECE8"/>
     </linearGradient>
     <filter id="softShadow" x="-15%" y="-15%" width="130%" height="130%">
       <feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#13291D" flood-opacity="0.18"/>
@@ -30,15 +30,15 @@
     <circle cx="400" cy="355" r="245" fill="url(#forestGrad)"/>
   </g>
 
-  <circle cx="400" cy="355" r="233" fill="none" stroke="url(#goldGrad)" stroke-width="4.5"/>
-  <circle cx="400" cy="355" r="221" fill="none" stroke="url(#goldGrad)" stroke-width="1.4" stroke-opacity="0.7" stroke-dasharray="4 4"/>
+  <circle cx="400" cy="355" r="233" fill="none" stroke="url(#whiteGrad)" stroke-width="4.5"/>
+  <circle cx="400" cy="355" r="221" fill="none" stroke="#FFFFFF" stroke-width="1.4" stroke-opacity="0.65" stroke-dasharray="4 4"/>
 
   <path d="M 400 175 L 515 215 L 515 335 C 515 415, 462 475, 400 505 C 338 475, 285 415, 285 335 L 285 215 Z"
-        fill="#152E20" stroke="url(#goldGrad)" stroke-width="3.5" stroke-linejoin="round"/>
+        fill="#152E20" stroke="url(#whiteGrad)" stroke-width="3.5" stroke-linejoin="round"/>
   <path d="M 400 189 L 502 224 L 502 333 C 502 405, 455 460, 400 489 C 345 460, 298 405, 298 333 L 298 224 Z"
-        fill="none" stroke="url(#goldGrad)" stroke-width="1" stroke-opacity="0.55"/>
+        fill="none" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.45"/>
 
-  <g fill="url(#goldSoft)">
+  <g fill="url(#whiteSoft)">
     <rect x="352" y="268" width="22" height="44" rx="2"/>
     <rect x="389" y="242" width="22" height="70" rx="2"/>
     <rect x="426" y="256" width="22" height="56" rx="2"/>
@@ -49,20 +49,20 @@
   <text x="400" y="396" text-anchor="middle"
         font-family="Georgia, 'Times New Roman', serif"
         font-size="64" font-weight="700" letter-spacing="5"
-        fill="url(#goldGrad)">MGR</text>
+        fill="#FFFFFF">MGR</text>
 
-  <line x1="354" y1="416" x2="446" y2="416" stroke="url(#goldGrad)" stroke-width="1.5" stroke-opacity="0.8"/>
+  <line x1="354" y1="416" x2="446" y2="416" stroke="#FFFFFF" stroke-width="1.5" stroke-opacity="0.8"/>
 
   <text x="400" y="442" text-anchor="middle"
         font-family="'Segoe UI', Arial, sans-serif"
         font-size="13" font-weight="700" letter-spacing="4"
-        fill="#E6C98B" opacity="0.92">EST. 2026</text>
+        fill="#FFFFFF" opacity="0.92">EST. 2026</text>
 
-  <g fill="none" stroke="url(#goldGrad)" stroke-width="2.5" stroke-linecap="round">
+  <g fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" opacity="0.9">
     <path d="M 225 460 C 195 405, 195 315, 225 255"/>
     <path d="M 575 460 C 605 405, 605 315, 575 255"/>
   </g>
-  <g fill="url(#goldGrad)">
+  <g fill="#FFFFFF" opacity="0.92">
     <ellipse cx="206" cy="395" rx="9" ry="4" transform="rotate(-35 206 395)"/>
     <ellipse cx="201" cy="355" rx="9" ry="4" transform="rotate(-15 201 355)"/>
     <ellipse cx="206" cy="315" rx="9" ry="4" transform="rotate(15 206 315)"/>
@@ -80,9 +80,9 @@
         font-size="38" font-weight="700" letter-spacing="5.5"
         fill="#1D3B2A">MGR INVESTMENT CLUB</text>
 
-  <line x1="230" y1="692" x2="570" y2="692" stroke="url(#goldGrad)" stroke-width="2"/>
+  <line x1="230" y1="692" x2="570" y2="692" stroke="#1D3B2A" stroke-width="1.8" stroke-opacity="0.35"/>
   <text x="400" y="724" text-anchor="middle"
         font-family="'Segoe UI', Arial, sans-serif"
         font-size="16" font-weight="700" letter-spacing="5.5"
-        fill="#6E3C1B">PRIVATE WEALTH &amp; EQUITY REGISTRY • NAIROBI</text>
+        fill="#1D3B2A" opacity="0.8">PRIVATE WEALTH &amp; EQUITY REGISTRY • NAIROBI</text>
 </svg>

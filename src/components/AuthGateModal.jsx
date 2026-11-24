@@ -214,7 +214,7 @@ export default function AuthGateModal() {
         {/* Mobile Header (Hidden on Desktop) */}
         <div className="lg:hidden mgr-glass-header text-white p-4 flex items-center justify-between border-b border-white/10">
           <div className="flex items-center space-x-2.5">
-            <div className="w-10 h-10 rounded-full overflow-hidden shadow-md shrink-0 ring-1 ring-[var(--accent-gold-light)]/40 bg-[#1D3B2A]">
+            <div className="w-10 h-10 rounded-full overflow-hidden shadow-md shrink-0 ring-1 ring-white/40 bg-[#1D3B2A]">
               <img
                 src="./mgr-crest.svg"
                 alt="MGR Investment Club Crest"
@@ -239,7 +239,7 @@ export default function AuthGateModal() {
         <div className="hidden lg:flex lg:col-span-5 mgr-glass-header text-white p-6 sm:p-8 flex-col justify-between">
           <div className="space-y-5">
             <div className="flex items-center space-x-3">
-              <div className="w-14 h-14 rounded-full overflow-hidden shadow-lg shrink-0 ring-2 ring-[var(--accent-gold-light)]/50 bg-[#1D3B2A]">
+              <div className="w-14 h-14 rounded-full overflow-hidden shadow-lg shrink-0 ring-2 ring-white/50 bg-[#1D3B2A]">
                 <img
                   src="./mgr-crest.svg"
                   alt="MGR Investment Club Official Crest"
