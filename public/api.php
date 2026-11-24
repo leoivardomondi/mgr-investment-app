@@ -1025,6 +1025,53 @@ function getStoredState($pdo, $driverUsed) {
     if ($row && !empty($row['state_json'])) {
         $decoded = json_decode($row['state_json'], true);
         if (is_array($decoded)) {
+            // Ensure every user in mgr_users exists in state['members'] so new signups/members always appear in Members & Deposit dropdowns
+            if (isset($decoded['members']) && is_array($decoded['members'])) {
+                try {
+                    $existingIds = [];
+                    foreach ($decoded['members'] as $em) {
+                        if (!empty($em['id'])) {
+                            $existingIds[strtoupper(trim((string)$em['id']))] = true;
+                        }
+                    }
+                    $uStmt = $pdo->query("SELECT member_id, name, email, phone, position_title, membership_tier, account_status, account_pin, national_id, location_city, updated_at FROM mgr_users ORDER BY member_id ASC");
+                    $allUsers = $uStmt ? $uStmt->fetchAll() : [];
+                    foreach ($allUsers as $u) {
+                        $mid = strtoupper(trim((string)($u['member_id'] ?? '')));
+                        if ($mid !== '' && !isset($existingIds[$mid])) {
+                            $uName = trim((string)($u['name'] ?? $mid));
+                            $parts = preg_split('/\s+/', $uName);
+                            $initials = '';
+                            foreach ($parts as $p) {
+                                if ($p !== '') $initials .= strtoupper(substr($p, 0, 1));
+                                if (strlen($initials) >= 2) break;
+                            }
+                            if ($initials === '') $initials = 'MB';
+                            $decoded['members'][] = [
+                                'id' => $u['member_id'],
+                                'name' => $uName,
+                                'gender' => 'male',
+                                'role' => $u['position_title'] ?: 'Member',
+                                'committeeRole' => $u['membership_tier'] ?: 'General Member',
+                                'shares' => 0,
+                                'regFeePaid' => false,
+                                'status' => ($u['account_status'] === 'Inactive') ? 'Inactive' : 'Active',
+                                'phone' => $u['phone'] ?: '',
+                                'email' => $u['email'] ?: '',
+                                'nationalId' => $u['national_id'] ?: '',
+                                'locationCity' => $u['location_city'] ?: '',
+                                'avatar' => $initials,
+                                'joinedDate' => !empty($u['updated_at']) ? substr((string)$u['updated_at'], 0, 10) : gmdate('Y-m-d'),
+                                'depositHistory' => [],
+                                'accountPin' => $u['account_pin'] ?: '1234',
+                                'kycDocuments' => []
+                            ];
+                            $existingIds[$mid] = true;
+                        }
+                    }
+                } catch (Exception $e) {}
+            }
+
             return [
                 'initialized' => true,
                 'driver' => $driverUsed,

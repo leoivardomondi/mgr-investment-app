@@ -897,6 +897,36 @@ export function AppProvider({ children }) {
     pushStateToServer
   ]);
 
+  // Keep members roster always in sync with rbacUsers so any member in Admin Directory appears in Members & Deposit dropdowns
+  useEffect(() => {
+    if (!Array.isArray(rbacUsers) || rbacUsers.length === 0) return;
+    setMembers(prevMembers => {
+      const existingIds = new Set(prevMembers.map(m => String(m.id || '').toUpperCase()));
+      const missing = rbacUsers.filter(u => u.memberId && !existingIds.has(String(u.memberId).toUpperCase()));
+      if (missing.length === 0) return prevMembers;
+      const additions = missing.map(u => ({
+        id: u.memberId,
+        name: u.name || u.memberId,
+        gender: 'male',
+        role: u.positionTitle || 'Member',
+        committeeRole: u.membershipTier || 'General Member',
+        shares: 0,
+        regFeePaid: false,
+        status: u.accountStatus === 'Inactive' ? 'Inactive' : 'Active',
+        phone: u.phone || '',
+        email: u.email || '',
+        nationalId: u.nationalId || '',
+        locationCity: u.locationCity || '',
+        avatar: (u.name || 'MB').split(' ').filter(Boolean).map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'MB',
+        joinedDate: (u.updatedAt || new Date().toISOString()).split('T')[0],
+        depositHistory: [],
+        accountPin: u.accountPin || '1234',
+        kycDocuments: u.kycDocuments || []
+      }));
+      return [...prevMembers, ...additions];
+    });
+  }, [rbacUsers]);
+
   // Executive Committee Status: Driven by RBAC access level OR Executive Committee membership OR System Admin
   const isCurrentMemberExec =
     isSuperAdmin ||

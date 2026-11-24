@@ -258,9 +258,10 @@ export default function MembersView({ onOpenDepositModal, onOpenDataEditor }) {
   const johnCapitalMobilized = johnRecruits.reduce((sum, m) => sum + parseFloat(m.shares || 0), 0);
 
   const filteredMembers = members.filter(m => {
-    const matchesSearch = m.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          m.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          m.role.toLowerCase().includes(searchTerm.toLowerCase());
+    const q = searchTerm.toLowerCase();
+    const matchesSearch = (m.name || '').toLowerCase().includes(q) || 
+                          (m.id || '').toLowerCase().includes(q) ||
+                          (m.role || '').toLowerCase().includes(q);
     if (filterRole === 'EXEC') {
       return matchesSearch && m.committeeRole === 'Executive Committee';
     }
