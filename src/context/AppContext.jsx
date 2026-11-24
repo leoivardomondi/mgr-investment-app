@@ -101,7 +101,7 @@ export function AppProvider({ children }) {
     const saved = localStorage.getItem(`${STORAGE_KEY}_members`);
     if (!saved) return INITIAL_MEMBERS;
     try {
-      const parsed = JSON.parse(saved).filter(m => m.id !== 'MGR-012');
+      const parsed = JSON.parse(saved);
       const isOldIdFormat = parsed.some(m => m.id === 'MGR-007' && (m.name || '').toLowerCase().includes('john'));
       const oldToNewMap = {
         'MGR-007': 'MGR-001',
@@ -594,7 +594,7 @@ export function AppProvider({ children }) {
         'MGR-008': 'MGR-010',
         'MGR-011': 'MGR-011',
       };
-      setMembers(remoteState.members.filter(m => m.id !== 'MGR-012').map(m => {
+      setMembers(remoteState.members.map(m => {
         const id = isOldIdFormat && oldToNewMap[m.id] ? oldToNewMap[m.id] : m.id;
         return normalizeMemberNetDeposits({ ...m, id });
       }));
@@ -674,6 +674,32 @@ export function AppProvider({ children }) {
 
       if (Array.isArray(data.users) && data.users.length > 0) {
         setRbacUsers(data.users);
+        // Ensure any registered user in mgr_users missing from members state appears in Members & Deposit dropdowns
+        setMembers(prevMembers => {
+          const existingIds = new Set(prevMembers.map(m => m.id));
+          const missingFromMembers = data.users.filter(u => u.memberId && !existingIds.has(u.memberId));
+          if (missingFromMembers.length === 0) return prevMembers;
+          const additions = missingFromMembers.map(u => ({
+            id: u.memberId,
+            name: u.name || u.memberId,
+            gender: 'male',
+            role: u.positionTitle || 'Member',
+            committeeRole: u.membershipTier || 'General Member',
+            shares: 0,
+            regFeePaid: false,
+            status: u.accountStatus === 'Inactive' ? 'Inactive' : 'Active',
+            phone: u.phone || '',
+            email: u.email || '',
+            nationalId: u.nationalId || '',
+            locationCity: u.locationCity || '',
+            avatar: (u.name || 'MB').split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase(),
+            joinedDate: (u.updatedAt || new Date().toISOString()).split('T')[0],
+            depositHistory: [],
+            accountPin: u.accountPin || '1234',
+            kycDocuments: u.kycDocuments || []
+          }));
+          return [...prevMembers, ...additions];
+        });
       }
       if (data.authenticatedUser) {
         setAuthenticatedUser(data.authenticatedUser);
