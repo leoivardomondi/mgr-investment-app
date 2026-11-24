@@ -11,6 +11,7 @@ import {
   INITIAL_PORTFOLIO_ADVISORIES,
   INITIAL_ANNOUNCEMENTS,
   getQuarterForDate,
+  isPostQ3Member,
 } from '../data/initialData';
 
 // MGR Investment Club Executive Committee (Authorized to perform actions affecting other members and group finances)
@@ -1238,8 +1239,8 @@ export function AppProvider({ children }) {
     const memberEligibility = members.map(m => {
       let eligible = m.shares;
       if (isPeriodProrated) {
-        if (m.id === 'MGR-011') {
-          eligible = 0; // Exclude new post-period capital
+        if (isPostQ3Member(m)) {
+          eligible = 0; // Exclude post-Q3 joiners (joined >= 2026-10-01)
         } else if (m.status !== 'Active' && m.id !== 'MGR-007') {
           eligible = 0;
         }

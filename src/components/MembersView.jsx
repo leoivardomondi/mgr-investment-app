@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
+import { isPostQ3Member } from '../data/initialData';
 import PageContextBanner from './PageContextBanner';
 import MemberAvatarIcon from './MemberAvatarIcon';
 import MemberKycModal from './MemberKycModal';
@@ -948,16 +949,17 @@ export default function MembersView({ onOpenDepositModal, onOpenDataEditor }) {
               const isDeceased = member.status === 'Deceased';
               const isPending = member.status === 'Pending Approval';
               const isNewTreasurer = member.id === 'MGR-011';
+              const isPostQ3Joiner = isPostQ3Member(member);
 
               const depHist = member.depositHistory || [];
               const creditedYieldDeps = depHist
                 .filter(d => d.type && (d.type.toLowerCase().includes('yield') || d.type.toLowerCase().includes('dividend')))
                 .reduce((s, d) => s + Number(d.amount || 0), 0);
               const q3BaseTotal = members
-                .filter(item => item.id !== 'MGR-011' && (item.status === 'Active' || item.id === 'MGR-007'))
+                .filter(item => !isPostQ3Member(item) && (item.status === 'Active' || item.id === 'MGR-007'))
                 .reduce((s, item) => s + Number(item.shares || 0), 0);
               const totalQ3Yield = Number(assets.mansaX?.interestAccrued || 41587) + 21309;
-              const accruedMemberYield = (!isNewTreasurer && !isPending && q3BaseTotal > 0)
+              const accruedMemberYield = (!isPostQ3Joiner && !isPending && q3BaseTotal > 0)
                 ? (Number(member.shares || 0) / q3BaseTotal) * totalQ3Yield
                 : 0;
 
@@ -1037,7 +1039,7 @@ export default function MembersView({ onOpenDepositModal, onOpenDataEditor }) {
                       </p>
                       <p className="text-[10px] text-emerald-700 font-medium truncate">
                         {isCurrentMemberExec || member.id === currentMember?.id
-                          ? (isNewTreasurer ? 'Starts Q4 (Oct)' : creditedYieldDeps > 0 ? `Credited + Accrued` : `Q3 Accrued Yield`)
+                          ? (isPostQ3Joiner ? 'Starts Q4 2026' : creditedYieldDeps > 0 ? `Credited + Accrued` : `Q3 Accrued Yield`)
                           : 'Executive Only'}
                       </p>
                     </div>
@@ -1671,10 +1673,10 @@ export default function MembersView({ onOpenDepositModal, onOpenDataEditor }) {
                   .filter(d => !d.type || (!d.type.toLowerCase().includes('registration') && !d.type.toLowerCase().includes('yield') && !d.type.toLowerCase().includes('dividend')))
                   .reduce((s, d) => s + Number(d.amount || 0), 0);
                 const q3Base = members
-                  .filter(item => item.id !== 'MGR-011' && (item.status === 'Active' || item.id === 'MGR-007'))
+                  .filter(item => !isPostQ3Member(item) && (item.status === 'Active' || item.id === 'MGR-007'))
                   .reduce((s, item) => s + Number(item.shares || 0), 0);
                 const totalQ3Pool = Number(assets.mansaX?.interestAccrued || 41587) + 21309;
-                const accruedYld = (liveM.id !== 'MGR-011' && liveM.status !== 'Pending Approval' && q3Base > 0)
+                const accruedYld = (!isPostQ3Member(liveM) && liveM.status !== 'Pending Approval' && q3Base > 0)
                   ? (Number(liveM.shares || 0) / q3Base) * totalQ3Pool
                   : 0;
 

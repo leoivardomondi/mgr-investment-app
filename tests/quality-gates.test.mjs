@@ -7,7 +7,8 @@ import { execSync, spawnSync } from 'node:child_process';
 import {
   INITIAL_MEMBERS,
   INITIAL_GROUP_ASSETS,
-  getQuarterForDate
+  getQuarterForDate,
+  isPostQ3Member
 } from '../src/data/initialData.js';
 
 const ROOT = process.cwd();
@@ -221,6 +222,18 @@ test('Financial baseline: founding roster (MGR-001..MGR-011), assets, and quarte
   assert.match(getQuarterForDate('2026-05-15'), /Q2[- ]2026/);
   assert.match(getQuarterForDate('2026-08-15'), /Q3[- ]2026/);
   assert.match(getQuarterForDate('2026-11-15'), /Q4[- ]2026/);
+
+  // Yield prorating cutoff: Q4 2026+ joiners must NOT accrue Q3 2026 yields
+  assert.equal(isPostQ3Member({ id: 'MGR-011', joinedDate: '2026-10-28' }), true);
+  assert.equal(isPostQ3Member({ id: 'MGR-012', joinedDate: '2026-11-20' }), true);
+  assert.equal(isPostQ3Member({ id: 'MGR-013', joinedDate: '2027-01-05' }), true);
+  assert.equal(isPostQ3Member({ id: 'MGR-001', joinedDate: '2026-01-15' }), false);
+  assert.equal(isPostQ3Member({ id: 'MGR-007', joinedDate: '2026-06-01' }), false);
+
+  // Ensure MembersView, MMFStatementView, and AppContext use isPostQ3Member rather than hardcoding MGR-011 only
+  assert.ok(readText('src/components/MembersView.jsx').includes('isPostQ3Member'), 'MembersView must use isPostQ3Member for Q3 yield cutoff');
+  assert.ok(readText('src/components/MMFStatementView.jsx').includes('isPostQ3Member'), 'MMFStatementView must use isPostQ3Member for Q3 yield cutoff');
+  assert.ok(readText('src/context/AppContext.jsx').includes('isPostQ3Member'), 'AppContext must use isPostQ3Member in distributeInterest');
 });
 
 // ============================================================================

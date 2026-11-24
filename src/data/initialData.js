@@ -35,6 +35,18 @@ export function getMemberTwoNames(name) {
   return `${parts[0]} ${parts[parts.length - 1]}`;
 }
 
+/**
+ * Returns true if a member joined after Q3 2026 closed (on or after 2026-10-01),
+ * meaning they have 0 active days in the Q3 2026 yield period and accrue KES 0.00 Q3 yield.
+ */
+export function isPostQ3Member(member) {
+  if (!member) return false;
+  if (member.id === 'MGR-011') return true;
+  const jd = String(member.joinedDate || '').trim();
+  if (jd === 'Q4-2026' || jd >= '2026-10-01') return true;
+  return false;
+}
+
 export const INITIAL_MEMBERS = [
   {
     "id": "MGR-001",

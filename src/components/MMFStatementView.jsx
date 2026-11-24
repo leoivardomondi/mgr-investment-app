@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
+import { isPostQ3Member } from '../data/initialData';
 import PageContextBanner from './PageContextBanner';
 import {
   KENYA_MMF_BENCHMARKS_2025,
@@ -157,7 +158,7 @@ export default function MMFStatementView() {
       let eligibleShares = m.shares;
       let daysActiveInPeriod = 92; // Full Q3 (July 1 to Sept 30 = 92 days)
 
-      if (m.id === 'MGR-011') { // Leoivard Omondi Ongule
+      if (isPostQ3Member(m)) { // Post-Q3 joiners (e.g., Leoivard & Q4 2026+ members)
         if (proratingPolicy === 'holding-period') {
           // Option A: Exclude post-quarter capital completely (0 days active in Q3)
           eligibleShares = 0;
@@ -1277,7 +1278,7 @@ export default function MMFStatementView() {
             </thead>
             <tbody className="divide-y divide-slate-100 bg-white font-mono-num">
               {calculatedBreakdown.map((member) => {
-                const isLeoivard = member.id === 'MGR-011';
+                const isLeoivard = isPostQ3Member(member);
                 const isDeceased = member.status === 'Deceased' || member.id === 'MGR-007';
 
                 return (
