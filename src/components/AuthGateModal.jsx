@@ -214,8 +214,12 @@ export default function AuthGateModal() {
         {/* Mobile Header (Hidden on Desktop) */}
         <div className="lg:hidden mgr-glass-header text-white p-4 flex items-center justify-between border-b border-white/10">
           <div className="flex items-center space-x-2.5">
-            <div className="w-9 h-9 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center shrink-0">
-              <Landmark className="w-4 h-4 text-[var(--accent-gold-light)]" />
+            <div className="w-10 h-10 rounded-full overflow-hidden shadow-md shrink-0 ring-1 ring-[var(--accent-gold-light)]/40 bg-[#1D3B2A]">
+              <img
+                src="./mgr-crest.svg"
+                alt="MGR Investment Club Crest"
+                className="w-full h-full object-cover"
+              />
             </div>
             <div>
               <h1 className="font-bold text-sm tracking-tight text-white leading-tight">
@@ -235,8 +239,12 @@ export default function AuthGateModal() {
         <div className="hidden lg:flex lg:col-span-5 mgr-glass-header text-white p-6 sm:p-8 flex-col justify-between">
           <div className="space-y-5">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center shrink-0">
-                <Landmark className="w-5 h-5 text-[var(--accent-gold-light)]" />
+              <div className="w-14 h-14 rounded-full overflow-hidden shadow-lg shrink-0 ring-2 ring-[var(--accent-gold-light)]/50 bg-[#1D3B2A]">
+                <img
+                  src="./mgr-crest.svg"
+                  alt="MGR Investment Club Official Crest"
+                  className="w-full h-full object-cover"
+                />
               </div>
               <div>
                 <h1 className="font-bold text-base tracking-tight text-white">

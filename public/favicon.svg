@@ -1,26 +1,64 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="145 100 510 510" width="512" height="512">
   <defs>
-    <linearGradient id="mgrBg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#1D3B2A" />
-      <stop offset="100%" stop-color="#112419" />
+    <linearGradient id="forestGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#224632"/>
+      <stop offset="60%" stop-color="#1D3B2A"/>
+      <stop offset="100%" stop-color="#13291D"/>
     </linearGradient>
-    <linearGradient id="mgrGold" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#E5C17B" />
-      <stop offset="100%" stop-color="#B6863E" />
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E6C98B"/>
+      <stop offset="50%" stop-color="#C89B57"/>
+      <stop offset="100%" stop-color="#9A6F2E"/>
+    </linearGradient>
+    <linearGradient id="goldSoft" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#F0DCA8"/>
+      <stop offset="100%" stop-color="#B88940"/>
     </linearGradient>
   </defs>
-  <rect width="512" height="512" rx="108" fill="url(#mgrBg)" />
-  <rect x="28" y="28" width="456" height="456" rx="86" fill="none" stroke="url(#mgrGold)" stroke-width="6" stroke-opacity="0.45" />
-  <!-- Classical Institutional Pediment / Roof -->
-  <path d="M256 96 L108 176 H404 Z" fill="url(#mgrGold)" />
-  <rect x="116" y="186" width="280" height="16" rx="4" fill="#F6F3EC" fill-opacity="0.9" />
-  <!-- Pillars -->
-  <rect x="140" y="214" width="32" height="132" rx="6" fill="url(#mgrGold)" />
-  <rect x="206" y="214" width="32" height="132" rx="6" fill="url(#mgrGold)" />
-  <rect x="274" y="214" width="32" height="132" rx="6" fill="url(#mgrGold)" />
-  <rect x="340" y="214" width="32" height="132" rx="6" fill="url(#mgrGold)" />
-  <!-- Base Foundation -->
-  <rect x="108" y="356" width="296" height="22" rx="6" fill="#F6F3EC" />
-  <!-- MGR Monogram Banner -->
-  <text x="256" y="436" text-anchor="middle" font-family="Georgia, serif" font-weight="bold" font-size="54" fill="url(#mgrGold)" letter-spacing="6">MGR</text>
+
+  <circle cx="400" cy="355" r="248" fill="url(#forestGrad)"/>
+  <circle cx="400" cy="355" r="235" fill="none" stroke="url(#goldGrad)" stroke-width="5.5"/>
+  <circle cx="400" cy="355" r="222" fill="none" stroke="url(#goldGrad)" stroke-width="1.6" stroke-opacity="0.7" stroke-dasharray="4 4"/>
+
+  <path d="M 400 175 L 515 215 L 515 335 C 515 415, 462 475, 400 505 C 338 475, 285 415, 285 335 L 285 215 Z"
+        fill="#152E20" stroke="url(#goldGrad)" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M 400 189 L 502 224 L 502 333 C 502 405, 455 460, 400 489 C 345 460, 298 405, 298 333 L 298 224 Z"
+        fill="none" stroke="url(#goldGrad)" stroke-width="1.2" stroke-opacity="0.55"/>
+
+  <g fill="url(#goldSoft)">
+    <rect x="352" y="268" width="22" height="44" rx="2"/>
+    <rect x="389" y="242" width="22" height="70" rx="2"/>
+    <rect x="426" y="256" width="22" height="56" rx="2"/>
+    <rect x="338" y="317" width="124" height="5" rx="2.5"/>
+    <polygon points="400,213 409,225 400,237 391,225"/>
+  </g>
+
+  <text x="400" y="396" text-anchor="middle"
+        font-family="Georgia, 'Times New Roman', serif"
+        font-size="64" font-weight="700" letter-spacing="5"
+        fill="url(#goldGrad)">MGR</text>
+
+  <line x1="354" y1="416" x2="446" y2="416" stroke="url(#goldGrad)" stroke-width="1.8" stroke-opacity="0.8"/>
+
+  <text x="400" y="442" text-anchor="middle"
+        font-family="'Segoe UI', Arial, sans-serif"
+        font-size="13" font-weight="700" letter-spacing="4"
+        fill="#E6C98B" opacity="0.92">EST. 2026</text>
+
+  <g fill="none" stroke="url(#goldGrad)" stroke-width="2.5" stroke-linecap="round">
+    <path d="M 225 460 C 195 405, 195 315, 225 255"/>
+    <path d="M 575 460 C 605 405, 605 315, 575 255"/>
+  </g>
+  <g fill="url(#goldGrad)">
+    <ellipse cx="206" cy="395" rx="9" ry="4" transform="rotate(-35 206 395)"/>
+    <ellipse cx="201" cy="355" rx="9" ry="4" transform="rotate(-15 201 355)"/>
+    <ellipse cx="206" cy="315" rx="9" ry="4" transform="rotate(15 206 315)"/>
+    <ellipse cx="218" cy="278" rx="8" ry="3.5" transform="rotate(35 218 278)"/>
+    <ellipse cx="218" cy="432" rx="8" ry="3.5" transform="rotate(-50 218 432)"/>
+    <ellipse cx="594" cy="395" rx="9" ry="4" transform="rotate(35 594 395)"/>
+    <ellipse cx="599" cy="355" rx="9" ry="4" transform="rotate(15 599 355)"/>
+    <ellipse cx="594" cy="315" rx="9" ry="4" transform="rotate(-15 594 315)"/>
+    <ellipse cx="582" cy="278" rx="8" ry="3.5" transform="rotate(-35 582 278)"/>
+    <ellipse cx="582" cy="432" rx="8" ry="3.5" transform="rotate(50 582 432)"/>
+  </g>
 </svg>

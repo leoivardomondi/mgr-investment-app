@@ -1,9 +1,11 @@
-const CACHE_NAME = 'mgr-investment-pwa-v5';
+const CACHE_NAME = 'mgr-investment-pwa-v6';
 const APP_SHELL_ASSETS = [
   './',
   './index.html',
   './manifest.webmanifest',
   './favicon.svg',
+  './mgr-crest.svg',
+  './mgr-logo.svg',
   './pwa-192x192.png',
   './pwa-512x512.png'
 ];
